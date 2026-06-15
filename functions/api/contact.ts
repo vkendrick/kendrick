@@ -1,5 +1,3 @@
-import type { EventContext } from "@cloudflare/workers-types";
-
 interface Env {
   DB: D1Database;
   RESEND_API_KEY?: string;
@@ -34,7 +32,7 @@ async function sendEmail(env: Env, to: string, subject: string, html: string) {
   });
 }
 
-export const onRequestPost: (ctx: EventContext<Env, string, unknown>) => Promise<Response> = async ({ request, env }) => {
+export const onRequestPost = async ({ request, env }: { request: Request; env: Env; params: unknown }) => {
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",

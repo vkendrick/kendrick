@@ -1,5 +1,3 @@
-import type { EventContext } from "@cloudflare/workers-types";
-
 interface Env {
   DB: D1Database;
   RESEND_API_KEY?: string;
@@ -114,7 +112,7 @@ async function notifyOwner(env: Env, data: LeadData) {
   await sendEmail(env, ownerEmail, `Nuevo lead: ${data.name} — ${label}`, html);
 }
 
-export const onRequestPost: (ctx: EventContext<Env, string, unknown>) => Promise<Response> = async ({ request, env }) => {
+export const onRequestPost = async ({ request, env }: { request: Request; env: Env; params: unknown }) => {
   // CORS
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
