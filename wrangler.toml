@@ -1,7 +1,5 @@
 name = "kendrick"
-main = "src/worker/index.ts"
 compatibility_date = "2024-09-23"
-compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
 
 [[d1_databases]]
@@ -13,5 +11,5 @@ database_id = "dcba75e2-c77a-4218-bd62-fff9b9ebe707"
 OWNER_EMAIL = "veridiana@kendrick.com"
 APP_NAME = "Kendrick Consultoria Digital"
 
-# Para producción, agrega en el dashboard de Cloudflare:
+# Agrega en el dashboard de Cloudflare → Pages → Settings → Variables:
 # RESEND_API_KEY = "re_xxxx"
