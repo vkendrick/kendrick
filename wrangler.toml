@@ -7,7 +7,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "kendrick-db"
-database_id = "local-dev"
+database_id = "dcba75e2-c77a-4218-bd62-fff9b9ebe707"
 
 [vars]
 OWNER_EMAIL = "veridiana@kendrick.com"
