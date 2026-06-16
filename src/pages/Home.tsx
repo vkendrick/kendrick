@@ -1,211 +1,189 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
-import {
-  ArrowRight, CheckCircle2, ChevronDown, ChevronUp,
-  Star, Clock, Search, Zap, BarChart3,
-  MessageSquare, Phone
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 
 // ─── DATOS ────────────────────────────────────────────────────────────────────
 
 const STATS = [
   { value: "+120", label: "Negocios ayudados" },
-  { value: "3×", label: "Más clientes en promedio" },
-  { value: "-40%", label: "Menos gasto en publicidad" },
-  { value: "98%", label: "Clientes satisfechos" },
+  { value: "3×", label: "Más clientes" },
+  { value: "4 sem.", label: "Primeros resultados" },
+  { value: "98%", label: "Satisfacción" },
 ];
 
-const SERVICES = [
+// Paquetes diseñados como escalera progresiva — cada nivel incluye el anterior
+const PACKAGES = [
   {
-    level: "Nivel 1",
+    step: "01",
     name: "Arranque Digital Mínimo",
     price: "€450 – €600",
     duration: "4 semanas",
-    tagline: "Para negocios que aún no existen en internet",
-    description:
-      "Si cuando alguien busca tu negocio en Google no apareces, o tu única herramienta de ventas es el boca a boca, este es tu punto de partida. En 4 semanas tienes todo lo básico funcionando.",
-    deliverables: [
-      "Página web de una sola pantalla, lista para recibir clientes",
-      "Tu negocio visible en Google Maps y búsquedas locales",
-      "Botón de WhatsApp para que los clientes te contacten al instante",
-      "Guía de 15 minutos semanales para mantener tu presencia activa",
-      "Informe completo de cómo está tu negocio online hoy (PDF)",
+    tagline: "Sin presencia online",
+    badge: null,
+    highlight: false,
+    includes: [
+      "Web de una página lista para recibir clientes",
+      "Google Maps optimizado y verificado",
+      "Botón WhatsApp directo",
+      "Informe de situación digital (PDF)",
+      "Guía de mantenimiento de 15 min/semana",
     ],
-    color: "border-l-4 border-[#C5A880]",
-    badge: "Más popular para empezar",
-  },
-  {
-    level: "Nivel 2",
-    name: "Estructura de Ventas Integrada",
-    price: "€850 – €1.200",
-    duration: "6 semanas",
-    tagline: "Para negocios con presencia, pero sin sistema",
-    description:
-      "Tienes redes sociales, quizás una web, pero los clientes interesados se pierden porque no hay un proceso claro de seguimiento. Conectamos todo para que ningún cliente potencial se escape.",
-    deliverables: [
-      "Revisión completa de tu web y redes (qué funciona y qué no)",
-      "Sistema de seguimiento de clientes (CRM: Brevo o HubSpot gratuito)",
-      "3 emails automáticos que se envían solos cuando alguien te contacta",
-      "Instalación de píxeles para saber de dónde vienen tus clientes",
-      "Panel de control en Notion para ver tus ventas de un vistazo",
-      "Sesión de formación de 90 minutos (grabada para que la revises cuando quieras)",
-    ],
-    color: "border-l-4 border-[#0B2545]",
-    badge: "Mayor retorno de inversión",
-  },
-  {
-    level: "Nivel 3",
-    name: "Mentoría de Crecimiento Avanzado",
-    price: "€1.500 – €2.000",
-    duration: "8 semanas",
-    tagline: "Para negocios listos para crecer con publicidad",
-    description:
-      "Tu negocio ya funciona bien online. Ahora quieres más clientes y estás dispuesto a invertir en publicidad. Te ayudamos a hacerlo bien desde el principio para no desperdiciar dinero.",
-    deliverables: [
-      "Configuración completa de publicidad en Facebook/Instagram y Google",
-      "Panel en tiempo real para ver qué anuncios funcionan y cuáles no",
-      "Manual personalizado de crecimiento (PDF 20+ páginas)",
-      "Revisiones cada 2 semanas para ajustar y mejorar",
-      "Estrategia para llegar a personas similares a tus mejores clientes",
-    ],
-    note: "⚠️ El presupuesto de publicidad (lo que pagas a Facebook/Google) no está incluido en el precio del servicio.",
-    color: "border-l-4 border-[#C5A880]/60",
-    badge: "Para escalar",
-  },
-];
-
-const HOW_IT_WORKS = [
-  {
-    step: "01",
-    icon: Search,
-    title: "Auditoría",
-    desc: "Revisamos cómo está tu negocio online hoy: web, redes, Google. Te decimos exactamente qué está fallando y por qué.",
+    cta: "Empezar desde cero",
+    note: null,
   },
   {
     step: "02",
-    icon: Zap,
-    title: "Estructura",
-    desc: "Construimos o mejoramos tu presencia digital con las herramientas correctas para tu tipo de negocio.",
+    name: "Estructura de Ventas Integrada",
+    price: "€850 – €1.200",
+    duration: "6 semanas",
+    tagline: "Presencia sin sistema",
+    badge: "Más solicitado",
+    highlight: true,
+    includes: [
+      "Todo lo del Nivel 01 +",
+      "Auditoría completa de web y redes",
+      "CRM gratuito configurado (Brevo/HubSpot)",
+      "3 emails automáticos de seguimiento",
+      "Píxeles de seguimiento instalados",
+      "Panel Notion con tus métricas clave",
+      "Sesión de formación grabada (90 min)",
+    ],
+    cta: "Conectar mi negocio",
+    note: null,
   },
   {
     step: "03",
-    icon: MessageSquare,
-    title: "Revisión",
-    desc: "Revisamos juntos cada entregable antes de darlo por terminado. Tú apruebas, nosotros ajustamos.",
-  },
-  {
-    step: "04",
-    icon: BarChart3,
-    title: "Entrega",
-    desc: "Recibes todo funcionando, con formación incluida para que puedas manejarlo tú mismo sin depender de nadie.",
-  },
-];
-
-const TESTIMONIALS = [
-  {
-    name: "Carmen Rodríguez",
-    role: "Dueña de clínica dental",
-    location: "Madrid",
-    date: "Marzo 2025",
-    text: "Antes mis pacientes me encontraban solo por recomendación. Ahora recibo 3 o 4 consultas nuevas cada semana desde Google. El cambio fue en menos de un mes.",
-    rating: 5,
-    initials: "CR",
-    color: "bg-[#0B2545]",
-  },
-  {
-    name: "Marcos Oliveira",
-    role: "Dueño de restaurante",
-    location: "Barcelona",
-    date: "Enero 2025",
-    text: "Pensaba que necesitaba gastar miles en publicidad. Con el paquete básico, en 4 semanas ya tenía mi Google Maps optimizado y empecé a recibir reservas online. Muy recomendable.",
-    rating: 5,
-    initials: "MO",
-    color: "bg-[#C5A880]",
-  },
-  {
-    name: "Laura Sánchez",
-    role: "Estilista independiente",
-    location: "Valencia",
-    date: "Abril 2025",
-    text: "No entendía nada de marketing digital. Veridiana me explicó todo en palabras simples y en 6 semanas tenía un sistema que me trae clientes solos. Ahora tengo agenda llena.",
-    rating: 5,
-    initials: "LS",
-    color: "bg-[#1a3a6b]",
+    name: "Mentoría de Crecimiento Avanzado",
+    price: "€1.500 – €2.000",
+    duration: "8 semanas",
+    tagline: "Listo para escalar",
+    badge: null,
+    highlight: false,
+    includes: [
+      "Todo lo del Nivel 02 +",
+      "Publicidad en Facebook/Instagram y Google",
+      "Panel en tiempo real de anuncios",
+      "Revisiones quincenales de resultados",
+      "Estrategia de audiencias similares",
+      "Manual personalizado de crecimiento",
+    ],
+    cta: "Escalar con publicidad",
+    note: "El presupuesto de publicidad (lo que pagas a Meta/Google) no está incluido.",
   },
 ];
 
-const CASE_STUDY = {
-  client: "Clínica Dental AR",
-  sector: "Salud — Madrid",
-  before: [
-    "0 reseñas en Google",
-    "Sin página web propia",
-    "100% de clientes por boca a boca",
-    "Agenda con huecos todas las semanas",
-  ],
-  after: [
-    "47 reseñas en Google (4.9 ★)",
-    "Página web con formulario de citas",
-    "3-4 consultas nuevas por semana desde internet",
-    "Agenda completa con lista de espera",
-  ],
-  duration: "4 semanas",
-  package: "Arranque Digital Mínimo",
-};
+// Portafolio visual — resultados concretos por sector
+const PORTFOLIO = [
+  {
+    initials: "AT",
+    color: "#0B2545",
+    business: "FisioVida Madrid",
+    sector: "Fisioterapia",
+    package: "Nivel 01",
+    metric: "+6 pacientes/mes",
+    detail: "De 0 a Top 3 en Google en 4 semanas",
+  },
+  {
+    initials: "MS",
+    color: "#7c3aed",
+    business: "Barbería Don Mateo",
+    sector: "Barbería · Sevilla",
+    package: "Nivel 01",
+    metric: "23 reservas online/mes",
+    detail: "12 años de negocio, cero presencia digital",
+  },
+  {
+    initials: "LF",
+    color: "#0e7490",
+    business: "LinguaFlow",
+    sector: "Academia de idiomas",
+    package: "Nivel 02",
+    metric: "+€1.200/mes",
+    detail: "Sistema de captación automatizado",
+  },
+  {
+    initials: "RA",
+    color: "#b45309",
+    business: "Reyes Arquitectura",
+    sector: "Arquitectura · Valencia",
+    package: "Nivel 02",
+    metric: "3× más presupuestos",
+    detail: "Embudo de leads desde LinkedIn y web",
+  },
+  {
+    initials: "DL",
+    color: "#be185d",
+    business: "Pastelería Dulce Luna",
+    sector: "Pastelería artesanal",
+    package: "Nivel 01",
+    metric: "+40% ventas online",
+    detail: "Instagram + Google Maps + pedidos web",
+  },
+  {
+    initials: "YA",
+    color: "#065f46",
+    business: "Yoga Alma Serena",
+    sector: "Bienestar · Barcelona",
+    package: "Nivel 03",
+    metric: "Clases llenas en 6 sem.",
+    detail: "Publicidad Meta + automatización de reservas",
+  },
+];
+
+const PROCESS = [
+  { n: "01", title: "Diagnóstico", desc: "Revisamos tu situación digital en 60 min." },
+  { n: "02", title: "Plan", desc: "Propuesta clara con entregables y plazos exactos." },
+  { n: "03", title: "Ejecución", desc: "Construimos todo. Tú apruebas cada pieza." },
+  { n: "04", title: "Entrega", desc: "Todo funcionando. Formación incluida." },
+];
 
 const FAQS = [
   {
-    q: "¿Necesito saber de tecnología para trabajar con vosotros?",
-    a: "Para nada. Nosotros nos encargamos de todo lo técnico. Tú solo necesitas tener claro qué quieres conseguir con tu negocio. Al final te entregamos todo funcionando y te explicamos cómo usarlo en palabras simples.",
+    q: "¿Necesito saber de tecnología?",
+    a: "No. Nos encargamos de todo lo técnico. Al final te entregamos todo funcionando y te explicamos cómo usarlo en palabras simples.",
   },
   {
     q: "¿Cuánto tiempo tengo que dedicarle yo?",
-    a: "Muy poco. Necesitamos una reunión inicial de 60 minutos para entender tu negocio, y luego revisiones cortas cada semana. El resto lo hacemos nosotros. Al terminar, te enseñamos a mantenerlo en 15 minutos semanales.",
+    a: "Reunión inicial de 60 min + revisiones cortas semanales. Al terminar, mantienes todo en 15 min/semana.",
+  },
+  {
+    q: "¿Los paquetes son acumulativos?",
+    a: "Sí. Cada nivel incluye todo lo del anterior. Si empiezas con el Nivel 01 y quieres crecer, el Nivel 02 parte de lo que ya tienes construido — no empezamos de cero.",
   },
   {
     q: "¿Qué pasa si no me gustan los resultados?",
-    a: "Antes de empezar firmamos un contrato con los entregables exactos que vas a recibir. Revisamos juntos cada pieza antes de darla por terminada. Si algo no cumple lo acordado, lo corregimos sin coste adicional.",
-  },
-  {
-    q: "¿Por qué no contratar a alguien más barato en Fiverr?",
-    a: "Puedes hacerlo. La diferencia es que en Fiverr recibes una tarea aislada (una web, un logo) sin estrategia. Nosotros construimos un sistema completo que funciona junto: web + Google + seguimiento de clientes. Es la diferencia entre comprar ladrillos y construir una casa.",
-  },
-  {
-    q: "¿Funciona para mi tipo de negocio?",
-    a: "Hemos trabajado con clínicas dentales, restaurantes, peluquerías, talleres mecánicos, tiendas de ropa, psicólogos y muchos más. Si tienes clientes locales o vendes servicios, funciona. Haz el diagnóstico gratuito y te decimos exactamente qué necesitas.",
+    a: "Firmamos un contrato con los entregables exactos. Revisamos juntos cada pieza antes de cerrarla. Si algo no cumple lo acordado, lo corregimos sin coste adicional.",
   },
   {
     q: "¿Cuándo empiezo a ver resultados?",
-    a: "Depende del paquete. Con el Arranque Digital Mínimo, en 2-3 semanas ya apareces en Google y tienes tu web activa. Los primeros clientes desde internet suelen llegar entre la semana 3 y 6. No prometemos milagros, pero sí resultados medibles.",
+    a: "Con el Nivel 01, en 2-3 semanas ya apareces en Google. Los primeros clientes desde internet suelen llegar entre la semana 3 y 6.",
   },
 ];
 
-// ─── COMPONENTES INTERNOS ─────────────────────────────────────────────────────
+// ─── COMPONENTES ──────────────────────────────────────────────────────────────
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="border-b border-gray-100">
+    <div className="border-b border-gray-100 last:border-0">
       <button
         className="w-full flex items-center justify-between py-5 text-left gap-4"
         onClick={() => setOpen(!open)}
       >
-        <span className="font-semibold text-[#0B2545] text-base leading-snug">{q}</span>
+        <span className="font-semibold text-[#0B2545] text-sm leading-snug">{q}</span>
         {open ? (
-          <ChevronUp size={18} className="text-[#C5A880] shrink-0" />
+          <ChevronUp size={16} className="text-[#C5A880] shrink-0" />
         ) : (
-          <ChevronDown size={18} className="text-gray-400 shrink-0" />
+          <ChevronDown size={16} className="text-gray-400 shrink-0" />
         )}
       </button>
-      {open && (
-        <p className="pb-5 text-gray-600 text-sm leading-relaxed">{a}</p>
-      )}
+      {open && <p className="pb-5 text-gray-500 text-sm leading-relaxed">{a}</p>}
     </div>
   );
 }
 
-// ─── PÁGINA PRINCIPAL ─────────────────────────────────────────────────────────
+// ─── PÁGINA ───────────────────────────────────────────────────────────────────
 
 export default function Home() {
   const [form, setForm] = useState({ name: "", email: "", company: "", message: "", consent: false });
@@ -225,7 +203,7 @@ export default function Home() {
         toast.success("¡Mensaje enviado! Te respondemos en menos de 24 horas.");
         setForm({ name: "", email: "", company: "", message: "", consent: false });
       } else {
-        toast.error("Algo salió mal. Escríbenos directamente a veridiana@kendrick.com");
+        toast.error("Algo salió mal. Escríbenos a veridiana@kendrick.com");
       }
     } catch {
       toast.error("Error de conexión. Inténtalo de nuevo.");
@@ -236,374 +214,303 @@ export default function Home() {
 
   return (
     <main>
+
       {/* ── HERO ── */}
       <section className="relative min-h-screen flex items-center bg-[#0B2545] overflow-hidden">
-        {/* Imagen de fondo */}
         <div className="absolute inset-0">
           <img
             src="/images/hero-consultant.jpg"
-            alt="Consultor digital trabajando"
-            className="w-full h-full object-cover opacity-20"
+            alt=""
+            className="w-full h-full object-cover opacity-15"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B2545] via-[#0B2545]/90 to-[#0B2545]/60" />
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0B2545] via-[#0B2545]/95 to-[#0B2545]/70" />
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-6 py-32 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-block text-[#C5A880] text-xs tracking-[3px] uppercase font-sans font-semibold mb-6">
-              Consultoría Digital · Hecho para pequeños negocios
+        <div className="relative max-w-6xl mx-auto px-6 py-32 w-full">
+          <div className="max-w-2xl">
+            <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-8">
+              Consultoría Digital · Para pequeños negocios
             </span>
-            <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Más clientes para tu negocio.{" "}
+            <h1 className="text-white text-5xl md:text-6xl font-bold leading-[1.1] mb-6">
+              Más clientes.{" "}
               <span className="text-[#C5A880] italic">Sin complicaciones.</span>
             </h1>
-            <p className="text-white/70 text-lg leading-relaxed mb-8 max-w-lg">
-              Ayudamos a dueños de pequeños negocios a conseguir más clientes usando internet. Sin tecnicismos, sin contratos eternos, con resultados en semanas.
+            <p className="text-white/60 text-lg mb-10 max-w-md leading-relaxed">
+              Construimos tu presencia digital y el sistema que convierte visitas en clientes.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/quiz"
-                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-7 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a] active:scale-[0.97]"
+                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a] active:scale-[0.97]"
               >
-                Descubre qué necesita tu negocio — Gratis
-                <ArrowRight size={16} />
+                Diagnóstico gratuito — 3 min
+                <ArrowRight size={15} />
               </Link>
               <a
                 href="#servicios"
-                className="inline-flex items-center justify-center gap-2 border border-white/30 text-white font-semibold px-7 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-white/10"
+                className="inline-flex items-center justify-center gap-2 border border-white/20 text-white/80 font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-white/5"
               >
                 Ver servicios
               </a>
             </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 gap-4">
+          {/* Stats strip */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-20">
             {STATS.map((s) => (
-              <div key={s.label} className="bg-white/5 border border-white/10 rounded-lg p-6 text-center backdrop-blur-sm">
-                <div className="text-[#C5A880] text-3xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <div key={s.label} className="border border-white/10 rounded-lg p-5 text-center">
+                <div className="text-[#C5A880] text-2xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
                   {s.value}
                 </div>
-                <div className="text-white/60 text-xs font-sans">{s.label}</div>
+                <div className="text-white/40 text-xs font-sans">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── PROBLEMA ── */}
+      {/* ── PROBLEMA — 3 tarjetas compactas ── */}
       <section className="bg-[#FAF8F5] py-20">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <span className="section-label inline-block mb-4" style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
-            ¿Te suena familiar?
-          </span>
-          <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mb-12 leading-tight">
-            El problema que tienen la mayoría de pequeños negocios
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[
-              {
-                icon: "🔍",
-                title: "Nadie te encuentra en Google",
-                desc: "Cuando alguien busca lo que ofreces, aparecen tus competidores. Tú, no.",
-              },
-              {
-                icon: "📱",
-                title: "Tienes redes pero no clientes",
-                desc: "Publicas en Instagram, pero esos seguidores no se convierten en ventas reales.",
-              },
-              {
-                icon: "🔄",
-                title: "Todo depende del boca a boca",
-                desc: "Si un mes viene poco trabajo, no tienes forma de activar más clientes.",
-              },
-            ].map((item) => (
-              <div key={item.title} className="bg-white rounded-lg p-6 shadow-sm border border-gray-100 text-left">
-                <div className="text-3xl mb-3">{item.icon}</div>
-                <h3 className="font-bold text-[#0B2545] text-base mb-2">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-10 p-6 bg-[#0B2545] rounded-lg text-white text-center">
-            <p className="text-lg font-semibold">
-              No es culpa tuya. Nadie te enseñó a hacer marketing digital cuando montaste tu negocio.
-            </p>
-            <p className="text-white/70 text-sm mt-2">
-              Nosotros sí sabemos cómo hacerlo, y lo hacemos por ti.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SERVICIOS ── */}
-      <section id="servicios" className="py-24 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
-              Nuestros servicios
-            </span>
-            <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3 mb-4">
-              Elige según dónde está tu negocio hoy
-            </h2>
-            <p className="text-gray-500 max-w-xl mx-auto text-sm leading-relaxed">
-              No vendemos lo mismo a todos. Primero entendemos tu situación y te recomendamos lo que realmente necesitas.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {SERVICES.map((s) => (
-              <div key={s.name} className={`bg-white rounded-lg p-7 shadow-sm ${s.color} relative flex flex-col`}>
-                {s.badge && (
-                  <span className="absolute -top-3 left-6 bg-[#C5A880] text-[#0B2545] text-xs font-bold px-3 py-1 rounded-full">
-                    {s.badge}
-                  </span>
-                )}
-                <div className="mb-5">
-                  <span className="text-xs text-gray-400 font-sans uppercase tracking-widest">{s.level}</span>
-                  <h3 className="text-[#0B2545] text-xl font-bold mt-1 mb-1">{s.name}</h3>
-                  <p className="text-[#C5A880] text-xs font-sans font-semibold">{s.tagline}</p>
-                </div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-5">{s.description}</p>
-                <ul className="space-y-2 mb-6 flex-1">
-                  {s.deliverables.map((d) => (
-                    <li key={d} className="flex items-start gap-2 text-sm text-gray-700">
-                      <CheckCircle2 size={14} className="text-[#C5A880] mt-0.5 shrink-0" />
-                      {d}
-                    </li>
-                  ))}
-                </ul>
-                {s.note && (
-                  <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-3 mb-5 leading-relaxed">
-                    {s.note}
-                  </p>
-                )}
-                <div className="border-t border-gray-100 pt-5 mt-auto">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <span className="text-[#0B2545] text-xl font-bold">{s.price}</span>
-                      <span className="text-gray-400 text-xs ml-2 font-sans">· {s.duration}</span>
-                    </div>
-                    <span className="flex items-center gap-1 text-xs text-gray-400 font-sans">
-                      <Clock size={12} /> {s.duration}
-                    </span>
-                  </div>
-                  <Link
-                    to="/quiz"
-                    className="block text-center bg-[#0B2545] text-white font-semibold text-sm px-4 py-3 rounded hover:bg-[#1a3a6b] transition-colors"
-                  >
-                    Quiero este servicio →
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-10">
-            <p className="text-gray-500 text-sm mb-4">¿No sabes cuál necesitas?</p>
-            <Link
-              to="/quiz"
-              className="inline-flex items-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-7 py-3.5 rounded text-sm hover:bg-[#d4bc9a] transition-colors"
-            >
-              Haz el diagnóstico gratuito (3 min) <ArrowRight size={15} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CÓMO FUNCIONA ── */}
-      <section id="como-funciona" className="py-24 bg-[#FAF8F5]">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
-              El proceso
-            </span>
-            <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3">
-              Así trabajamos contigo
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-4 gap-6">
-            {HOW_IT_WORKS.map((step, i) => (
-              <div key={step.step} className="relative text-center">
-                {i < HOW_IT_WORKS.length - 1 && (
-                  <div className="hidden md:block absolute top-8 left-[60%] w-full h-px bg-[#C5A880]/30" />
-                )}
-                <div className="relative z-10 w-16 h-16 rounded-full bg-[#0B2545] flex items-center justify-center mx-auto mb-4">
-                  <step.icon size={22} className="text-[#C5A880]" />
-                </div>
-                <span className="text-[#C5A880] text-xs font-bold font-sans tracking-widest">{step.step}</span>
-                <h3 className="text-[#0B2545] font-bold text-base mt-1 mb-2">{step.title}</h3>
-                <p className="text-gray-500 text-xs leading-relaxed">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CASO DE ESTUDIO ── */}
-      <section className="py-24 bg-white">
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-12">
-            <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
-              Caso real
+            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+              ¿Te suena familiar?
             </span>
-            <h2 className="text-[#0B2545] text-3xl font-bold mt-3">
-              De invisible a agenda llena en 4 semanas
+            <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3">
+              El problema de la mayoría de negocios
             </h2>
           </div>
-          <div className="bg-[#FAF8F5] rounded-xl overflow-hidden border border-gray-100">
-            <div className="grid md:grid-cols-2">
-              <div className="p-8 border-r border-gray-100">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center text-red-500 font-bold text-sm">✗</div>
-                  <div>
-                    <p className="font-bold text-[#0B2545] text-sm">Antes</p>
-                    <p className="text-gray-400 text-xs">{CASE_STUDY.client} · {CASE_STUDY.sector}</p>
-                  </div>
-                </div>
-                <ul className="space-y-3">
-                  {CASE_STUDY.before.map((b) => (
-                    <li key={b} className="flex items-center gap-2 text-sm text-gray-600">
-                      <span className="text-red-400">✗</span> {b}
-                    </li>
-                  ))}
-                </ul>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { icon: "🔍", title: "Nadie te encuentra en Google", desc: "Tus competidores aparecen. Tú, no." },
+              { icon: "📱", title: "Redes sin ventas reales", desc: "Seguidores que no se convierten en clientes." },
+              { icon: "🔄", title: "Todo depende del boca a boca", desc: "Sin sistema, los ingresos son impredecibles." },
+            ].map((item) => (
+              <div key={item.title} className="bg-white rounded-xl p-6 border border-gray-100">
+                <div className="text-3xl mb-4">{item.icon}</div>
+                <h3 className="font-bold text-[#0B2545] text-sm mb-1">{item.title}</h3>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
               </div>
-              <div className="p-8">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold text-sm">✓</div>
-                  <div>
-                    <p className="font-bold text-[#0B2545] text-sm">Después — {CASE_STUDY.duration}</p>
-                    <p className="text-[#C5A880] text-xs font-semibold">{CASE_STUDY.package}</p>
-                  </div>
-                </div>
-                <ul className="space-y-3">
-                  {CASE_STUDY.after.map((a) => (
-                    <li key={a} className="flex items-center gap-2 text-sm text-gray-700 font-medium">
-                      <CheckCircle2 size={14} className="text-green-500 shrink-0" /> {a}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="bg-[#0B2545] p-6 text-center">
-              <p className="text-white/70 text-sm">
-                "En menos de un mes pasé de que nadie me encontrara en internet a tener la agenda llena."
-              </p>
-              <p className="text-[#C5A880] text-xs font-semibold mt-2">— Dra. Ana Rodríguez, Clínica Dental AR, Madrid</p>
-            </div>
-          </div>
-          <div className="text-center mt-10">
-            <Link
-              to="/casos"
-              className="inline-flex items-center gap-2 border-2 border-[#0B2545] text-[#0B2545] px-7 py-3 rounded-full font-semibold text-sm hover:bg-[#0B2545] hover:text-white transition-all duration-200"
-            >
-              Ver los 7 casos de éxito completos
-              <ArrowRight size={16} />
-            </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── TESTIMONIOS ── */}
-      <section id="testimonios" className="py-24 bg-[#FAF8F5]">
+      {/* ── SERVICIOS — escalera progresiva ── */}
+      <section id="servicios" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-14">
-            <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
-              Lo que dicen nuestros clientes
+          <div className="text-center mb-4">
+            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+              Nuestros servicios
             </span>
-            <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3">
-              Resultados reales, negocios reales
+            <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3 mb-2">
+              Una escalera, no tres opciones aisladas
             </h2>
+            <p className="text-gray-400 text-sm max-w-lg mx-auto">
+              Cada nivel construye sobre el anterior. Empiezas donde estás y creces sin empezar de cero.
+            </p>
           </div>
 
-          {/* Logo wall */}
-          <div className="flex flex-wrap justify-center gap-6 mb-12 opacity-40">
-            {["Clínica AR", "Restaurante Oliveira", "Studio LS", "Taller García", "Boutique Marta"].map((b) => (
-              <div key={b} className="bg-white border border-gray-200 rounded px-5 py-2 text-xs font-semibold text-gray-500 font-sans">
-                {b}
-              </div>
-            ))}
+          {/* Flecha visual de progresión */}
+          <div className="flex items-center justify-center gap-2 my-8 text-xs text-gray-300 font-sans">
+            <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Sin presencia</span>
+            <ArrowRight size={12} />
+            <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Presencia sin sistema</span>
+            <ArrowRight size={12} />
+            <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Escala con publicidad</span>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t) => (
-              <div key={t.name} className="bg-white rounded-lg p-7 shadow-sm border border-gray-100 flex flex-col">
-                <div className="flex gap-0.5 mb-4">
-                  {Array.from({ length: t.rating }).map((_, i) => (
-                    <Star key={i} size={14} className="text-[#C5A880] fill-[#C5A880]" />
-                  ))}
-                </div>
-                <p className="text-gray-700 text-sm leading-relaxed flex-1 mb-5">"{t.text}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
-                  <div className={`w-9 h-9 rounded-full ${t.color} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
-                    {t.initials}
+            {PACKAGES.map((pkg) => (
+              <div
+                key={pkg.name}
+                className={`relative rounded-xl flex flex-col overflow-hidden border ${
+                  pkg.highlight
+                    ? "border-[#C5A880] shadow-lg shadow-[#C5A880]/10"
+                    : "border-gray-100"
+                }`}
+              >
+                {pkg.badge && (
+                  <div className="bg-[#C5A880] text-[#0B2545] text-[10px] font-bold tracking-widest uppercase text-center py-2 font-sans">
+                    {pkg.badge}
                   </div>
-                  <div>
-                    <p className="font-semibold text-[#0B2545] text-sm">{t.name}</p>
-                    <p className="text-gray-400 text-xs">{t.role} · {t.location}</p>
+                )}
+                <div className={`p-7 flex flex-col flex-1 ${pkg.highlight ? "bg-[#0B2545]" : "bg-white"}`}>
+                  <span className={`text-[10px] tracking-[3px] uppercase font-sans font-semibold mb-3 ${pkg.highlight ? "text-[#C5A880]" : "text-gray-300"}`}>
+                    Nivel {pkg.step}
+                  </span>
+                  <h3 className={`text-xl font-bold mb-1 ${pkg.highlight ? "text-white" : "text-[#0B2545]"}`}>
+                    {pkg.name}
+                  </h3>
+                  <p className={`text-xs mb-5 font-sans ${pkg.highlight ? "text-white/40" : "text-gray-400"}`}>
+                    Para negocios: {pkg.tagline}
+                  </p>
+
+                  <ul className="space-y-2.5 mb-6 flex-1">
+                    {pkg.includes.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <CheckCircle2
+                          size={13}
+                          className={`mt-0.5 shrink-0 ${pkg.highlight ? "text-[#C5A880]" : "text-[#C5A880]"}`}
+                        />
+                        <span className={`text-sm ${pkg.highlight ? "text-white/80" : "text-gray-600"}`}>
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {pkg.note && (
+                    <p className={`text-xs mb-5 leading-relaxed rounded-lg p-3 ${pkg.highlight ? "bg-white/10 text-white/50" : "bg-amber-50 text-amber-700 border border-amber-100"}`}>
+                      ⚠️ {pkg.note}
+                    </p>
+                  )}
+
+                  <div className={`border-t pt-5 mt-auto ${pkg.highlight ? "border-white/10" : "border-gray-100"}`}>
+                    <div className="flex items-baseline justify-between mb-4">
+                      <span className={`text-xl font-bold ${pkg.highlight ? "text-white" : "text-[#0B2545]"}`}>
+                        {pkg.price}
+                      </span>
+                      <span className={`text-xs font-sans ${pkg.highlight ? "text-white/40" : "text-gray-300"}`}>
+                        {pkg.duration}
+                      </span>
+                    </div>
+                    <Link
+                      to="/quiz"
+                      className={`block text-center font-bold text-sm px-4 py-3 rounded transition-all duration-200 active:scale-[0.97] ${
+                        pkg.highlight
+                          ? "bg-[#C5A880] text-[#0B2545] hover:bg-[#d4bc9a]"
+                          : "bg-[#0B2545] text-white hover:bg-[#1a3a6b]"
+                      }`}
+                    >
+                      {pkg.cta} →
+                    </Link>
                   </div>
-                  <span className="ml-auto text-gray-300 text-xs font-sans">{t.date}</span>
                 </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-gray-400 text-xs mt-8 font-sans">
+            ¿No sabes por dónde empezar?{" "}
+            <Link to="/quiz" className="text-[#0B2545] font-semibold underline hover:text-[#C5A880]">
+              Haz el diagnóstico gratuito (3 min)
+            </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* ── PORTAFOLIO — grid visual de resultados ── */}
+      <section className="py-24 bg-[#FAF8F5]">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+                Resultados reales
+              </span>
+              <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-2">
+                Negocios que ya crecen
+              </h2>
+            </div>
+            <Link
+              to="/casos"
+              className="inline-flex items-center gap-2 text-[#0B2545] font-semibold text-sm border-b border-[#0B2545] pb-0.5 hover:text-[#C5A880] hover:border-[#C5A880] transition-colors shrink-0"
+            >
+              Ver los 7 casos completos <ArrowRight size={13} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {PORTFOLIO.map((p) => (
+              <div
+                key={p.business}
+                className="bg-white rounded-xl p-5 border border-gray-100 hover:shadow-md transition-shadow duration-200 group"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                    style={{ backgroundColor: p.color }}
+                  >
+                    {p.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-[#0B2545] text-sm truncate">{p.business}</p>
+                    <p className="text-gray-400 text-xs">{p.sector}</p>
+                  </div>
+                </div>
+                <div className="bg-[#FAF8F5] rounded-lg p-3 mb-3">
+                  <p className="text-[#0B2545] font-bold text-lg leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    {p.metric}
+                  </p>
+                  <p className="text-gray-400 text-xs mt-0.5">{p.detail}</p>
+                </div>
+                <span className="text-[10px] text-[#C5A880] font-bold tracking-widest uppercase font-sans">
+                  {p.package}
+                </span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── EQUIPO ── */}
-      <section className="py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative">
-              <img
-                src="/images/team-meeting.jpg"
-                alt="Equipo Kendrick en reunión de trabajo"
-                className="rounded-lg w-full object-cover shadow-md"
-                style={{ maxHeight: 380 }}
-              />
-              <div className="absolute -bottom-4 -right-4 bg-[#C5A880] text-[#0B2545] rounded-lg p-4 shadow-lg">
-                <div className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>5+</div>
-                <div className="text-xs font-semibold font-sans">años de experiencia</div>
-              </div>
-            </div>
-            <div>
-              <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
-                Quiénes somos
-              </span>
-              <h2 className="text-[#0B2545] text-3xl font-bold mt-3 mb-4">
-                Consultores que hablan tu idioma
-              </h2>
-              <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                Somos un equipo especializado en ayudar a pequeños negocios a crecer online. No somos una gran agencia con procesos complicados. Somos consultores que se sientan contigo, entienden tu negocio y construyen soluciones que tú puedes manejar.
-              </p>
-              <p className="text-gray-600 text-sm leading-relaxed mb-6">
-                Hemos trabajado con más de 120 negocios en España. Sabemos qué funciona para una clínica dental, un restaurante familiar o una tienda de barrio. Y lo hacemos sin tecnicismos.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {["Google Ads", "Meta Ads", "SEO Local", "CRM", "Automatización", "Analítica Web"].map((skill) => (
-                  <span key={skill} className="bg-[#FAF8F5] border border-gray-200 text-[#0B2545] text-xs px-3 py-1.5 rounded-full font-sans font-medium">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
+      {/* ── PROCESO — 4 pasos compactos ── */}
+      <section id="como-funciona" className="py-20 bg-white">
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-12">
+            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+              El proceso
+            </span>
+            <h2 className="text-[#0B2545] text-3xl font-bold mt-2">
+              Así trabajamos
+            </h2>
           </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {PROCESS.map((step, i) => (
+              <div key={step.n} className="relative text-center">
+                {i < PROCESS.length - 1 && (
+                  <div className="hidden md:block absolute top-5 left-[65%] w-full h-px bg-[#C5A880]/20" />
+                )}
+                <div className="relative z-10 w-10 h-10 rounded-full bg-[#0B2545] flex items-center justify-center mx-auto mb-3">
+                  <span className="text-[#C5A880] text-xs font-bold font-sans">{step.n}</span>
+                </div>
+                <h3 className="text-[#0B2545] font-bold text-sm mb-1">{step.title}</h3>
+                <p className="text-gray-400 text-xs leading-relaxed">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── TESTIMONIO DESTACADO ── */}
+      <section className="py-20 bg-[#0B2545]">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <div className="flex justify-center gap-0.5 mb-6">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg key={i} className="w-4 h-4 text-[#C5A880] fill-[#C5A880]" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+          </div>
+          <blockquote className="text-white text-xl md:text-2xl font-medium leading-relaxed mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
+            "En tres semanas pasé de que nadie me encontrara a tener la agenda llena los martes y jueves."
+          </blockquote>
+          <p className="text-[#C5A880] text-sm font-semibold">Ana Torres · FisioVida Madrid</p>
+          <p className="text-white/30 text-xs mt-1 font-sans">Nivel 01 · Arranque Digital Mínimo</p>
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section id="faq" className="py-24 bg-[#FAF8F5]">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="text-center mb-12">
-            <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
+      <section id="faq" className="py-20 bg-[#FAF8F5]">
+        <div className="max-w-2xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
               Preguntas frecuentes
             </span>
-            <h2 className="text-[#0B2545] text-3xl font-bold mt-3">
-              Dudas que suelen tener nuestros clientes
+            <h2 className="text-[#0B2545] text-3xl font-bold mt-2">
+              Dudas habituales
             </h2>
           </div>
-          <div className="bg-white rounded-lg px-6 shadow-sm border border-gray-100">
+          <div className="bg-white rounded-xl px-6 border border-gray-100">
             {FAQS.map((faq) => (
               <FaqItem key={faq.q} q={faq.q} a={faq.a} />
             ))}
@@ -611,60 +518,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA CENTRAL ── */}
-      <section className="py-24 bg-[#0B2545] text-white text-center">
-        <div className="max-w-2xl mx-auto px-6">
-          <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
+      {/* ── CTA FINAL ── */}
+      <section className="py-24 bg-white">
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
             Empieza hoy
           </span>
-          <h2 className="text-3xl md:text-4xl font-bold mt-3 mb-4">
-            Descubre qué necesita tu negocio. Gratis.
+          <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3 mb-4">
+            Descubre qué necesita tu negocio
           </h2>
-          <p className="text-white/70 mb-8 leading-relaxed">
-            En 3 minutos te decimos exactamente en qué nivel está tu negocio y qué deberías hacer primero para conseguir más clientes.
+          <p className="text-gray-400 text-sm mb-8 max-w-sm mx-auto">
+            3 minutos. Sin compromiso. Te decimos exactamente por dónde empezar.
           </p>
           <Link
             to="/quiz"
-            className="inline-flex items-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide hover:bg-[#d4bc9a] transition-colors"
+            className="inline-flex items-center gap-2 bg-[#0B2545] text-white font-bold px-10 py-4 rounded text-sm tracking-wide hover:bg-[#1a3a6b] transition-colors active:scale-[0.97]"
           >
-            Hacer el diagnóstico gratuito <ArrowRight size={16} />
+            Diagnóstico gratuito <ArrowRight size={15} />
           </Link>
-          <p className="text-white/40 text-xs mt-4 font-sans">Sin compromiso · Sin tarjeta de crédito · 3 minutos</p>
+          <p className="text-gray-300 text-xs mt-4 font-sans">Sin tarjeta · Sin compromiso · 3 minutos</p>
         </div>
       </section>
 
       {/* ── CONTACTO ── */}
-      <section id="contacto" className="py-24 bg-white">
+      <section id="contacto" className="py-24 bg-[#FAF8F5]">
         <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-16 items-start">
             <div>
-              <span style={{ color: "#C5A880", fontSize: "11px", letterSpacing: "3px", textTransform: "uppercase", fontFamily: "sans-serif", fontWeight: 600 }}>
+              <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
                 Contacto
               </span>
               <h2 className="text-[#0B2545] text-3xl font-bold mt-3 mb-4">
                 ¿Tienes alguna pregunta?
               </h2>
-              <p className="text-gray-600 text-sm leading-relaxed mb-8">
-                Escríbenos y te respondemos en menos de 24 horas. Sin presiones, sin vendedores agresivos. Solo una conversación honesta sobre tu negocio.
+              <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                Escríbenos. Sin presiones, sin vendedores. Solo una conversación honesta sobre tu negocio.
               </p>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[#FAF8F5] flex items-center justify-center">
-                    <Phone size={15} className="text-[#C5A880]" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 font-sans">Email</p>
-                    <p className="text-[#0B2545] text-sm font-semibold">veridiana@kendrick.com</p>
-                  </div>
+                  <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[#C5A880] text-xs">✉</div>
+                  <span className="text-[#0B2545] text-sm font-semibold">veridiana@kendrick.com</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-[#FAF8F5] flex items-center justify-center">
-                    <Clock size={15} className="text-[#C5A880]" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-400 font-sans">Respuesta</p>
-                    <p className="text-[#0B2545] text-sm font-semibold">Menos de 24 horas</p>
-                  </div>
+                  <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[#C5A880] text-xs">⏱</div>
+                  <span className="text-[#0B2545] text-sm font-semibold">Respuesta en menos de 24 horas</span>
                 </div>
               </div>
             </div>
@@ -672,47 +569,47 @@ export default function Home() {
             <form onSubmit={handleContact} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 font-sans">Nombre *</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Nombre *</label>
                   <input
                     type="text"
                     required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full border border-gray-200 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
                     placeholder="Tu nombre"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5 font-sans">Email *</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Email *</label>
                   <input
                     type="email"
                     required
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full border border-gray-200 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
                     placeholder="tu@email.com"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 font-sans">Nombre de tu negocio</label>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Negocio</label>
                 <input
                   type="text"
                   value={form.company}
                   onChange={(e) => setForm({ ...form, company: e.target.value })}
-                  className="w-full border border-gray-200 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
                   placeholder="Ej: Clínica Dental García"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5 font-sans">¿En qué podemos ayudarte? *</label>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">¿En qué podemos ayudarte? *</label>
                 <textarea
                   required
                   rows={4}
                   value={form.message}
                   onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full border border-gray-200 rounded px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors resize-none"
-                  placeholder="Cuéntanos brevemente cómo está tu negocio online hoy y qué quieres conseguir..."
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors resize-none"
+                  placeholder="Cuéntanos brevemente tu situación..."
                 />
               </div>
               <label className="flex items-start gap-3 cursor-pointer">
@@ -722,18 +619,18 @@ export default function Home() {
                   onChange={(e) => setForm({ ...form, consent: e.target.checked })}
                   className="mt-0.5 shrink-0 accent-[#0B2545]"
                 />
-                <span className="text-xs text-gray-500 leading-relaxed">
+                <span className="text-xs text-gray-400 leading-relaxed">
                   He leído y acepto la{" "}
                   <Link to="/privacidad" className="text-[#0B2545] underline hover:text-[#C5A880]">
                     Política de Privacidad
                   </Link>
-                  . Mis datos se usarán únicamente para responder a mi consulta.
+                  .
                 </span>
               </label>
               <button
                 type="submit"
                 disabled={sending}
-                className="w-full bg-[#0B2545] text-white font-bold py-3.5 rounded text-sm hover:bg-[#1a3a6b] transition-colors disabled:opacity-60"
+                className="w-full bg-[#0B2545] text-white font-bold py-3.5 rounded-lg text-sm hover:bg-[#1a3a6b] transition-colors disabled:opacity-60 active:scale-[0.97]"
               >
                 {sending ? "Enviando..." : "Enviar mensaje →"}
               </button>
@@ -741,6 +638,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+
     </main>
   );
 }
