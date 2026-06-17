@@ -9,7 +9,11 @@
     --cream: #FAF8F5;
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    /* Offset for fixed navbar (64px) so anchors land at top of section */
+    scroll-padding-top: 64px;
+  }
 
   body {
     font-family: 'Inter', system-ui, sans-serif;

@@ -201,6 +201,9 @@ export default function Home() {
       });
       if (res.ok) {
         toast.success("¡Mensaje enviado! Te respondemos en menos de 24 horas.");
+        // Open WhatsApp with prefilled message
+        const waText = encodeURIComponent(`Hola, soy ${form.name}. ${form.message}`);
+        window.open(`https://wa.me/34658598442?text=${waText}`, "_blank");
         setForm({ name: "", email: "", company: "", message: "", consent: false });
       } else {
         toast.error("Algo salió mal. Escríbenos a veridiana@kendrick.com");
@@ -216,7 +219,7 @@ export default function Home() {
     <main>
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex items-center bg-[#0B2545] overflow-hidden">
+      <section className="relative min-h-[100svh] flex items-center bg-[#0B2545] overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/images/hero-consultant.jpg"
@@ -226,7 +229,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-br from-[#0B2545] via-[#0B2545]/95 to-[#0B2545]/70" />
         </div>
 
-        <div className="relative max-w-6xl mx-auto px-6 py-32 w-full">
+        <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-12 w-full">
           <div className="max-w-2xl">
             <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-8">
               Consultoría Digital · Para pequeños negocios
@@ -256,7 +259,7 @@ export default function Home() {
           </div>
 
           {/* Stats strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-10">
             {STATS.map((s) => (
               <div key={s.label} className="border border-white/10 rounded-lg p-5 text-center">
                 <div className="text-[#C5A880] text-2xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -396,6 +399,59 @@ export default function Home() {
             <Link to="/quiz" className="text-[#0B2545] font-semibold underline hover:text-[#C5A880]">
               Haz el diagnóstico gratuito (3 min)
             </Link>
+          </p>
+        </div>
+      </section>
+
+      {/* ── PORTAFOLIO VISUAL — mockups de sites realizados ── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+              Nuestro trabajo
+            </span>
+            <h2 className="text-[#0B2545] text-3xl font-bold mt-2">
+              Sitios que construimos
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              { name: "FisioVida Madrid", type: "Clínica · Nivel 01", bg: "#0B2545", accent: "#C5A880" },
+              { name: "Barbería Don Mateo", type: "Barbería · Nivel 01", bg: "#1a1a2e", accent: "#7c3aed" },
+              { name: "LinguaFlow", type: "Academia · Nivel 02", bg: "#0e4a5c", accent: "#0ea5e9" },
+              { name: "Reyes Arquitectura", type: "Arquitectura · Nivel 02", bg: "#2d1b00", accent: "#b45309" },
+              { name: "Pastelería Dulce Luna", type: "Pastelería · Nivel 01", bg: "#3b0a2a", accent: "#ec4899" },
+              { name: "Yoga Alma Serena", type: "Bienestar · Nivel 03", bg: "#022c22", accent: "#10b981" },
+            ].map((site) => (
+              <div
+                key={site.name}
+                className="rounded-xl overflow-hidden border border-gray-100 relative group"
+                style={{ backgroundColor: site.bg, aspectRatio: "16/9" }}
+              >
+                {/* Browser chrome */}
+                <div className="absolute top-0 left-0 right-0 h-5 flex items-center gap-1 px-2" style={{ backgroundColor: "rgba(0,0,0,0.35)" }}>
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
+                  <div className="flex-1 mx-2 h-2.5 rounded-sm" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
+                </div>
+                {/* Fake content */}
+                <div className="absolute inset-0 top-5 p-3 flex flex-col gap-1.5">
+                  <div className="h-2.5 w-2/3 rounded" style={{ backgroundColor: site.accent, opacity: 0.9 }} />
+                  <div className="h-1.5 w-full rounded" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
+                  <div className="h-1.5 w-4/5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.05)" }} />
+                  <div className="h-6 w-1/3 rounded mt-1" style={{ backgroundColor: site.accent, opacity: 0.5 }} />
+                </div>
+                {/* Label */}
+                <div className="absolute inset-0 top-5 flex flex-col justify-end p-3 bg-gradient-to-t from-black/75 to-transparent">
+                  <p className="text-white font-bold text-xs leading-tight">{site.name}</p>
+                  <p className="text-white/50 text-[10px] font-sans">{site.type}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-gray-400 text-xs mt-5 font-sans">
+            Todos los sitios son funcionales y entregados con formación incluida.
           </p>
         </div>
       </section>
@@ -634,6 +690,17 @@ export default function Home() {
               >
                 {sending ? "Enviando..." : "Enviar mensaje →"}
               </button>
+              <p className="text-center text-gray-400 text-xs font-sans">
+                O escríbenos directamente por{" "}
+                <a
+                  href="https://wa.me/34658598442?text=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20sus%20servicios."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#25D366] font-semibold hover:underline"
+                >
+                  WhatsApp
+                </a>
+              </p>
             </form>
           </div>
         </div>

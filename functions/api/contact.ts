@@ -2,6 +2,7 @@ interface Env {
   DB: D1Database;
   RESEND_API_KEY?: string;
   OWNER_EMAIL?: string;
+  CALLMEBOT_APIKEY?: string;
 }
 
 interface ContactData {
@@ -10,6 +11,16 @@ interface ContactData {
   company?: string;
   message: string;
   consent: boolean;
+}
+
+const WA_NUMBER = "34658598442";
+
+async function sendWhatsApp(env: Env, message: string) {
+  if (!env.CALLMEBOT_APIKEY) return;
+  const encoded = encodeURIComponent(message);
+  await fetch(
+    `https://api.callmebot.com/whatsapp.php?phone=${WA_NUMBER}&text=${encoded}&apikey=${env.CALLMEBOT_APIKEY}`
+  ).catch(console.error);
 }
 
 async function sendEmail(env: Env, to: string, subject: string, html: string) {
@@ -55,13 +66,18 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       });
     }
 
+    // Guardar en D1
     await env.DB.prepare(
       `INSERT INTO contacts (name, email, company, message, consent) VALUES (?, ?, ?, ?, ?)`
     )
       .bind(data.name, data.email, data.company ?? null, data.message, data.consent ? 1 : 0)
       .run();
 
-    // Notificación al dueño
+    // Notificación por WhatsApp (no bloqueante)
+    const waMsg = `📩 Nuevo contacto web\n👤 ${data.name}\n📧 ${data.email}${data.company ? `\n🏢 ${data.company}` : ""}\n💬 ${data.message.slice(0, 200)}${data.message.length > 200 ? "..." : ""}`;
+    sendWhatsApp(env, waMsg).catch(console.error);
+
+    // Notificación por email (no bloqueante)
     const html = `<div style="font-family:Arial,sans-serif;max-width:500px;padding:24px;background:#0B2545;border-radius:4px;">
   <h2 style="color:#C5A880;margin:0 0 16px;">📩 Nuevo mensaje de contacto</h2>
   <p style="color:#fff;margin:4px 0;"><strong>Nombre:</strong> ${data.name}</p>
@@ -70,7 +86,6 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   <p style="color:#fff;margin:16px 0 4px;"><strong>Mensaje:</strong></p>
   <p style="color:#e5e7eb;margin:0;line-height:1.6;">${data.message}</p>
 </div>`;
-
     const ownerEmail = env.OWNER_EMAIL ?? "veridiana@kendrick.com";
     sendEmail(env, ownerEmail, `Contacto web: ${data.name}`, html).catch(console.error);
 

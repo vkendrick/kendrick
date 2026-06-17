@@ -2,6 +2,7 @@ interface Env {
   DB: D1Database;
   RESEND_API_KEY?: string;
   OWNER_EMAIL?: string;
+  CALLMEBOT_APIKEY?: string;
 }
 
 interface LeadData {
@@ -12,6 +13,8 @@ interface LeadData {
   package: string;
   consent: boolean;
 }
+
+const WA_NUMBER = "34658598442";
 
 const levelLabels: Record<string, string> = {
   invisible_digital: "Invisible Digital",
@@ -36,6 +39,14 @@ const levelDiagnosis: Record<string, string[]> = {
     "Tienes la oportunidad de multiplicar tus ingresos con la estrategia correcta",
   ],
 };
+
+async function sendWhatsApp(env: Env, message: string) {
+  if (!env.CALLMEBOT_APIKEY) return;
+  const encoded = encodeURIComponent(message);
+  await fetch(
+    `https://api.callmebot.com/whatsapp.php?phone=${WA_NUMBER}&text=${encoded}&apikey=${env.CALLMEBOT_APIKEY}`
+  ).catch(console.error);
+}
 
 async function sendEmail(env: Env, to: string, subject: string, html: string) {
   if (!env.RESEND_API_KEY) {
@@ -85,10 +96,10 @@ async function sendLeadEmail(env: Env, data: LeadData) {
     <div style="padding:32px 40px;border-bottom:1px solid #f0f0f0;">
       <p style="margin:0 0 8px;color:#C5A880;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:Arial,sans-serif;">Solución recomendada</p>
       <h3 style="margin:0 0 16px;color:#0B2545;font-size:20px;font-weight:bold;">${data.package}</h3>
-      <a href="https://kendrick.com/quiz" style="display:inline-block;background:#C5A880;color:#0B2545;padding:14px 28px;border-radius:4px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif;font-size:14px;">Agendar sesión gratuita →</a>
+      <a href="https://wa.me/34658598442?text=Hola%2C%20hice%20el%20diagn%C3%B3stico%20y%20me%20gustar%C3%ADa%20hablar%20sobre%20el%20${encodeURIComponent(data.package)}" style="display:inline-block;background:#25D366;color:#fff;padding:14px 28px;border-radius:4px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif;font-size:14px;">Hablar por WhatsApp →</a>
     </div>
     <div style="padding:24px 40px;background:#f9fafb;">
-      <p style="margin:0;color:#9ca3af;font-size:12px;font-family:Arial,sans-serif;">Kendrick Consultoria Digital · veridiana@kendrick.com</p>
+      <p style="margin:0;color:#9ca3af;font-size:12px;font-family:Arial,sans-serif;">Kendrick Consultoria Digital · veridiana@kendrick.com · +34 658 598 442</p>
       <p style="margin:8px 0 0;color:#9ca3af;font-size:11px;font-family:Arial,sans-serif;">Puedes darte de baja en cualquier momento respondiendo a este email con "Baja".</p>
     </div>
   </div>
@@ -98,7 +109,13 @@ async function sendLeadEmail(env: Env, data: LeadData) {
   await sendEmail(env, data.email, `Tu diagnóstico digital: ${label}`, html);
 }
 
-async function notifyOwner(env: Env, data: LeadData) {
+async function notifyOwnerByWhatsApp(env: Env, data: LeadData) {
+  const label = levelLabels[data.level] ?? data.level;
+  const msg = `🎯 Nuevo lead del quiz!\n👤 ${data.name}\n📧 ${data.email}\n📊 ${label} (${data.score}/15)\n📦 ${data.package}`;
+  await sendWhatsApp(env, msg);
+}
+
+async function notifyOwnerByEmail(env: Env, data: LeadData) {
   const label = levelLabels[data.level] ?? data.level;
   const html = `<div style="font-family:Arial,sans-serif;max-width:500px;padding:24px;background:#0B2545;border-radius:4px;">
   <h2 style="color:#C5A880;margin:0 0 16px;">🎯 Nuevo lead — ${label}</h2>
@@ -113,7 +130,6 @@ async function notifyOwner(env: Env, data: LeadData) {
 }
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env; params: unknown }) => {
-  // CORS
   const corsHeaders = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
@@ -123,8 +139,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   try {
     const data = await request.json() as LeadData;
 
-    // Validación básica
-    if (!data.name || !data.email || !data.level || !data.package) {
+    if (!data.name || !data.email || !data.level) {
       return new Response(JSON.stringify({ error: "Datos incompletos" }), {
         status: 400,
         headers: { "Content-Type": "application/json", ...corsHeaders },
@@ -137,15 +152,18 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       });
     }
 
+    const packageName = data.package ?? levelLabels[data.level] ?? data.level;
+
     await env.DB.prepare(
       `INSERT INTO leads (name, email, score, level, package, consent) VALUES (?, ?, ?, ?, ?, ?)`
     )
-      .bind(data.name, data.email, data.score ?? 0, data.level, data.package, data.consent ? 1 : 0)
+      .bind(data.name, data.email, data.score ?? 0, data.level, packageName, data.consent ? 1 : 0)
       .run();
 
-    // Emails no bloqueantes
-    sendLeadEmail(env, data).catch(console.error);
-    notifyOwner(env, data).catch(console.error);
+    // Notificaciones no bloqueantes
+    notifyOwnerByWhatsApp(env, { ...data, package: packageName }).catch(console.error);
+    notifyOwnerByEmail(env, { ...data, package: packageName }).catch(console.error);
+    sendLeadEmail(env, { ...data, package: packageName }).catch(console.error);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
