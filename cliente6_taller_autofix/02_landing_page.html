@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taller AutoFix — Mecánica Multimarca · Zaragoza</title>
+  <meta name="description" content="Taller mecánico multimarca en Zaragoza. 18 años de experiencia. Revisión pre-ITV, cambio de aceite, diagnóstico electrónico. Presupuesto sin compromiso." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --rojo: #CC2200;
+      --rojo-oscuro: #991900;
+      --rojo-claro: #ff3300;
+      --gris-oscuro: #2D2D2D;
+      --gris-medio: #444444;
+      --gris-claro: #888888;
+      --blanco: #ffffff;
+      --fondo: #1a1a1a;
+    }
+    body { font-family: 'Source Sans 3', sans-serif; color: var(--blanco); background: var(--fondo); }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(26,26,26,0.98); backdrop-filter: blur(8px);
+      border-bottom: 3px solid var(--rojo);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 68px;
+    }
+    .logo { font-family: 'Oswald', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--blanco); letter-spacing: 2px; }
+    .logo span { color: var(--rojo); }
+    .logo-sub { color: var(--gris-claro); font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; display: block; font-family: 'Source Sans 3', sans-serif; font-weight: 400; }
+    .nav-cta {
+      background: var(--rojo); color: var(--blanco);
+      padding: 10px 24px; border-radius: 3px;
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem; letter-spacing: 1px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--rojo-oscuro); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 60%, #1f0a08 100%);
+      display: flex; align-items: center;
+      padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(204,34,0,0.1) 0%, transparent 60%);
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 80px; align-items: center; position: relative; }
+    .hero-tag {
+      display: inline-block; background: var(--rojo); color: white;
+      padding: 4px 14px; font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2.8rem, 5.5vw, 4.5rem);
+      line-height: 1.05; color: var(--blanco); margin-bottom: 20px; font-weight: 700; text-transform: uppercase;
+    }
+    .hero h1 span { color: var(--rojo); }
+    .hero p { color: rgba(255,255,255,0.55); line-height: 1.7; margin-bottom: 36px; font-size: 1rem; font-weight: 300; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-rojo {
+      background: var(--rojo); color: white;
+      padding: 16px 36px; border-radius: 3px;
+      font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-rojo:hover { background: var(--rojo-oscuro); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--blanco);
+      padding: 16px 36px; border-radius: 3px; border: 2px solid rgba(255,255,255,0.2);
+      font-family: 'Oswald', sans-serif; font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--rojo); color: var(--rojo); }
+    .hero-panel {
+      background: var(--gris-oscuro); border-left: 4px solid var(--rojo);
+      padding: 32px;
+    }
+    .hero-panel-title { font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--rojo); margin-bottom: 20px; }
+    .servicio-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .servicio-row:last-child { border-bottom: none; }
+    .s-nombre { color: rgba(255,255,255,0.8); font-size: 0.9rem; }
+    .s-precio { color: var(--rojo); font-family: 'Oswald', sans-serif; font-weight: 600; }
+
+    /* STATS */
+    .stats { background: var(--rojo); padding: 40px 5%; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; text-align: center; }
+    .stat-num { font-family: 'Oswald', sans-serif; font-size: 2.5rem; color: white; font-weight: 700; }
+    .stat-label { color: rgba(255,255,255,0.75); font-size: 0.8rem; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* SOBRE ROBERTO */
+    .sobre { padding: 80px 5%; background: var(--gris-oscuro); }
+    .sobre-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .sobre-visual {
+      background: var(--fondo); border: 2px solid rgba(204,34,0,0.3);
+      aspect-ratio: 4/5; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px; position: relative;
+      font-size: 4rem;
+    }
+    .sobre-badge {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--rojo); padding: 16px;
+      font-family: 'Oswald', sans-serif; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;
+      text-align: center;
+    }
+    .section-label { color: var(--rojo); font-family: 'Oswald', sans-serif; font-size: 0.75rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+    .sobre h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; color: var(--blanco); margin-bottom: 20px; text-transform: uppercase; }
+    .sobre p { color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 16px; font-weight: 300; }
+    .divider-rojo { width: 60px; height: 3px; background: var(--rojo); margin: 20px 0; }
+
+    /* SERVICIOS */
+    .servicios { padding: 80px 5%; background: var(--fondo); }
+    .servicios-inner { max-width: 1100px; margin: 0 auto; }
+    .section-header { margin-bottom: 50px; }
+    .section-header h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; color: var(--blanco); text-transform: uppercase; margin-bottom: 8px; }
+    .section-header p { color: var(--gris-claro); }
+    .servicios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .servicio-card {
+      background: var(--gris-oscuro); padding: 32px 28px;
+      border-top: 3px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .servicio-card:hover { border-top-color: var(--rojo); }
+    .s-icon { font-size: 2rem; margin-bottom: 14px; display: block; }
+    .servicio-card h3 { font-family: 'Oswald', sans-serif; font-size: 1.1rem; color: var(--blanco); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 1px; }
+    .servicio-card p { color: rgba(255,255,255,0.5); font-size: 0.88rem; line-height: 1.6; font-weight: 300; }
+    .s-card-precio { margin-top: 16px; color: var(--rojo); font-family: 'Oswald', sans-serif; font-size: 1.2rem; font-weight: 600; }
+
+    /* TESTIMONIOS */
+    .testimonios { padding: 80px 5%; background: var(--gris-oscuro); }
+    .testimonios-inner { max-width: 1100px; margin: 0 auto; }
+    .testimonios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 50px; }
+    .testimonio { background: var(--fondo); padding: 28px; border-left: 3px solid var(--rojo); }
+    .testimonio-texto { color: rgba(255,255,255,0.65); line-height: 1.7; margin-bottom: 20px; font-size: 0.92rem; font-weight: 300; }
+    .testimonio-autor { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 42px; height: 42px; border-radius: 3px; background: var(--rojo); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-weight: 600; font-size: 0.9rem; flex-shrink: 0; }
+    .autor-info strong { display: block; font-size: 0.88rem; color: var(--blanco); font-family: 'Oswald', sans-serif; letter-spacing: 0.5px; }
+    .autor-info span { font-size: 0.78rem; color: var(--gris-claro); }
+    .estrellas { color: var(--rojo); font-size: 0.8rem; margin-bottom: 10px; }
+
+    /* PRESUPUESTO */
+    .presupuesto { padding: 80px 5%; background: var(--fondo); }
+    .presupuesto-inner { max-width: 700px; margin: 0 auto; }
+    .presupuesto h2 { font-family: 'Oswald', sans-serif; font-size: 2.5rem; color: var(--blanco); text-transform: uppercase; margin-bottom: 8px; }
+    .presupuesto h2 span { color: var(--rojo); }
+    .presupuesto p { color: var(--gris-claro); margin-bottom: 36px; line-height: 1.7; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; color: rgba(255,255,255,0.4); font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; font-family: 'Oswald', sans-serif; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 13px 16px;
+      background: var(--gris-oscuro); border: 1px solid rgba(255,255,255,0.08);
+      color: var(--blanco); font-size: 0.95rem; font-family: 'Source Sans 3', sans-serif;
+      transition: border-color 0.2s; border-radius: 3px;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--rojo); }
+    .form-group select option { background: var(--gris-oscuro); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn-form {
+      width: 100%; background: var(--rojo); color: white;
+      padding: 16px; border: none; border-radius: 3px;
+      font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600; cursor: pointer; letter-spacing: 2px; text-transform: uppercase;
+      transition: background 0.2s; margin-top: 8px;
+    }
+    .btn-form:hover { background: var(--rojo-oscuro); }
+    .form-nota { color: rgba(255,255,255,0.25); font-size: 0.78rem; margin-top: 10px; }
+
+    /* FOOTER */
+    footer {
+      background: #0d0d0d; padding: 36px 5%;
+      border-top: 3px solid var(--rojo);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    footer p { color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+
+    /* WA FLOAT */
+    .wa-float {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #25d366; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.1); }
+
+    @media (max-width: 768px) {
+      .hero-inner, .sobre-inner { grid-template-columns: 1fr; }
+      .hero-panel { display: none; }
+      .servicios-grid, .testimonios-grid { grid-template-columns: 1fr; }
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>AUTO</span>FIX <span class="logo-sub">Taller mecánico · Zaragoza · 18 años</span></div>
+  <a href="#presupuesto" class="nav-cta">Pedir presupuesto</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-tag">⚙ Taller multimarca · Zaragoza</div>
+      <h1>Tu coche en <span>buenas manos</span></h1>
+      <p>18 años arreglando coches en Zaragoza. Sin sorpresas en la factura, sin esperas innecesarias, sin excusas. Presupuesto gratis antes de empezar cualquier trabajo.</p>
+      <div class="hero-btns">
+        <a href="#presupuesto" class="btn-rojo">Pedir presupuesto</a>
+        <a href="tel:+34600000000" class="btn-outline">📞 Llamar ahora</a>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="hero-panel-title">⚙ Servicios más solicitados</div>
+      <div class="servicio-row"><span class="s-nombre">Revisión pre-ITV</span><span class="s-precio">€39</span></div>
+      <div class="servicio-row"><span class="s-nombre">Cambio de aceite + filtros</span><span class="s-precio">€49</span></div>
+      <div class="servicio-row"><span class="s-nombre">Diagnóstico electrónico</span><span class="s-precio">€29</span></div>
+      <div class="servicio-row"><span class="s-nombre">Frenos completos</span><span class="s-precio">Desde €89</span></div>
+      <div class="servicio-row"><span class="s-nombre">Aire acondicionado</span><span class="s-precio">€59</span></div>
+      <div class="servicio-row"><span class="s-nombre">Revisión 30 puntos</span><span class="s-precio">€79</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-inner">
+    <div><div class="stat-num">18</div><div class="stat-label">Años en Zaragoza</div></div>
+    <div><div class="stat-num">4</div><div class="stat-label">Mecánicos expertos</div></div>
+    <div><div class="stat-num">+3.500</div><div class="stat-label">Vehículos reparados</div></div>
+    <div><div class="stat-num">Todas</div><div class="stat-label">Las marcas</div></div>
+  </div>
+</section>
+
+<section class="sobre">
+  <div class="sobre-inner">
+    <div class="sobre-visual">
+      🔧
+      <div class="sobre-badge">Roberto Sanz · Mecánico jefe · 18 años</div>
+    </div>
+    <div>
+      <div class="section-label">Quién somos</div>
+      <h2>Roberto Sanz</h2>
+      <div class="divider-rojo"></div>
+      <p>Empecé en este taller con 24 años como mecánico de banco. Hoy soy el dueño y sigo siendo el primero en llegar y el último en irse. No porque tenga que hacerlo, sino porque me gusta saber que cada coche que sale de aquí sale bien.</p>
+      <p>Tenemos 4 mecánicos, todos con más de 10 años de experiencia. Trabajamos con todas las marcas, tenemos diagnóstico electrónico y no empezamos ningún trabajo sin que el cliente sepa exactamente cuánto va a costar.</p>
+      <p style="color:var(--rojo);font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:1px;text-transform:uppercase;margin-top:20px;">"Sin sorpresas en la factura. Siempre."</p>
+    </div>
+  </div>
+</section>
+
+<section class="servicios" id="servicios">
+  <div class="servicios-inner">
+    <div class="section-header">
+      <div class="section-label">Lo que hacemos</div>
+      <h2>Servicios</h2>
+      <p>Presupuesto gratuito antes de cualquier trabajo. Sin compromiso.</p>
+    </div>
+    <div class="servicios-grid">
+      <div class="servicio-card">
+        <span class="s-icon">🔍</span>
+        <h3>Revisión Pre-ITV</h3>
+        <p>Revisamos tu coche antes de llevarlo a la ITV. Si hay algo que corregir, te lo decimos antes.</p>
+        <div class="s-card-precio">€39</div>
+      </div>
+      <div class="servicio-card">
+        <span class="s-icon">🛢️</span>
+        <h3>Cambio de Aceite</h3>
+        <p>Aceite + filtro de aceite + revisión de niveles. Aceite sintético o semisintético según tu motor.</p>
+        <div class="s-card-precio">€49</div>
+      </div>
+      <div class="servicio-card">
+        <span class="s-icon">💻</span>
+        <h3>Diagnóstico Electrónico</h3>
+        <p>Lectura de errores con escáner profesional. Sabemos qué falla antes de abrir nada.</p>
+        <div class="s-card-precio">€29</div>
+      </div>
+      <div class="servicio-card">
+        <span class="s-icon">🛑</span>
+        <h3>Frenos</h3>
+        <p>Pastillas, discos y líquido de frenos. Revisión completa del sistema de frenado.</p>
+        <div class="s-card-precio">Desde €89</div>
+      </div>
+      <div class="servicio-card">
+        <span class="s-icon">❄️</span>
+        <h3>Aire Acondicionado</h3>
+        <p>Carga de gas, limpieza del sistema y revisión de filtros. Listo para el verano.</p>
+        <div class="s-card-precio">€59</div>
+      </div>
+      <div class="servicio-card">
+        <span class="s-icon">✅</span>
+        <h3>Revisión 30 Puntos</h3>
+        <p>Revisión completa del vehículo: motor, frenos, suspensión, luces, neumáticos y más.</p>
+        <div class="s-card-precio">€79</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonios">
+  <div class="testimonios-inner">
+    <div class="section-header">
+      <div class="section-label">Lo que dicen</div>
+      <h2>Clientes</h2>
+    </div>
+    <div class="testimonios-grid">
+      <div class="testimonio">
+        <div class="estrellas">★★★★★</div>
+        <p class="testimonio-texto">Llevo 10 años llevando mis coches a AutoFix. Roberto siempre te explica qué hay que hacer y por qué. Nunca te mete un gasto que no sea necesario.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">JL</div>
+          <div class="autor-info"><strong>José Luis Moreno</strong><span>Cliente desde 2015 · Zaragoza</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <div class="estrellas">★★★★★</div>
+        <p class="testimonio-texto">Me pasé la ITV a la primera después de que me hicieran la revisión previa. Rápido, barato y sin sorpresas. Exactamente lo que necesitaba.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">MG</div>
+          <div class="autor-info"><strong>María García</strong><span>Cliente desde 2023 · Zaragoza</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <div class="estrellas">★★★★★</div>
+        <p class="testimonio-texto">Vine con un problema en el motor que otro taller no supo diagnosticar. En AutoFix lo encontraron en media hora con el diagnóstico electrónico. Muy profesionales.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">AR</div>
+          <div class="autor-info"><strong>Antonio Ruiz</strong><span>Cliente desde 2024 · Zaragoza</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="presupuesto" id="presupuesto">
+  <div class="presupuesto-inner">
+    <div class="section-label">Contacto</div>
+    <h2>Pide tu <span>presupuesto</span></h2>
+    <p>Rellena el formulario y te llamamos en menos de 2 horas en horario de taller. El presupuesto es siempre gratuito y sin compromiso.</p>
+    <form>
+      <div class="form-grid">
+        <div class="form-group"><label>Nombre</label><input type="text" placeholder="Tu nombre" /></div>
+        <div class="form-group"><label>Teléfono</label><input type="tel" placeholder="600 000 000" /></div>
+      </div>
+      <div class="form-group">
+        <label>Marca y modelo del vehículo</label>
+        <input type="text" placeholder="Ej: Seat Ibiza 2019, Volkswagen Golf..." />
+      </div>
+      <div class="form-group">
+        <label>¿Qué necesitas?</label>
+        <select>
+          <option value="">Selecciona el servicio...</option>
+          <option>Revisión pre-ITV — €39</option>
+          <option>Cambio de aceite + filtros — €49</option>
+          <option>Diagnóstico electrónico — €29</option>
+          <option>Frenos — Desde €89</option>
+          <option>Aire acondicionado — €59</option>
+          <option>Revisión completa 30 puntos — €79</option>
+          <option>Otro (describir abajo)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Descripción del problema (opcional)</label>
+        <textarea placeholder="Cuéntanos qué le pasa al coche..."></textarea>
+      </div>
+      <button type="submit" class="btn-form">⚙ Solicitar presupuesto gratis</button>
+      <p class="form-nota">Te llamamos en menos de 2 horas · Lunes a viernes 9h-20h · Sábados 9h-14h</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="logo"><span>AUTO</span>FIX</div>
+  <p>Polígono Industrial Malpica, Calle C, Nave 12 · Zaragoza · autofix@taller.es · 976 000 000</p>
+  <p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">© 2026 Taller AutoFix · Diseño web por Kendrick Consultoria Digital</p>
+</footer>
+
+<a href="https://wa.me/34600000000" class="wa-float" title="WhatsApp">💬</a>
+
+</body>
+</html>

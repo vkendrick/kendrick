@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Barbería Don Mateo — Triana, Sevilla</title>
+  <meta name="description" content="Barbería tradicional de alta gama en Triana, Sevilla. Cortes clásicos, afeitado con navaja y tratamientos capilares. Más de 12 años de experiencia." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --negro: #1a1a1a;
+      --negro-suave: #2a2a2a;
+      --dorado: #C9A84C;
+      --dorado-claro: #e8c96a;
+      --dorado-oscuro: #9a7a30;
+      --blanco: #ffffff;
+      --crema: #f5f0e8;
+      --gris: #888888;
+    }
+    body { font-family: 'Lato', sans-serif; color: var(--blanco); background: var(--negro); }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(26,26,26,0.97); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--dorado); letter-spacing: 1px; }
+    .logo span { color: var(--blanco); font-weight: 300; font-size: 0.75rem; display: block; letter-spacing: 3px; text-transform: uppercase; }
+    .nav-cta {
+      background: transparent; color: var(--dorado); padding: 10px 24px;
+      border: 1px solid var(--dorado); border-radius: 2px;
+      font-weight: 700; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--dorado); color: var(--negro); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 50%, #2a2218 100%);
+      display: flex; align-items: center;
+      padding: 100px 5% 60px;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: "";
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(201,168,76,0.08) 0%, transparent 60%);
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; position: relative; }
+    .hero-ornament { color: var(--dorado); font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 20px; opacity: 0.8; }
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.15; color: var(--blanco); margin-bottom: 8px;
+    }
+    .hero h1 em { font-style: italic; color: var(--dorado); }
+    .hero-sub { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--dorado); font-style: italic; margin-bottom: 24px; }
+    .hero p { color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 40px; font-weight: 300; font-size: 1rem; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-gold {
+      background: var(--dorado); color: var(--negro);
+      padding: 16px 36px; border-radius: 2px;
+      font-weight: 700; font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .btn-gold:hover { background: var(--dorado-claro); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--blanco);
+      padding: 16px 36px; border-radius: 2px; border: 1px solid rgba(255,255,255,0.3);
+      font-weight: 400; font-size: 0.85rem; letter-spacing: 1px;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--dorado); color: var(--dorado); }
+    .hero-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 4px; padding: 40px;
+    }
+    .hero-card-title { font-family: 'Playfair Display', serif; color: var(--dorado); font-size: 1rem; margin-bottom: 28px; letter-spacing: 1px; }
+    .servicio-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .servicio-item:last-child { border-bottom: none; }
+    .servicio-nombre { color: rgba(255,255,255,0.85); font-size: 0.95rem; }
+    .servicio-precio { color: var(--dorado); font-weight: 700; font-size: 0.95rem; }
+
+    /* STATS */
+    .stats { background: var(--dorado); padding: 50px 5%; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--negro); font-weight: 900; }
+    .stat-label { color: rgba(26,26,26,0.7); font-size: 0.85rem; margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+
+    /* SOBRE MATEO */
+    .sobre { padding: 100px 5%; background: var(--negro-suave); }
+    .sobre-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .sobre-foto {
+      background: linear-gradient(135deg, #2a2218, #1a1a1a);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 4px; aspect-ratio: 4/5;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem; position: relative;
+    }
+    .sobre-foto::after {
+      content: "Mateo Jiménez\nMaestro Barbero\n12 años de oficio";
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: var(--dorado); color: var(--negro);
+      padding: 20px; font-size: 0.85rem; line-height: 1.6;
+      white-space: pre-line; font-weight: 700; letter-spacing: 0.5px;
+    }
+    .section-label { color: var(--dorado); font-size: 0.7rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 16px; }
+    .sobre h2 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--blanco); margin-bottom: 20px; line-height: 1.3; }
+    .sobre p { color: rgba(255,255,255,0.6); line-height: 1.8; margin-bottom: 16px; font-weight: 300; }
+    .divider-gold { width: 60px; height: 2px; background: var(--dorado); margin: 24px 0; }
+
+    /* SERVICIOS */
+    .servicios { padding: 100px 5%; background: var(--negro); }
+    .servicios-inner { max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--blanco); margin-bottom: 16px; }
+    .section-header p { color: var(--gris); font-size: 1rem; max-width: 480px; margin: 0 auto; }
+    .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .card {
+      background: var(--negro-suave); padding: 40px 32px;
+      border: 1px solid rgba(255,255,255,0.05);
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--dorado); transform: scaleX(0); transition: transform 0.3s;
+    }
+    .card:hover::before { transform: scaleX(1); }
+    .card:hover { border-color: rgba(201,168,76,0.2); }
+    .card-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: rgba(201,168,76,0.15); font-weight: 900; margin-bottom: 16px; line-height: 1; }
+    .card h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--blanco); margin-bottom: 12px; }
+    .card p { color: var(--gris); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
+    .card-precio { margin-top: 20px; color: var(--dorado); font-weight: 700; font-size: 1.1rem; }
+    .card-duracion { color: rgba(255,255,255,0.3); font-size: 0.8rem; margin-top: 4px; }
+
+    /* TESTIMONIOS */
+    .testimonios { padding: 100px 5%; background: var(--negro-suave); }
+    .testimonios-inner { max-width: 1100px; margin: 0 auto; }
+    .testimonios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+    .testimonio {
+      background: var(--negro); padding: 32px;
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 2px;
+    }
+    .comillas { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--dorado); line-height: 0.5; margin-bottom: 16px; opacity: 0.5; }
+    .testimonio-texto { color: rgba(255,255,255,0.7); line-height: 1.7; font-style: italic; margin-bottom: 24px; font-size: 0.95rem; font-weight: 300; }
+    .testimonio-autor { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--dorado); color: var(--negro); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+    .autor-info strong { display: block; font-size: 0.9rem; color: var(--blanco); }
+    .autor-info span { font-size: 0.8rem; color: var(--gris); }
+    .estrellas { color: var(--dorado); font-size: 0.8rem; margin-bottom: 12px; }
+
+    /* RESERVA */
+    .reserva { padding: 100px 5%; background: var(--negro); }
+    .reserva-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+    .reserva h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--blanco); margin-bottom: 8px; }
+    .reserva h2 em { color: var(--dorado); font-style: italic; }
+    .reserva p { color: var(--gris); margin-bottom: 40px; line-height: 1.7; font-weight: 300; }
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; color: rgba(255,255,255,0.5); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+    .form-group input, .form-group select {
+      width: 100%; padding: 14px 16px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--blanco); font-size: 0.95rem; font-family: 'Lato', sans-serif;
+      transition: border-color 0.2s; border-radius: 2px;
+    }
+    .form-group input::placeholder { color: rgba(255,255,255,0.2); }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--dorado); }
+    .form-group select option { background: var(--negro); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn-form {
+      width: 100%; background: var(--dorado); color: var(--negro);
+      padding: 16px; border: none; border-radius: 2px;
+      font-size: 0.85rem; font-weight: 700; cursor: pointer; letter-spacing: 2px; text-transform: uppercase;
+      transition: background 0.2s; margin-top: 8px; font-family: 'Lato', sans-serif;
+    }
+    .btn-form:hover { background: var(--dorado-claro); }
+    .form-nota { color: rgba(255,255,255,0.3); font-size: 0.78rem; margin-top: 12px; }
+
+    /* FOOTER */
+    footer {
+      background: #0d0d0d; padding: 40px 5%;
+      border-top: 1px solid rgba(201,168,76,0.2);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    footer .logo { font-size: 1rem; }
+    footer p { color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+
+    /* WA FLOAT */
+    .wa-float {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #25d366; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.1); }
+
+    @media (max-width: 768px) {
+      .hero-inner, .sobre-inner { grid-template-columns: 1fr; }
+      .hero-card { display: none; }
+      .cards-grid, .testimonios-grid, .stats-inner { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Don Mateo <span>Barbería · Triana · Sevilla</span></div>
+  <a href="#reserva" class="nav-cta">Reservar cita</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-ornament">✦ Barbería tradicional desde 2012 ✦</div>
+      <h1>El arte del <em>corte perfecto</em></h1>
+      <div class="hero-sub">Triana, Sevilla</div>
+      <p>Doce años perfeccionando cada corte. Navaja de afeitar, tijeras de precisión y el tiempo que mereces. Porque un buen corte no es un lujo, es una necesidad.</p>
+      <div class="hero-btns">
+        <a href="#reserva" class="btn-gold">Reservar cita</a>
+        <a href="#servicios" class="btn-outline">Ver servicios</a>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-title">✦ Nuestros servicios ✦</div>
+      <div class="servicio-item"><span class="servicio-nombre">Corte clásico</span><span class="servicio-precio">€22</span></div>
+      <div class="servicio-item"><span class="servicio-nombre">Corte + barba</span><span class="servicio-precio">€35</span></div>
+      <div class="servicio-item"><span class="servicio-nombre">Afeitado con navaja</span><span class="servicio-precio">€28</span></div>
+      <div class="servicio-item"><span class="servicio-nombre">Tratamiento capilar</span><span class="servicio-precio">€45</span></div>
+      <div class="servicio-item"><span class="servicio-nombre">Pack novio</span><span class="servicio-precio">€120</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-inner">
+    <div><div class="stat-num">12</div><div class="stat-label">Años de oficio</div></div>
+    <div><div class="stat-num">+2.000</div><div class="stat-label">Clientes atendidos</div></div>
+    <div><div class="stat-num">4.9 ⭐</div><div class="stat-label">Valoración Google</div></div>
+  </div>
+</section>
+
+<section class="sobre">
+  <div class="sobre-inner">
+    <div class="sobre-foto">✂️</div>
+    <div>
+      <div class="section-label">El maestro</div>
+      <h2>Mateo Jiménez</h2>
+      <div class="divider-gold"></div>
+      <p>Empecé en este oficio con 22 años, en la barbería de mi padre. Aprendí que un buen corte empieza mucho antes de tocar las tijeras: empieza escuchando. Qué quieres, cómo vives, qué imagen quieres dar.</p>
+      <p>Doce años después, sigo pensando lo mismo. Cada cliente es diferente. Cada corte también. No hay atajos, no hay prisas. Solo el trabajo bien hecho.</p>
+      <p style="color:rgba(201,168,76,0.8);font-style:italic;margin-top:20px;">"La barbería no es solo un corte. Es el único sitio donde un hombre puede sentarse, cerrar los ojos y desconectar durante media hora."</p>
+    </div>
+  </div>
+</section>
+
+<section class="servicios" id="servicios">
+  <div class="servicios-inner">
+    <div class="section-header">
+      <div class="section-label">Lo que ofrecemos</div>
+      <h2>Servicios</h2>
+      <p>Cada servicio incluye consulta previa, producto de calidad y el tiempo que necesitas.</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-num">01</div>
+        <h3>Corte Clásico</h3>
+        <p>Corte personalizado con tijera y/o máquina. Lavado, secado y peinado incluidos.</p>
+        <div class="card-precio">€22</div>
+        <div class="card-duracion">45 minutos</div>
+      </div>
+      <div class="card">
+        <div class="card-num">02</div>
+        <h3>Corte + Barba</h3>
+        <p>Corte completo más perfilado y arreglo de barba con navaja y productos de acabado.</p>
+        <div class="card-precio">€35</div>
+        <div class="card-duracion">60 minutos</div>
+      </div>
+      <div class="card">
+        <div class="card-num">03</div>
+        <h3>Afeitado con Navaja</h3>
+        <p>El ritual completo: toalla caliente, espuma artesanal, navaja de afeitar y aftershave.</p>
+        <div class="card-precio">€28</div>
+        <div class="card-duracion">45 minutos</div>
+      </div>
+      <div class="card">
+        <div class="card-num">04</div>
+        <h3>Tratamiento Capilar</h3>
+        <p>Diagnóstico del cuero cabelludo, tratamiento hidratante o anticaída según necesidad.</p>
+        <div class="card-precio">€45</div>
+        <div class="card-duracion">60 minutos</div>
+      </div>
+      <div class="card">
+        <div class="card-num">05</div>
+        <h3>Pack Novio</h3>
+        <p>Corte + barba + afeitado con navaja + tratamiento capilar. Para el día más importante.</p>
+        <div class="card-precio">€120</div>
+        <div class="card-duracion">2 horas</div>
+      </div>
+      <div class="card">
+        <div class="card-num">06</div>
+        <h3>Bono Mensual</h3>
+        <p>2 cortes al mes con reserva preferente. Para los que no quieren esperar.</p>
+        <div class="card-precio">€38/mes</div>
+        <div class="card-duracion">Ahorra €6/mes</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonios">
+  <div class="testimonios-inner">
+    <div class="section-header">
+      <div class="section-label">Lo que dicen</div>
+      <h2>Clientes</h2>
+    </div>
+    <div class="testimonios-grid">
+      <div class="testimonio">
+        <div class="comillas">"</div>
+        <p class="testimonio-texto">Llevo 8 años viniendo a Don Mateo. He probado otras barberías cuando estaba de viaje y siempre vuelvo con la misma conclusión: no hay nadie como Mateo.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">AF</div>
+          <div class="autor-info"><strong>Alejandro Fuentes</strong><span>Cliente desde 2018 · Triana</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <div class="comillas">"</div>
+        <p class="testimonio-texto">Me hice el afeitado con navaja para mi boda. Nunca me había sentido tan bien. El ritual completo, con calma, sin prisas. Una experiencia que recomiendo a todo el mundo.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">JM</div>
+          <div class="autor-info"><strong>José Manuel Ríos</strong><span>Cliente desde 2022 · Sevilla centro</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <div class="comillas">"</div>
+        <p class="testimonio-texto">Vine de turista y pregunté en el hotel dónde cortarse el pelo bien en Sevilla. Me mandaron aquí. Ahora cuando vengo a Sevilla, siempre saco cita con Mateo.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">PG</div>
+          <div class="autor-info"><strong>Pierre Gautier</strong><span>Cliente desde 2024 · París / Sevilla</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reserva" id="reserva">
+  <div class="reserva-inner">
+    <div class="section-label">Reservas</div>
+    <h2>Reserva tu <em>cita</em></h2>
+    <p>Rellena el formulario y te confirmamos la cita en menos de 2 horas. También puedes escribirnos por WhatsApp.</p>
+    <form>
+      <div class="form-grid">
+        <div class="form-group"><label>Nombre</label><input type="text" placeholder="Tu nombre" /></div>
+        <div class="form-group"><label>Teléfono</label><input type="tel" placeholder="600 000 000" /></div>
+      </div>
+      <div class="form-group">
+        <label>Servicio</label>
+        <select>
+          <option value="">¿Qué servicio te interesa?</option>
+          <option>Corte clásico — €22</option>
+          <option>Corte + barba — €35</option>
+          <option>Afeitado con navaja — €28</option>
+          <option>Tratamiento capilar — €45</option>
+          <option>Pack novio — €120</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Preferencia de horario</label>
+        <select>
+          <option value="">¿Cuándo prefieres?</option>
+          <option>Mañanas (9h-14h)</option>
+          <option>Tardes (16h-20h)</option>
+          <option>Cualquier horario</option>
+        </select>
+      </div>
+      <button type="submit" class="btn-form">Solicitar cita</button>
+      <p class="form-nota">✦ Confirmación en menos de 2 horas · ✦ Sin pago anticipado · ✦ Cancelación gratuita 24h antes</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="logo">Don Mateo <span style="display:inline;font-size:0.75rem;color:rgba(255,255,255,0.4);letter-spacing:2px;"> · Barbería · Triana</span></div>
+  <p>Calle Betis 42, Triana, Sevilla · donmateo@barberia.es · 600 000 000</p>
+  <p style="color:rgba(255,255,255,0.2);font-size:0.75rem;">© 2026 Barbería Don Mateo · Diseño web por Kendrick Consultoria Digital</p>
+</footer>
+
+<a href="https://wa.me/34600000000" class="wa-float" title="WhatsApp">💬</a>
+
+</body>
+</html>

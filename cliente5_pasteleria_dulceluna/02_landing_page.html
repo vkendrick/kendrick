@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dulce Luna — Pastelería Artesanal · Bilbao</title>
+  <meta name="description" content="Tartas personalizadas artesanales en Bilbao. Tartas de boda, cumpleaños y eventos. Hecho a mano con ingredientes de calidad. Carmen Etxebarria." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --rosa: #F4A7B9;
+      --rosa-suave: #fce4ec;
+      --rosa-oscuro: #e07a96;
+      --crema: #FFF8F0;
+      --crema-oscuro: #f5e6d3;
+      --chocolate: #4A2C2A;
+      --chocolate-suave: #6b3f3c;
+      --gris: #9e9e9e;
+    }
+    body { font-family: 'Nunito', sans-serif; color: var(--chocolate); background: var(--crema); }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,248,240,0.97); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(244,167,185,0.3);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+    }
+    .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: var(--chocolate); letter-spacing: 1px; }
+    .logo span { color: var(--rosa-oscuro); font-style: italic; }
+    .logo-sub { color: var(--gris); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; display: block; font-family: 'Nunito', sans-serif; font-style: normal; }
+    .nav-cta {
+      background: var(--rosa); color: var(--chocolate);
+      padding: 10px 24px; border-radius: 50px;
+      font-weight: 700; font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--rosa-oscuro); color: white; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--crema) 0%, #fce4ec 50%, #fff0f5 100%);
+      display: flex; align-items: center;
+      padding: 100px 5% 60px;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .hero-badge {
+      display: inline-block; background: var(--rosa-suave); color: var(--rosa-oscuro);
+      padding: 6px 16px; border-radius: 50px; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 1px; margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.2; color: var(--chocolate); margin-bottom: 16px;
+    }
+    .hero h1 em { color: var(--rosa-oscuro); font-style: italic; }
+    .hero p { color: var(--chocolate-suave); line-height: 1.8; margin-bottom: 36px; font-size: 1rem; font-weight: 300; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-rosa {
+      background: var(--rosa-oscuro); color: white;
+      padding: 16px 36px; border-radius: 50px;
+      font-weight: 700; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-rosa:hover { background: var(--chocolate); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(224,122,150,0.3); }
+    .btn-outline {
+      background: transparent; color: var(--chocolate);
+      padding: 16px 36px; border-radius: 50px; border: 2px solid var(--rosa);
+      font-weight: 600; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { background: var(--rosa-suave); }
+    .hero-visual {
+      background: linear-gradient(135deg, #fce4ec, #fff0f5);
+      border-radius: 24px; padding: 40px;
+      border: 2px solid rgba(244,167,185,0.4);
+      text-align: center;
+    }
+    .hero-emoji { font-size: 5rem; margin-bottom: 20px; display: block; }
+    .hero-visual-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--chocolate); margin-bottom: 20px; font-style: italic; }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .tag { background: white; border: 1px solid var(--rosa); color: var(--chocolate); padding: 6px 14px; border-radius: 50px; font-size: 0.8rem; font-weight: 600; }
+
+    /* STATS */
+    .stats { background: var(--rosa-oscuro); padding: 50px 5%; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
+    .stat-num { font-family: 'Cormorant Garamond', serif; font-size: 3rem; color: white; font-weight: 700; }
+    .stat-label { color: rgba(255,255,255,0.75); font-size: 0.85rem; margin-top: 4px; }
+
+    /* SOBRE CARMEN */
+    .sobre { padding: 100px 5%; background: white; }
+    .sobre-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .sobre-visual {
+      background: linear-gradient(135deg, #fce4ec, #fff0f5);
+      border-radius: 24px; aspect-ratio: 4/5;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; border: 2px solid rgba(244,167,185,0.3);
+      font-size: 4rem; position: relative;
+    }
+    .sobre-chip {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--rosa-oscuro); color: white;
+      padding: 12px 24px; border-radius: 50px; font-size: 0.85rem; font-weight: 700;
+      white-space: nowrap;
+    }
+    .section-label { color: var(--rosa-oscuro); font-size: 0.75rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+    .sobre h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--chocolate); margin-bottom: 20px; line-height: 1.2; }
+    .sobre p { color: var(--chocolate-suave); line-height: 1.8; margin-bottom: 16px; font-weight: 300; }
+    .divider-rosa { width: 60px; height: 3px; background: var(--rosa); border-radius: 2px; margin: 20px 0; }
+
+    /* SERVICIOS */
+    .servicios { padding: 100px 5%; background: var(--crema); }
+    .servicios-inner { max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--chocolate); margin-bottom: 12px; }
+    .section-header p { color: var(--gris); max-width: 480px; margin: 0 auto; }
+    .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .card {
+      background: white; padding: 36px 28px; border-radius: 20px;
+      border: 2px solid transparent;
+      transition: all 0.3s; box-shadow: 0 2px 16px rgba(244,167,185,0.1);
+    }
+    .card:hover { border-color: var(--rosa); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(244,167,185,0.2); }
+    .card-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+    .card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--chocolate); margin-bottom: 10px; }
+    .card p { color: var(--gris); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
+    .card-precio { margin-top: 20px; color: var(--rosa-oscuro); font-weight: 700; font-size: 1rem; }
+
+    /* TESTIMONIOS */
+    .testimonios { padding: 100px 5%; background: white; }
+    .testimonios-inner { max-width: 1100px; margin: 0 auto; }
+    .testimonios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+    .testimonio {
+      background: var(--crema); padding: 32px; border-radius: 20px;
+      border: 1px solid rgba(244,167,185,0.2);
+    }
+    .estrellas { color: var(--rosa-oscuro); font-size: 1rem; margin-bottom: 12px; }
+    .testimonio-texto { color: var(--chocolate-suave); line-height: 1.7; font-style: italic; margin-bottom: 20px; font-size: 0.95rem; font-weight: 300; }
+    .testimonio-autor { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--rosa); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; flex-shrink: 0; }
+    .autor-info strong { display: block; font-size: 0.9rem; color: var(--chocolate); }
+    .autor-info span { font-size: 0.8rem; color: var(--gris); }
+
+    /* PEDIDO */
+    .pedido { padding: 100px 5%; background: var(--crema); }
+    .pedido-inner { max-width: 700px; margin: 0 auto; text-align: center; }
+    .pedido h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; color: var(--chocolate); margin-bottom: 8px; }
+    .pedido h2 em { color: var(--rosa-oscuro); }
+    .pedido p { color: var(--gris); margin-bottom: 40px; line-height: 1.7; }
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; color: var(--chocolate); font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 14px 16px;
+      background: white; border: 2px solid rgba(244,167,185,0.3);
+      color: var(--chocolate); font-size: 0.95rem; font-family: 'Nunito', sans-serif;
+      transition: border-color 0.2s; border-radius: 12px;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--rosa-oscuro); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .btn-form {
+      width: 100%; background: var(--rosa-oscuro); color: white;
+      padding: 16px; border: none; border-radius: 50px;
+      font-size: 0.95rem; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; margin-top: 8px; font-family: 'Nunito', sans-serif;
+    }
+    .btn-form:hover { background: var(--chocolate); transform: translateY(-2px); }
+    .form-nota { color: var(--gris); font-size: 0.8rem; margin-top: 12px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--chocolate); padding: 40px 5%;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    footer .logo { color: var(--crema); }
+    footer p { color: rgba(255,248,240,0.5); font-size: 0.8rem; }
+
+    /* WA FLOAT */
+    .wa-float {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #25d366; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.1); }
+
+    @media (max-width: 768px) {
+      .hero-inner, .sobre-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .cards-grid, .testimonios-grid, .stats-inner { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>Dulce</span> Luna <span class="logo-sub">Pastelería artesanal · Bilbao</span></div>
+  <a href="#pedido" class="nav-cta">Hacer un pedido</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">🎂 Hecho a mano, con amor</div>
+      <h1>Tartas que cuentan <em>tu historia</em></h1>
+      <p>Cada tarta es única. La diseñamos juntas para que sea exactamente lo que imaginaste — para tu boda, tu cumpleaños o ese momento especial que merece algo diferente.</p>
+      <div class="hero-btns">
+        <a href="#pedido" class="btn-rosa">Encargar mi tarta</a>
+        <a href="#servicios" class="btn-outline">Ver creaciones</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <span class="hero-emoji">🎂</span>
+      <div class="hero-visual-title">¿Qué puedo hacer para ti?</div>
+      <div class="tag-list">
+        <span class="tag">Tartas de boda</span>
+        <span class="tag">Cumpleaños</span>
+        <span class="tag">Eventos corporativos</span>
+        <span class="tag">Sin gluten</span>
+        <span class="tag">Veganas</span>
+        <span class="tag">Cupcakes</span>
+        <span class="tag">Talleres</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-inner">
+    <div><div class="stat-num">5</div><div class="stat-label">Años de experiencia</div></div>
+    <div><div class="stat-num">+400</div><div class="stat-label">Tartas creadas</div></div>
+    <div><div class="stat-num">100%</div><div class="stat-label">Ingredientes artesanales</div></div>
+  </div>
+</section>
+
+<section class="sobre">
+  <div class="sobre-inner">
+    <div class="sobre-visual">
+      🧁
+      <div class="sobre-chip">Carmen Etxebarria · Maestra repostera</div>
+    </div>
+    <div>
+      <div class="section-label">Quién está detrás</div>
+      <h2>Hola, soy Carmen</h2>
+      <div class="divider-rosa"></div>
+      <p>Empecé haciendo tartas para la familia. Primero los cumpleaños de mis sobrinos, luego la boda de mi hermana. En algún momento me di cuenta de que esto no era solo un hobby: era lo que quería hacer todos los días.</p>
+      <p>Cinco años después, cada tarta que sale de mi obrador en Indautxu lleva horas de trabajo, ingredientes de calidad y mucho cariño. No hago tartas en serie. Cada una es diferente porque cada cliente es diferente.</p>
+      <p style="color:var(--rosa-oscuro);font-style:italic;margin-top:16px;font-family:'Cormorant Garamond',serif;font-size:1.1rem;">"Una tarta bonita dura un momento. Una tarta rica dura un poco más. Una tarta que cuenta tu historia, esa se recuerda siempre."</p>
+    </div>
+  </div>
+</section>
+
+<section class="servicios" id="servicios">
+  <div class="servicios-inner">
+    <div class="section-header">
+      <div class="section-label">Mis creaciones</div>
+      <h2>¿Qué puedo hacer para ti?</h2>
+      <p>Cada encargo es único. Estos son los puntos de partida.</p>
+    </div>
+    <div class="cards-grid">
+      <div class="card">
+        <span class="card-icon">🎂</span>
+        <h3>Tarta de Cumpleaños</h3>
+        <p>Personalizada con tu diseño, colores y sabores favoritos. Desde 2 pisos hasta tartas esculpidas.</p>
+        <div class="card-precio">Desde €65</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">💍</span>
+        <h3>Tarta de Boda</h3>
+        <p>El centro de tu mesa dulce. Diseño exclusivo, degustación previa incluida, entrega en el lugar del evento.</p>
+        <div class="card-precio">Desde €280</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🧁</span>
+        <h3>Cupcakes para Eventos</h3>
+        <p>Personalizados con tu temática. Perfectos para bodas, comuniones, eventos de empresa.</p>
+        <div class="card-precio">Desde €2,50/ud (mín. 24)</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🌿</span>
+        <h3>Sin Gluten y Veganas</h3>
+        <p>Las mismas recetas de siempre, adaptadas. Sin gluten, sin lactosa o veganas. Sin renunciar al sabor.</p>
+        <div class="card-precio">+€20 sobre precio base</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">👩‍🍳</span>
+        <h3>Taller de Repostería</h3>
+        <p>Aprende a decorar tartas desde cero. Grupos de hasta 6 personas. Incluye materiales y merienda.</p>
+        <div class="card-precio">€45/persona</div>
+      </div>
+      <div class="card">
+        <span class="card-icon">🏢</span>
+        <h3>Eventos Corporativos</h3>
+        <p>Tartas y dulces personalizados con tu logo para presentaciones, aniversarios de empresa o regalos.</p>
+        <div class="card-precio">Presupuesto personalizado</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonios">
+  <div class="testimonios-inner">
+    <div class="section-header">
+      <div class="section-label">Lo que dicen</div>
+      <h2>Clientes felices</h2>
+    </div>
+    <div class="testimonios-grid">
+      <div class="testimonio">
+        <div class="estrellas">★★★★★</div>
+        <p class="testimonio-texto">La tarta de nuestra boda fue perfecta. Carmen entendió exactamente lo que queríamos y lo superó. Todos los invitados preguntaron quién la había hecho.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">LM</div>
+          <div class="autor-info"><strong>Laura y Mikel</strong><span>Boda junio 2025 · Bilbao</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <div class="estrellas">★★★★★</div>
+        <p class="testimonio-texto">Encargué cupcakes para el cumpleaños de mi hija de 5 años. Llegaron perfectos, sabían increíble y los niños los devoraron en 10 minutos. Repetiremos seguro.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">AZ</div>
+          <div class="autor-info"><strong>Amaia Zubiaurre</strong><span>Cliente desde 2024 · Getxo</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <div class="estrellas">★★★★★</div>
+        <p class="testimonio-texto">Hice el taller de repostería con mi madre y fue una tarde increíble. Carmen explica muy bien, tiene mucha paciencia y el resultado fue sorprendente para ser principiantes.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">NI</div>
+          <div class="autor-info"><strong>Nerea Ibáñez</strong><span>Taller noviembre 2025 · Bilbao</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pedido" id="pedido">
+  <div class="pedido-inner">
+    <div class="section-label">Encargos</div>
+    <h2>Cuéntame tu <em>idea</em></h2>
+    <p>Rellena el formulario y te respondo en menos de 24 horas con disponibilidad y presupuesto orientativo. Los encargos se confirman con un depósito del 30%.</p>
+    <form>
+      <div class="form-grid">
+        <div class="form-group"><label>Tu nombre</label><input type="text" placeholder="Carmen..." /></div>
+        <div class="form-group"><label>Email o teléfono</label><input type="text" placeholder="Para responderte" /></div>
+      </div>
+      <div class="form-group">
+        <label>¿Qué tipo de tarta necesitas?</label>
+        <select>
+          <option value="">Selecciona...</option>
+          <option>Tarta de cumpleaños</option>
+          <option>Tarta de boda</option>
+          <option>Cupcakes para evento</option>
+          <option>Taller de repostería</option>
+          <option>Evento corporativo</option>
+          <option>Otro</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Fecha del evento</label><input type="date" /></div>
+      <div class="form-group">
+        <label>Cuéntame más (número de personas, diseño que imaginas, sabores...)</label>
+        <textarea placeholder="Cuanto más me cuentes, mejor puedo ayudarte..."></textarea>
+      </div>
+      <button type="submit" class="btn-form">Enviar mi encargo 🎂</button>
+      <p class="form-nota">Te respondo en menos de 24 horas · Presupuesto sin compromiso · Entrega a domicilio disponible en Bilbao y alrededores</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="logo"><span>Dulce</span> Luna</div>
+  <p>Indautxu, Bilbao · carmen@dulceluna.es · 600 000 000</p>
+  <p style="color:rgba(255,248,240,0.3);font-size:0.75rem;">© 2026 Dulce Luna · Diseño web por Kendrick Consultoria Digital</p>
+</footer>
+
+<a href="https://wa.me/34600000000" class="wa-float" title="WhatsApp">💬</a>
+
+</body>
+</html>

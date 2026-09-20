@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alma Serena — Centro de Yoga · Realejo, Granada</title>
+  <meta name="description" content="Centro de yoga en el Realejo, Granada. Clases de hatha yoga, yoga prenatal y meditación. Primera clase gratuita. Valentina Morales." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --terracota: #C4714A;
+      --terracota-oscuro: #9E5538;
+      --terracota-suave: #f5e6dc;
+      --beige: #F7F0E8;
+      --beige-oscuro: #EDE3D4;
+      --verde-salvia: #7A9E7E;
+      --marron: #3D2B1F;
+      --marron-suave: #5C4033;
+      --gris: #9E9089;
+    }
+    body { font-family: 'DM Sans', sans-serif; color: var(--marron); background: var(--beige); }
+    a { text-decoration: none; color: inherit; }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(247,240,232,0.97); backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(196,113,74,0.15);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5%; height: 70px;
+    }
+    .logo { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: var(--marron); }
+    .logo span { color: var(--terracota); font-style: italic; }
+    .logo-sub { color: var(--gris); font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; display: block; font-family: 'DM Sans', sans-serif; font-style: normal; }
+    .nav-cta {
+      background: var(--terracota); color: white;
+      padding: 10px 24px; border-radius: 50px;
+      font-weight: 500; font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--terracota-oscuro); }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      background: linear-gradient(160deg, var(--beige) 0%, #f0e8de 50%, #ede0d4 100%);
+      display: flex; align-items: center;
+      padding: 100px 5% 60px;
+    }
+    .hero-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--terracota-suave); color: var(--terracota-oscuro);
+      padding: 6px 16px; border-radius: 50px; font-size: 0.78rem; font-weight: 500;
+      letter-spacing: 0.5px; margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.15; color: var(--marron); margin-bottom: 20px;
+    }
+    .hero h1 em { color: var(--terracota); }
+    .hero p { color: var(--marron-suave); line-height: 1.8; margin-bottom: 36px; font-size: 1rem; font-weight: 300; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-terracota {
+      background: var(--terracota); color: white;
+      padding: 16px 36px; border-radius: 50px;
+      font-weight: 500; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-terracota:hover { background: var(--terracota-oscuro); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(196,113,74,0.3); }
+    .btn-outline {
+      background: transparent; color: var(--marron);
+      padding: 16px 36px; border-radius: 50px; border: 2px solid rgba(196,113,74,0.3);
+      font-weight: 500; font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--terracota); background: var(--terracota-suave); }
+    .hero-visual {
+      background: linear-gradient(135deg, #ede0d4, #f5e6dc);
+      border-radius: 30px 30px 30px 8px; padding: 40px;
+      border: 1px solid rgba(196,113,74,0.2);
+      text-align: center; position: relative;
+    }
+    .hero-emoji { font-size: 4rem; margin-bottom: 20px; display: block; }
+    .hero-horario-title { font-family: 'DM Serif Display', serif; font-size: 1.1rem; color: var(--marron); margin-bottom: 20px; }
+    .horario-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(196,113,74,0.1); font-size: 0.9rem; }
+    .horario-row:last-child { border-bottom: none; }
+    .h-dia { color: var(--marron-suave); font-weight: 400; }
+    .h-hora { color: var(--terracota); font-weight: 600; font-size: 0.85rem; }
+    .prueba-chip {
+      margin-top: 20px; background: var(--verde-salvia); color: white;
+      padding: 12px 20px; border-radius: 50px; font-size: 0.85rem; font-weight: 500;
+      display: inline-block;
+    }
+
+    /* STATS */
+    .stats { background: var(--terracota); padding: 50px 5%; }
+    .stats-inner { max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; text-align: center; }
+    .stat-num { font-family: 'DM Serif Display', serif; font-size: 3rem; color: white; }
+    .stat-label { color: rgba(255,255,255,0.75); font-size: 0.82rem; margin-top: 4px; }
+
+    /* SOBRE VALENTINA */
+    .sobre { padding: 100px 5%; background: white; }
+    .sobre-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .sobre-visual {
+      background: linear-gradient(135deg, #ede0d4, #f5e6dc);
+      border-radius: 30px 30px 30px 8px; aspect-ratio: 4/5;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 16px; border: 1px solid rgba(196,113,74,0.2);
+      font-size: 4rem; position: relative;
+    }
+    .sobre-chip {
+      position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+      background: var(--terracota); color: white;
+      padding: 12px 24px; border-radius: 50px; font-size: 0.82rem; font-weight: 500;
+      white-space: nowrap;
+    }
+    .section-label { color: var(--terracota); font-size: 0.72rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 12px; }
+    .sobre h2 { font-family: 'DM Serif Display', serif; font-size: 2.5rem; color: var(--marron); margin-bottom: 20px; line-height: 1.2; }
+    .sobre p { color: var(--marron-suave); line-height: 1.8; margin-bottom: 16px; font-weight: 300; }
+    .divider-terracota { width: 50px; height: 2px; background: var(--terracota); border-radius: 2px; margin: 20px 0; }
+
+    /* CLASES */
+    .clases { padding: 100px 5%; background: var(--beige); }
+    .clases-inner { max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 60px; }
+    .section-header h2 { font-family: 'DM Serif Display', serif; font-size: 2.8rem; color: var(--marron); margin-bottom: 12px; }
+    .section-header p { color: var(--gris); max-width: 480px; margin: 0 auto; }
+    .clases-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .clase-card {
+      background: white; padding: 36px 28px; border-radius: 20px;
+      border: 1px solid rgba(196,113,74,0.1);
+      transition: all 0.3s;
+    }
+    .clase-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(196,113,74,0.12); border-color: var(--terracota); }
+    .clase-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+    .clase-card h3 { font-family: 'DM Serif Display', serif; font-size: 1.3rem; color: var(--marron); margin-bottom: 10px; }
+    .clase-card p { color: var(--gris); font-size: 0.9rem; line-height: 1.6; font-weight: 300; }
+    .clase-nivel { margin-top: 16px; display: inline-block; background: var(--terracota-suave); color: var(--terracota-oscuro); padding: 4px 12px; border-radius: 50px; font-size: 0.78rem; font-weight: 500; }
+
+    /* BONOS */
+    .bonos { padding: 100px 5%; background: var(--marron); }
+    .bonos-inner { max-width: 1100px; margin: 0 auto; }
+    .bonos .section-header h2 { color: white; }
+    .bonos .section-header p { color: rgba(255,255,255,0.5); }
+    .bonos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+    .bono-card {
+      background: rgba(255,255,255,0.05); padding: 36px 28px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: all 0.3s; text-align: center;
+    }
+    .bono-card.destacado { background: var(--terracota); border-color: var(--terracota); }
+    .bono-card:hover { transform: translateY(-4px); }
+    .bono-nombre { font-family: 'DM Serif Display', serif; font-size: 1.2rem; color: white; margin-bottom: 8px; }
+    .bono-precio { font-size: 2.5rem; color: white; font-family: 'DM Serif Display', serif; margin: 16px 0; }
+    .bono-precio span { font-size: 1rem; opacity: 0.7; }
+    .bono-detalle { color: rgba(255,255,255,0.6); font-size: 0.85rem; line-height: 1.6; font-weight: 300; }
+    .bono-card.destacado .bono-detalle { color: rgba(255,255,255,0.85); }
+    .bono-tag { display: inline-block; background: var(--verde-salvia); color: white; padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 500; margin-top: 16px; }
+
+    /* TESTIMONIOS */
+    .testimonios { padding: 100px 5%; background: white; }
+    .testimonios-inner { max-width: 1100px; margin: 0 auto; }
+    .testimonios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 60px; }
+    .testimonio { background: var(--beige); padding: 32px; border-radius: 20px; }
+    .testimonio-texto { color: var(--marron-suave); line-height: 1.7; font-style: italic; margin-bottom: 20px; font-size: 0.95rem; font-weight: 300; }
+    .testimonio-autor { display: flex; align-items: center; gap: 12px; }
+    .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--terracota); color: white; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.9rem; flex-shrink: 0; }
+    .autor-info strong { display: block; font-size: 0.9rem; color: var(--marron); }
+    .autor-info span { font-size: 0.8rem; color: var(--gris); }
+
+    /* INSCRIPCION */
+    .inscripcion { padding: 100px 5%; background: var(--beige); }
+    .inscripcion-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+    .inscripcion h2 { font-family: 'DM Serif Display', serif; font-size: 2.8rem; color: var(--marron); margin-bottom: 8px; }
+    .inscripcion h2 em { color: var(--terracota); }
+    .inscripcion p { color: var(--gris); margin-bottom: 40px; line-height: 1.7; }
+    .form-group { margin-bottom: 14px; text-align: left; }
+    .form-group label { display: block; color: var(--marron); font-size: 0.78rem; font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 14px 16px;
+      background: white; border: 1.5px solid rgba(196,113,74,0.2);
+      color: var(--marron); font-size: 0.95rem; font-family: 'DM Sans', sans-serif;
+      transition: border-color 0.2s; border-radius: 12px;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--terracota); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .btn-form {
+      width: 100%; background: var(--terracota); color: white;
+      padding: 16px; border: none; border-radius: 50px;
+      font-size: 0.95rem; font-weight: 500; cursor: pointer;
+      transition: all 0.2s; margin-top: 8px; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-form:hover { background: var(--terracota-oscuro); transform: translateY(-2px); }
+    .form-nota { color: var(--gris); font-size: 0.8rem; margin-top: 12px; }
+
+    /* FOOTER */
+    footer {
+      background: var(--marron); padding: 40px 5%;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    footer .logo { color: var(--beige); }
+    footer p { color: rgba(247,240,232,0.4); font-size: 0.8rem; }
+
+    /* WA FLOAT */
+    .wa-float {
+      position: fixed; bottom: 24px; right: 24px; z-index: 999;
+      width: 60px; height: 60px; border-radius: 50%;
+      background: #25d366; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      transition: transform 0.2s;
+    }
+    .wa-float:hover { transform: scale(1.1); }
+
+    @media (max-width: 768px) {
+      .hero-inner, .sobre-inner { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .clases-grid, .bonos-grid, .testimonios-grid { grid-template-columns: 1fr; }
+      .stats-inner { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo"><span>Alma</span> Serena <span class="logo-sub">Centro de yoga · Realejo, Granada</span></div>
+  <a href="#inscripcion" class="nav-cta">Primera clase gratis</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">🌿 Yoga en el corazón del Realejo</div>
+      <h1>Un espacio para <em>volver a ti</em></h1>
+      <p>Clases de yoga para todos los niveles en un espacio tranquilo y acogedor. Sin importar si nunca has hecho yoga o llevas años practicando, aquí tienes tu sitio.</p>
+      <div class="hero-btns">
+        <a href="#inscripcion" class="btn-terracota">Reservar clase de prueba gratis</a>
+        <a href="#clases" class="btn-outline">Ver horarios</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <span class="hero-emoji">🧘</span>
+      <div class="hero-horario-title">Horario de esta semana</div>
+      <div class="horario-row"><span class="h-dia">Lunes y Miércoles</span><span class="h-hora">9:00 · 11:00 · 19:00</span></div>
+      <div class="horario-row"><span class="h-dia">Martes y Jueves</span><span class="h-hora">10:00 · 18:30 · 20:00</span></div>
+      <div class="horario-row"><span class="h-dia">Viernes</span><span class="h-hora">9:00 · 11:00</span></div>
+      <div class="horario-row"><span class="h-dia">Sábados</span><span class="h-hora">10:00 (clase especial)</span></div>
+      <div class="prueba-chip">🎁 Primera clase completamente gratis</div>
+    </div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stats-inner">
+    <div><div class="stat-num">3</div><div class="stat-label">Años en Granada</div></div>
+    <div><div class="stat-num">45+</div><div class="stat-label">Alumnos activos</div></div>
+    <div><div class="stat-num">12</div><div class="stat-label">Clases por semana</div></div>
+  </div>
+</section>
+
+<section class="sobre">
+  <div class="sobre-inner">
+    <div class="sobre-visual">
+      🌸
+      <div class="sobre-chip">Valentina Morales · Instructora certificada</div>
+    </div>
+    <div>
+      <div class="section-label">Quién soy</div>
+      <h2>Hola, soy Valentina</h2>
+      <div class="divider-terracota"></div>
+      <p>Empecé con el yoga hace 10 años, en un momento de mucho estrés. No buscaba flexibilidad ni hacer posturas difíciles. Buscaba un lugar donde poder respirar. Lo encontré, y desde entonces no he parado.</p>
+      <p>Llevo 3 años con Alma Serena en el Realejo. Lo que más me importa no es que mis alumnos hagan la postura perfecta, sino que salgan de clase sintiéndose mejor que cuando llegaron. Eso es todo.</p>
+      <p>Soy instructora certificada por la Escuela Internacional de Yoga, con especialización en yoga prenatal y yoga terapéutico.</p>
+    </div>
+  </div>
+</section>
+
+<section class="clases" id="clases">
+  <div class="clases-inner">
+    <div class="section-header">
+      <div class="section-label">Lo que ofrezco</div>
+      <h2>Tipos de clases</h2>
+      <p>Cada clase está diseñada para un momento y una necesidad diferente.</p>
+    </div>
+    <div class="clases-grid">
+      <div class="clase-card">
+        <span class="clase-icon">🧘</span>
+        <h3>Hatha Yoga</h3>
+        <p>El yoga clásico. Posturas, respiración y relajación final. Ideal para empezar o para quienes quieren una práctica completa y sin prisas.</p>
+        <span class="clase-nivel">Todos los niveles</span>
+      </div>
+      <div class="clase-card">
+        <span class="clase-icon">🤸</span>
+        <h3>Yoga Dinámico</h3>
+        <p>Más movimiento, más calor, más energía. Para quienes buscan un yoga más activo que también trabaje la fuerza y la resistencia.</p>
+        <span class="clase-nivel">Nivel medio</span>
+      </div>
+      <div class="clase-card">
+        <span class="clase-icon">🤰</span>
+        <h3>Yoga Prenatal</h3>
+        <p>Especialmente diseñado para el embarazo. Posturas seguras, respiración para el parto y conexión con el bebé.</p>
+        <span class="clase-nivel">Embarazadas</span>
+      </div>
+      <div class="clase-card">
+        <span class="clase-icon">🌙</span>
+        <h3>Yoga Restaurativo</h3>
+        <p>Posturas suaves con apoyos, mucho tiempo en cada postura. Para el estrés, el cansancio y los días que necesitas parar.</p>
+        <span class="clase-nivel">Todos los niveles</span>
+      </div>
+      <div class="clase-card">
+        <span class="clase-icon">🧠</span>
+        <h3>Meditación</h3>
+        <p>20 minutos de práctica guiada. Técnicas de respiración y visualización. Sin necesidad de experiencia previa.</p>
+        <span class="clase-nivel">Principiantes</span>
+      </div>
+      <div class="clase-card">
+        <span class="clase-icon">👥</span>
+        <h3>Clases Privadas</h3>
+        <p>Una hora contigo sola o con una amiga. Adaptado completamente a lo que necesitas en ese momento.</p>
+        <span class="clase-nivel">Personalizado</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="bonos">
+  <div class="bonos-inner">
+    <div class="section-header">
+      <div class="section-label">Precios</div>
+      <h2 style="color:white;font-family:'DM Serif Display',serif;font-size:2.8rem;margin-bottom:12px;">Bonos de clases</h2>
+      <p style="color:rgba(255,255,255,0.5);">Sin permanencias. Sin letra pequeña. Empiezas cuando quieres.</p>
+    </div>
+    <div class="bonos-grid">
+      <div class="bono-card">
+        <div class="bono-nombre">Clase suelta</div>
+        <div class="bono-precio">€14 <span>/ clase</span></div>
+        <div class="bono-detalle">Para probar sin compromiso. Válida para cualquier tipo de clase.</div>
+      </div>
+      <div class="bono-card destacado">
+        <div class="bono-nombre">Bono 10 clases</div>
+        <div class="bono-precio">€99 <span>/ bono</span></div>
+        <div class="bono-detalle">El más popular. Válido 3 meses. Para cualquier tipo de clase. Sin caducidad si te pones enferma.</div>
+        <span class="bono-tag">⭐ Más popular</span>
+      </div>
+      <div class="bono-card">
+        <div class="bono-nombre">Mensualidad ilimitada</div>
+        <div class="bono-precio">€79 <span>/ mes</span></div>
+        <div class="bono-detalle">Clases ilimitadas durante 30 días. Para quienes quieren practicar varias veces por semana.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonios">
+  <div class="testimonios-inner">
+    <div class="section-header">
+      <div class="section-label">La comunidad</div>
+      <h2>Lo que dicen mis alumnas</h2>
+    </div>
+    <div class="testimonios-grid">
+      <div class="testimonio">
+        <p class="testimonio-texto">Llegué sin saber nada de yoga y con mucho estrés del trabajo. Tres meses después duermo mejor, me duele menos la espalda y tengo un rato a la semana que es completamente mío.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">LF</div>
+          <div class="autor-info"><strong>Lucía Fernández</strong><span>Alumna desde enero 2026 · Granada</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <p class="testimonio-texto">Hice el yoga prenatal con Valentina durante el tercer trimestre. Me ayudó muchísimo a preparar el parto y a conectar con mi bebé. La recomiendo a todas las embarazadas.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">SR</div>
+          <div class="autor-info"><strong>Sara Rodríguez</strong><span>Alumna desde marzo 2026 · Granada</span></div>
+        </div>
+      </div>
+      <div class="testimonio">
+        <p class="testimonio-texto">Lo que más me gusta de Alma Serena es que no es un gimnasio. Valentina te conoce, sabe cómo estás ese día y adapta la clase. Es una comunidad de verdad.</p>
+        <div class="testimonio-autor">
+          <div class="avatar">CM</div>
+          <div class="autor-info"><strong>Carmen Molina</strong><span>Alumna desde 2024 · Granada</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="inscripcion" id="inscripcion">
+  <div class="inscripcion-inner">
+    <div class="section-label">Empieza hoy</div>
+    <h2>Tu primera clase, <em>gratis</em></h2>
+    <p>Rellena el formulario y te escribo para reservar tu clase de prueba. Sin compromiso, sin tarjeta, sin nada. Solo ven y prueba.</p>
+    <form>
+      <div class="form-grid">
+        <div class="form-group"><label>Tu nombre</label><input type="text" placeholder="¿Cómo te llamas?" /></div>
+        <div class="form-group"><label>Email o teléfono</label><input type="text" placeholder="Para escribirte" /></div>
+      </div>
+      <div class="form-group">
+        <label>¿Qué tipo de clase te interesa?</label>
+        <select>
+          <option value="">Selecciona...</option>
+          <option>Hatha Yoga (todos los niveles)</option>
+          <option>Yoga Dinámico</option>
+          <option>Yoga Prenatal</option>
+          <option>Yoga Restaurativo</option>
+          <option>Meditación</option>
+          <option>No sé, me orientas tú</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>¿Has practicado yoga antes?</label>
+        <select>
+          <option value="">Selecciona...</option>
+          <option>No, nunca</option>
+          <option>Sí, un poco</option>
+          <option>Sí, tengo experiencia</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>¿Hay algo que quieras contarme? (lesiones, embarazo, objetivos...)</label>
+        <textarea placeholder="Cuanto más me cuentes, mejor puedo orientarte..."></textarea>
+      </div>
+      <button type="submit" class="btn-form">🌿 Reservar mi clase gratuita</button>
+      <p class="form-nota">Te escribo en menos de 24 horas · Primera clase completamente gratis · Sin permanencias</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="logo"><span>Alma</span> Serena</div>
+  <p>Calle Pavaneras 8, Realejo · Granada · valentina@almaserena.es · 600 000 000</p>
+  <p style="color:rgba(247,240,232,0.25);font-size:0.75rem;">© 2026 Alma Serena · Diseño web por Kendrick Consultoria Digital</p>
+</footer>
+
+<a href="https://wa.me/34600000000" class="wa-float" title="WhatsApp">💬</a>
+
+</body>
+</html>
