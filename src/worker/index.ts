@@ -4,10 +4,13 @@ import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
 type Bindings = {
-  DB: D1Database;
+  GOOGLE_SHEETS_API_KEY: string;
+  GOOGLE_SHEETS_SPREADSHEET_ID: string;
+  GOOGLE_SHEETS_LEADS_RANGE: string;
+  GOOGLE_SHEETS_CONTACTS_RANGE: string;
   RESEND_API_KEY: string;
   OWNER_EMAIL: string;
-  APP_NAME: string;
+  CALLMEBOT_APIKEY: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
@@ -16,6 +19,18 @@ app.use("/api/*", cors());
 
 // ─── HEALTH ──────────────────────────────────────────────────────────────────
 app.get("/api/health", (c) => c.json({ ok: true }));
+
+// ─── GOOGLE SHEETS HELPER ────────────────────────────────────────────────────
+async function appendToSheet(env: Bindings, range: string, values: (string | number)[][]) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${env.GOOGLE_SHEETS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&key=${env.GOOGLE_SHEETS_API_KEY}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ values }),
+  });
+  if (!res.ok) throw new Error(`Sheets API error: ${await res.text()}`);
+  return res.json();
+}
 
 // ─── LEADS (QUIZ) ─────────────────────────────────────────────────────────────
 const leadSchema = z.object({
@@ -32,16 +47,17 @@ app.post("/api/leads", zValidator("json", leadSchema), async (c) => {
   if (!data.consent) return c.json({ error: "Se requiere consentimiento" }, 400);
 
   try {
-    await c.env.DB.prepare(
-      `INSERT INTO leads (name, email, score, level, package, consent) VALUES (?, ?, ?, ?, ?, ?)`
-    )
-      .bind(data.name, data.email, data.score, data.level, data.package, data.consent ? 1 : 0)
-      .run();
+    const label = levelLabels[data.level] ?? data.level;
+    const packageName = data.package ?? label;
+    const timestamp = new Date().toISOString();
 
-    // Email al lead (no bloqueante)
-    sendLeadEmail(c.env, data).catch(console.error);
-    // Notificación al dueño (no bloqueante)
-    notifyOwner(c.env, data).catch(console.error);
+    await appendToSheet(c.env, c.env.GOOGLE_SHEETS_LEADS_RANGE, [[
+      timestamp, data.name, data.email, data.score, data.level, packageName, data.consent ? "Sí" : "No"
+    ]]);
+
+    sendLeadEmail(c.env, { ...data, package: packageName }).catch(console.error);
+    notifyOwnerByWhatsApp(c.env, { ...data, package: packageName }).catch(console.error);
+    notifyOwnerByEmail(c.env, { ...data, package: packageName }).catch(console.error);
 
     return c.json({ success: true });
   } catch (err) {
@@ -64,11 +80,11 @@ app.post("/api/contact", zValidator("json", contactSchema), async (c) => {
   if (!data.consent) return c.json({ error: "Se requiere consentimiento" }, 400);
 
   try {
-    await c.env.DB.prepare(
-      `INSERT INTO contacts (name, email, company, message, consent) VALUES (?, ?, ?, ?, ?)`
-    )
-      .bind(data.name, data.email, data.company ?? null, data.message, data.consent ? 1 : 0)
-      .run();
+    const timestamp = new Date().toISOString();
+
+    await appendToSheet(c.env, c.env.GOOGLE_SHEETS_CONTACTS_RANGE, [[
+      timestamp, data.name, data.email, data.company ?? "", data.message, data.consent ? "Sí" : "No"
+    ]]);
 
     sendContactNotification(c.env, data).catch(console.error);
     return c.json({ success: true });
@@ -78,7 +94,7 @@ app.post("/api/contact", zValidator("json", contactSchema), async (c) => {
   }
 });
 
-// ─── EMAIL HELPERS ────────────────────────────────────────────────────────────
+// ─── EMAIL HELPERS (same as functions/api) ───────────────────────────────────
 const levelLabels: Record<string, string> = {
   invisible_digital: "Invisible Digital",
   estructura_desconectada: "Estructura Desconectada",
@@ -103,12 +119,7 @@ const levelDiagnosis: Record<string, string[]> = {
   ],
 };
 
-async function sendEmail(
-  env: Bindings,
-  to: string,
-  subject: string,
-  html: string
-): Promise<void> {
+async function sendEmail(env: Bindings, to: string, subject: string, html: string): Promise<void> {
   if (!env.RESEND_API_KEY) {
     console.log(`[EMAIL SIMULADO] Para: ${to} | Asunto: ${subject}`);
     return;
@@ -131,9 +142,7 @@ async function sendEmail(
 async function sendLeadEmail(env: Bindings, data: z.infer<typeof leadSchema>) {
   const label = levelLabels[data.level] ?? data.level;
   const diagnosis = levelDiagnosis[data.level] ?? [];
-  const diagnosisHtml = diagnosis
-    .map((d) => `<li style="margin-bottom:8px;color:#374151;">${d}</li>`)
-    .join("");
+  const diagnosisHtml = diagnosis.map(d => `<li style="margin-bottom:8px;color:#374151;">${d}</li>`).join("");
 
   const html = `
 <!DOCTYPE html>
@@ -141,31 +150,26 @@ async function sendLeadEmail(env: Bindings, data: z.infer<typeof leadSchema>) {
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f9fafb;font-family:Georgia,serif;">
   <div style="max-width:600px;margin:40px auto;background:#fff;border-radius:4px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-    <!-- Header -->
     <div style="background:#0B2545;padding:32px 40px;">
       <p style="margin:0;color:#C5A880;font-size:11px;letter-spacing:3px;text-transform:uppercase;font-family:Arial,sans-serif;">Kendrick Consultoria Digital</p>
       <h1 style="margin:12px 0 0;color:#fff;font-size:24px;font-weight:bold;">Tu diagnóstico está listo, ${data.name}</h1>
     </div>
-    <!-- Nivel -->
     <div style="padding:32px 40px;border-bottom:1px solid #f0f0f0;">
       <p style="margin:0 0 8px;color:#C5A880;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:Arial,sans-serif;">Tu nivel de madurez digital</p>
       <h2 style="margin:0 0 8px;color:#0B2545;font-size:28px;font-weight:bold;">${label}</h2>
       <p style="margin:0;color:#6b7280;font-size:14px;">Puntuación: ${data.score}/15 puntos</p>
     </div>
-    <!-- Diagnóstico -->
     <div style="padding:32px 40px;background:#fafafa;border-bottom:1px solid #f0f0f0;">
       <p style="margin:0 0 16px;color:#0B2545;font-size:16px;font-weight:bold;">Lo que encontramos en tu negocio:</p>
       <ul style="margin:0;padding-left:20px;">${diagnosisHtml}</ul>
     </div>
-    <!-- Paquete recomendado -->
     <div style="padding:32px 40px;border-bottom:1px solid #f0f0f0;">
       <p style="margin:0 0 8px;color:#C5A880;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-family:Arial,sans-serif;">Solución recomendada</p>
       <h3 style="margin:0 0 16px;color:#0B2545;font-size:20px;font-weight:bold;">${data.package}</h3>
-      <a href="https://kendrick.com/quiz" style="display:inline-block;background:#C5A880;color:#0B2545;padding:14px 28px;border-radius:4px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif;font-size:14px;">Agendar sesión gratuita →</a>
+      <a href="https://wa.me/34658598442?text=Hola%2C%20hice%20el%20diagn%C3%B3stico%20y%20me%20gustar%C3%ADa%20hablar%20sobre%20el%20${encodeURIComponent(data.package)}" style="display:inline-block;background:#25D366;color:#fff;padding:14px 28px;border-radius:4px;text-decoration:none;font-weight:bold;font-family:Arial,sans-serif;font-size:14px;">Hablar por WhatsApp →</a>
     </div>
-    <!-- Footer -->
     <div style="padding:24px 40px;background:#f9fafb;">
-      <p style="margin:0;color:#9ca3af;font-size:12px;font-family:Arial,sans-serif;">Kendrick Consultoria Digital · veridiana@kendrick.com</p>
+      <p style="margin:0;color:#9ca3af;font-size:12px;font-family:Arial,sans-serif;">Kendrick Consultoria Digital · veridiana@kendrick.com · +34 658 598 442</p>
       <p style="margin:8px 0 0;color:#9ca3af;font-size:11px;font-family:Arial,sans-serif;">Puedes darte de baja en cualquier momento respondiendo a este email con "Baja".</p>
     </div>
   </div>
@@ -175,10 +179,17 @@ async function sendLeadEmail(env: Bindings, data: z.infer<typeof leadSchema>) {
   await sendEmail(env, data.email, `Tu diagnóstico digital: ${label}`, html);
 }
 
-async function notifyOwner(env: Bindings, data: z.infer<typeof leadSchema>) {
+async function notifyOwnerByWhatsApp(env: Bindings, data: z.infer<typeof leadSchema>) {
   const label = levelLabels[data.level] ?? data.level;
-  const html = `
-<div style="font-family:Arial,sans-serif;max-width:500px;padding:24px;background:#0B2545;border-radius:4px;">
+  const msg = `🎯 Nuevo lead del quiz!\n👤 ${data.name}\n📧 ${data.email}\n📊 ${label} (${data.score}/15)\n📦 ${data.package}`;
+  if (!env.CALLMEBOT_APIKEY) return;
+  const encoded = encodeURIComponent(msg);
+  await fetch(`https://api.callmebot.com/whatsapp.php?phone=34658598442&text=${encoded}&apikey=${env.CALLMEBOT_APIKEY}`).catch(console.error);
+}
+
+async function notifyOwnerByEmail(env: Bindings, data: z.infer<typeof leadSchema>) {
+  const label = levelLabels[data.level] ?? data.level;
+  const html = `<div style="font-family:Arial,sans-serif;max-width:500px;padding:24px;background:#0B2545;border-radius:4px;">
   <h2 style="color:#C5A880;margin:0 0 16px;">🎯 Nuevo lead — ${label}</h2>
   <p style="color:#fff;margin:4px 0;"><strong>Nombre:</strong> ${data.name}</p>
   <p style="color:#fff;margin:4px 0;"><strong>Email:</strong> ${data.email}</p>
@@ -190,8 +201,12 @@ async function notifyOwner(env: Bindings, data: z.infer<typeof leadSchema>) {
 }
 
 async function sendContactNotification(env: Bindings, data: z.infer<typeof contactSchema>) {
-  const html = `
-<div style="font-family:Arial,sans-serif;max-width:500px;padding:24px;background:#0B2545;border-radius:4px;">
+  const waMsg = `📩 Nuevo contacto web\n👤 ${data.name}\n📧 ${data.email}${data.company ? `\n🏢 ${data.company}` : ""}\n💬 ${data.message.slice(0, 200)}${data.message.length > 200 ? "..." : ""}`;
+  if (env.CALLMEBOT_APIKEY) {
+    const encoded = encodeURIComponent(waMsg);
+    await fetch(`https://api.callmebot.com/whatsapp.php?phone=34658598442&text=${encoded}&apikey=${env.CALLMEBOT_APIKEY}`).catch(console.error);
+  }
+  const html = `<div style="font-family:Arial,sans-serif;max-width:500px;padding:24px;background:#0B2545;border-radius:4px;">
   <h2 style="color:#C5A880;margin:0 0 16px;">📩 Nuevo mensaje de contacto</h2>
   <p style="color:#fff;margin:4px 0;"><strong>Nombre:</strong> ${data.name}</p>
   <p style="color:#fff;margin:4px 0;"><strong>Email:</strong> ${data.email}</p>

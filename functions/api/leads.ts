@@ -1,5 +1,8 @@
 interface Env {
-  DB: D1Database;
+  GOOGLE_SHEETS_API_KEY: string;
+  GOOGLE_SHEETS_SPREADSHEET_ID: string;
+  GOOGLE_SHEETS_LEADS_RANGE: string; // e.g., "Leads!A:F"
+  GOOGLE_SHEETS_CONTACTS_RANGE: string; // e.g., "Contacts!A:F"
   RESEND_API_KEY?: string;
   OWNER_EMAIL?: string;
   CALLMEBOT_APIKEY?: string;
@@ -14,6 +17,14 @@ interface LeadData {
   consent: boolean;
 }
 
+interface ContactData {
+  name: string;
+  email: string;
+  company?: string;
+  message: string;
+  consent: boolean;
+}
+
 const WA_NUMBER = "34658598442";
 
 const levelLabels: Record<string, string> = {
@@ -22,23 +33,22 @@ const levelLabels: Record<string, string> = {
   optimizacion_escala: "Optimización y Escala",
 };
 
-const levelDiagnosis: Record<string, string[]> = {
-  invisible_digital: [
-    "Tu negocio no aparece cuando alguien te busca en Google",
-    "Dependes solo del boca a boca para conseguir clientes",
-    "No tienes forma de captar clientes mientras duermes",
-  ],
-  estructura_desconectada: [
-    "Tienes presencia online pero tus herramientas no trabajan juntas",
-    "Estás perdiendo entre el 60-70% de los clientes interesados por falta de seguimiento",
-    "No sabes qué canal te trae más clientes ni cuánto te cuesta cada uno",
-  ],
-  optimizacion_escala: [
-    "Tu base digital está lista, pero sin publicidad pagada tu crecimiento es lento",
-    "Sin un sistema de medición claro, invertir en publicidad es arriesgado",
-    "Tienes la oportunidad de multiplicar tus ingresos con la estrategia correcta",
-  ],
-};
+async function appendToSheet(env: Env, range: string, values: (string | number)[][]) {
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/${env.GOOGLE_SHEETS_SPREADSHEET_ID}/values/${encodeURIComponent(range)}:append?valueInputOption=USER_ENTERED&key=${env.GOOGLE_SHEETS_API_KEY}`;
+  
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ values }),
+  });
+  
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Google Sheets API error: ${error}`);
+  }
+  
+  return response.json();
+}
 
 async function sendWhatsApp(env: Env, message: string) {
   if (!env.CALLMEBOT_APIKEY) return;
@@ -129,13 +139,31 @@ async function notifyOwnerByEmail(env: Env, data: LeadData) {
   await sendEmail(env, ownerEmail, `Nuevo lead: ${data.name} — ${label}`, html);
 }
 
-export const onRequestPost = async ({ request, env }: { request: Request; env: Env; params: unknown }) => {
-  const corsHeaders = {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
+const levelDiagnosis: Record<string, string[]> = {
+  invisible_digital: [
+    "Tu negocio no aparece cuando alguien te busca en Google",
+    "Dependes solo del boca a boca para conseguir clientes",
+    "No tienes forma de captar clientes mientras duermes",
+  ],
+  estructura_desconectada: [
+    "Tienes presencia online pero tus herramientas no trabajan juntas",
+    "Estás perdiendo entre el 60-70% de los clientes interesados por falta de seguimiento",
+    "No sabes qué canal te trae más clientes ni cuánto te cuesta cada uno",
+  ],
+  optimizacion_escala: [
+    "Tu base digital está lista, pero sin publicidad pagada tu crecimiento es lento",
+    "Sin un sistema de medición claro, invertir en publicidad es arriesgado",
+    "Tienes la oportunidad de multiplicar tus ingresos con la estrategia correcta",
+  ],
+};
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+export const onRequestPost = async ({ request, env }: { request: Request; env: Env; params: unknown }) => {
   try {
     const data = await request.json() as LeadData;
 
@@ -153,12 +181,18 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     }
 
     const packageName = data.package ?? levelLabels[data.level] ?? data.level;
+    const timestamp = new Date().toISOString();
 
-    await env.DB.prepare(
-      `INSERT INTO leads (name, email, score, level, package, consent) VALUES (?, ?, ?, ?, ?, ?)`
-    )
-      .bind(data.name, data.email, data.score ?? 0, data.level, packageName, data.consent ? 1 : 0)
-      .run();
+    // Guardar en Google Sheets
+    await appendToSheet(env, env.GOOGLE_SHEETS_LEADS_RANGE, [[
+      timestamp,
+      data.name,
+      data.email,
+      data.score ?? 0,
+      data.level,
+      packageName,
+      data.consent ? "Sí" : "No",
+    ]]);
 
     // Notificaciones no bloqueantes
     notifyOwnerByWhatsApp(env, { ...data, package: packageName }).catch(console.error);
@@ -181,9 +215,5 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
 export const onRequestOptions = async () =>
   new Response(null, {
     status: 204,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
+    headers: corsHeaders,
   });

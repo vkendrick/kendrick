@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/wrangler.jsonc",
+  "name": "kendrick-consultoria",
+  "compatibility_date": "2026-09-27",
+  "pages_build_output_dir": "./dist",
+  "assets": {
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "vars": {
+    "ENVIRONMENT": "production",
+    "GOOGLE_SHEETS_API_KEY": "",
+    "GOOGLE_SHEETS_SPREADSHEET_ID": "",
+    "GOOGLE_SHEETS_LEADS_RANGE": "Leads!A:G",
+    "GOOGLE_SHEETS_CONTACTS_RANGE": "Contacts!A:F",
+    "RESEND_API_KEY": "",
+    "OWNER_EMAIL": "veridiana@kendrick.com",
+    "CALLMEBOT_APIKEY": ""
+  }
+}
