@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Star } from "lucide-react";
-import PortfolioCarousel from "../components/PortfolioCarousel";
+import { toast } from "sonner";
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 
-// ─── DATOS ────────────────────────────────────────────────────────────────────
+// ─── DATOS ────────────────────────────────────────────────────────────
 
 const STATS = [
   { value: "+120", label: "Negocios ayudados" },
@@ -11,6 +12,7 @@ const STATS = [
   { value: "98%", label: "Satisfacción" },
 ];
 
+// Paquetes diseñados como escalera progresiva — cada nivel incluye el anterior
 const PACKAGES = [
   {
     step: "01",
@@ -71,6 +73,73 @@ const PACKAGES = [
   },
 ];
 
+// Portafolio visual — resultados concretos por sector
+const PORTFOLIO = [
+  {
+    initials: "AT",
+    color: "#0B2545",
+    business: "FisioVida Madrid",
+    sector: "Fisioterapia",
+    package: "Nivel 01",
+    metric: "+6 pacientes/mes",
+    detail: "De 0 a Top 3 en Google en 4 semanas",
+  },
+  {
+    initials: "MS",
+    color: "#7c3aed",
+    business: "Barbería Don Mateo",
+    sector: "Barbería · Sevilla",
+    package: "Nivel 01",
+    metric: "23 reservas online/mes",
+    detail: "12 años de negocio, cero presencia digital",
+  },
+  {
+    initials: "LF",
+    color: "#0e7490",
+    business: "LinguaFlow",
+    sector: "Academia de idiomas",
+    package: "Nivel 02",
+    metric: "+€1.200/mes",
+    detail: "Sistema de captación automatizado",
+  },
+  {
+    initials: "RA",
+    color: "#b45309",
+    business: "Reyes Arquitectura",
+    sector: "Arquitectura · Valencia",
+    package: "Nivel 02",
+    metric: "3× más presupuestos",
+    detail: "Embudo de leads desde LinkedIn y web",
+  },
+  {
+    initials: "DL",
+    color: "#be185d",
+    business: "Pastelería Dulce Luna",
+    sector: "Pastelería artesanal",
+    package: "Nivel 01",
+    metric: "+40% ventas online",
+    detail: "Instagram + Google Maps + pedidos web",
+  },
+  {
+    initials: "YA",
+    color: "#065f46",
+    business: "Yoga Alma Serena",
+    sector: "Bienestar · Barcelona",
+    package: "Nivel 03",
+    metric: "Clases llenas en 6 sem.",
+    detail: "Publicidad Meta + automatización de reservas",
+  },
+  {
+    initials: "AF",
+    color: "#374151",
+    business: "Taller AutoFix",
+    sector: "Taller mecánico · Zaragoza",
+    package: "Nivel 01",
+    metric: "5-6 clientes/mes",
+    detail: "Google local + reseñas + mejor presencia digital",
+  },
+];
+
 const PROCESS = [
   { n: "01", title: "Diagnóstico", desc: "Revisamos tu situación digital en 60 min." },
   { n: "02", title: "Plan", desc: "Propuesta clara con entregables y plazos exactos." },
@@ -101,9 +170,7 @@ const FAQS = [
   },
 ];
 
-// ─── COMPONENTES ──────────────────────────────────────────────────────────────
-
-import { useState } from "react";
+// ─── COMPONENTES ────────────────────────────────────────────────────────
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
@@ -125,163 +192,84 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-// ─── PÁGINA ───────────────────────────────────────────────────────────────────
+// ─── PÁGINA ──────────────────────────────────────────────────────────
 
 export default function Home() {
-  // JSON-LD Structured Data for LocalBusiness
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Kendrick Consultoria Digital",
-    "image": "https://kendrick.com/images/hero-consultant.jpg",
-    "@id": "https://kendrick.com",
-    "url": "https://kendrick.com",
-    "telephone": "+34-658-598-442",
-    "email": "veridiana@kendrick.com",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "ES",
-      "addressRegion": "Madrid"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": 40.4168,
-      "longitude": -3.7038
-    },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-      "opens": "09:00",
-      "closes": "18:00"
-    },
-    "priceRange": "€€",
-    "description": "Consultoría digital para pequeños negocios. Ayudamos a conseguir más clientes usando Google Maps, Web y CRM. Sistema completo en 4 semanas.",
-    "areaServed": "ES",
-    "availableChannel": {
-      "@type": "ServiceChannel",
-      "serviceUrl": "https://kendrick.com/quiz",
-      "servicePhone": "+34-658-598-442"
-    },
-    "hasOfferCatalog": {
-      "@type": "OfferCatalog",
-      "name": "Servicios de Consultoría Digital",
-      "itemListElement": [
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Arranque Digital Mínimo",
-            "description": "Web de una página, Google Maps optimizado, WhatsApp directo, informe digital, guía mantenimiento 15 min/semana"
-          },
-          "price": "450",
-          "priceCurrency": "EUR",
-          "availability": "https://schema.org/InStock"
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Estructura de Ventas Integrada",
-            "description": "Todo lo del Nivel 01 + Auditoría completa, CRM configurado, 3 emails automáticos, píxeles, panel Notion, formación 90 min"
-          },
-          "price": "850",
-          "priceCurrency": "EUR",
-          "availability": "https://schema.org/InStock"
-        },
-        {
-          "@type": "Offer",
-          "itemOffered": {
-            "@type": "Service",
-            "name": "Mentoría de Crecimiento Avanzado",
-            "description": "Todo lo del Nivel 02 + Publicidad Meta/Google, panel tiempo real, revisiones quincenales, audiencias similares, manual crecimiento"
-          },
-          "price": "1500",
-          "priceCurrency": "EUR",
-          "availability": "https://schema.org/InStock"
-        }
-      ]
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "47",
-      "bestRating": "5",
-      "worstRating": "1"
-    },
-    "review": [
-      {
-        "@type": "Review",
-        "author": { "@type": "Person", "name": "Ana Torres" },
-        "datePublished": "2024-01-15",
-        "reviewBody": "En tres semanas pasé de que nadie me encontrara a tener la agenda llena los martes y jueves.",
-        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" }
+  const [form, setForm] = useState({ name: "", email: "", company: "", message: "", consent: false });
+  const [sending, setSending] = useState(false);
+
+  const handleContact = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.consent) { toast.error("Debes aceptar la política de privacidad"); return; }
+    setSending(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      if (res.ok) {
+        toast.success("¡Mensaje enviado! Te respondemos en menos de 24 horas.");
+        const waText = encodeURIComponent(`Hola, soy ${form.name}. ${form.message}`);
+        window.open(`https://wa.me/34658598442?text=${waText}`, "_blank");
+        setForm({ name: "", email: "", company: "", message: "", consent: false });
+      } else {
+        toast.error("Algo salió mal. Escríbenos a veridiana@kendrick.com");
       }
-    ]
+    } catch {
+      toast.error("Error de conexión. Inténtalo de nuevo.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-      <main>
-        {/* ── HERO ── */}
+    <main>
+
+      {/* ── HERO ── */}
       <section className="relative min-h-[100svh] flex items-center bg-[#0B2545] overflow-hidden">
         <div className="absolute inset-0">
+          <img
+            src="/images/hero-consultant.jpg"
+            alt=""
+            className="w-full h-full object-cover opacity-15"
+          />
           <div className="absolute inset-0 bg-gradient-to-br from-[#0B2545] via-[#0B2545]/95 to-[#0B2545]/70" />
         </div>
 
         <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-12 w-full">
-          <div className="max-w-3xl">
-            <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-6">
-              Consultoría Digital · Negocios Locales
+          <div className="max-w-2xl">
+            <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-8">
+              Consultoría Digital · Para pequeños negocios
             </span>
-            <h1 className="text-white text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-6">
-              Consigo <span className="text-[#C5A880] italic">5-10 clientes nuevos/mes</span> para negocios invisibles en Google
+            <h1 className="text-white text-5xl md:text-6xl font-bold leading-[1.1] mb-6">
+              Más clientes.{" "}
+              <span className="text-[#C5A880] italic">Sin complicaciones.</span>
             </h1>
-            <p className="text-white/60 text-lg md:text-xl mb-8 max-w-xl leading-relaxed">
-              Sistema GMB + Web + CRM en 4 semanas. Sin tecnicismos. Sin depender del boca a boca.
+            <p className="text-white/60 text-lg mb-10 max-w-md leading-relaxed">
+              Construimos tu presencia digital y el sistema que convierte visitas en clientes.
             </p>
-
-            {/* Social Proof Bar */}
-            <div className="flex flex-wrap items-center gap-6 mb-8 text-white/70 text-sm font-sans">
-              <div className="flex items-center gap-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
-                ))}
-              </div>
-              <span className="font-semibold text-white">4.9/5</span>
-              <span className="px-3 border-l border-white/20">47 reseñas Google</span>
-              <span className="px-3 border-l border-white/20">+€50k facturación extra generada</span>
-              <span className="px-3 border-l border-white/20">7 casos documentados</span>
-            </div>
-
-            {/* Dual CTA */}
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/quiz"
-                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a] active:scale-[0.97] w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a]"
               >
                 Diagnóstico gratuito — 3 min
                 <ArrowRight size={15} />
               </Link>
               <a
-                href="#portfolio"
-                className="inline-flex items-center justify-center gap-2 border border-white/20 text-white/80 font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-white/5 w-full sm:w-auto"
+                href="#servicios"
+                className="inline-flex items-center justify-center gap-2 border border-white/20 text-white/80 font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-white/5"
               >
-                Ver casos reales
+                Ver servicios
               </a>
             </div>
-
-            <p className="text-white/30 text-xs mt-4 font-sans">Sin tarjeta · Sin compromiso · Respuesta en 24h</p>
           </div>
 
-          {/* Stats strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-10">
             {STATS.map((s) => (
               <div key={s.label} className="border border-white/10 rounded-lg p-5 text-center">
-                <div className="text-[#C5A880] text-2xl md:text-3xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <div className="text-[#C5A880] text-2xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
                   {s.value}
                 </div>
                 <div className="text-white/40 text-xs font-sans">{s.label}</div>
@@ -299,7 +287,7 @@ export default function Home() {
               ¿Te suena familiar?
             </span>
             <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3">
-              El problema de la mayoría de negocios locales
+              El problema de la mayoría de negocios
             </h2>
           </div>
           <div className="grid md:grid-cols-3 gap-5">
@@ -318,9 +306,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PORTFOLIO CAROUSEL — Real screenshots ── */}
-      <PortfolioCarousel />
-
       {/* ── SERVICIOS — escalera progresiva ── */}
       <section id="servicios" className="py-24 bg-white">
         <div className="max-w-6xl mx-auto px-6">
@@ -336,7 +321,6 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Flecha visual de progresión */}
           <div className="flex items-center justify-center gap-2 my-8 text-xs text-gray-300 font-sans">
             <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Sin presencia</span>
             <ArrowRight size={12} />
@@ -376,7 +360,7 @@ export default function Home() {
                       <li key={item} className="flex items-start gap-2">
                         <CheckCircle2
                           size={13}
-                          className={`mt-0.5 shrink-0 ${pkg.highlight ? "text-[#C5A880]" : "text-[#C5A880]"}`}
+                          className="mt-0.5 shrink-0 text-[#C5A880]"
                         />
                         <span className={`text-sm ${pkg.highlight ? "text-white/80" : "text-gray-600"}`}>
                           {item}
@@ -425,6 +409,110 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── PORTAFOLIO VISUAL — mockups de sites realizados ── */}
+      <section className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+              Nuestro trabajo
+            </span>
+            <h2 className="text-[#0B2545] text-3xl font-bold mt-2">
+              Sitios que construimos
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              { name: "FisioVida Madrid", type: "Clínica · Nivel 01", bg: "#0B2545", accent: "#C5A880" },
+              { name: "Barbería Don Mateo", type: "Barbería · Nivel 01", bg: "#1a1a2e", accent: "#7c3aed" },
+              { name: "LinguaFlow", type: "Academia · Nivel 02", bg: "#0e4a5c", accent: "#0ea5e9" },
+              { name: "Reyes Arquitectura", type: "Arquitectura · Nivel 02", bg: "#2d1b00", accent: "#b45309" },
+              { name: "Pastelería Dulce Luna", type: "Pastelería · Nivel 01", bg: "#3b0a2a", accent: "#ec4899" },
+              { name: "Yoga Alma Serena", type: "Bienestar · Nivel 03", bg: "#022c22", accent: "#10b981" },
+              { name: "Taller AutoFix", type: "Taller · Nivel 01", bg: "#111827", accent: "#9ca3af" },
+            ].map((site) => (
+              <div
+                key={site.name}
+                className="rounded-xl overflow-hidden border border-gray-100 relative group"
+                style={{ backgroundColor: site.bg, aspectRatio: "16/9" }}
+              >
+                <div className="absolute top-0 left-0 right-0 h-5 flex items-center gap-1 px-2" style={{ backgroundColor: "rgba(0,0,0,0.35)" }}>
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
+                  <div className="flex-1 mx-2 h-2.5 rounded-sm" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
+                </div>
+                <div className="absolute inset-0 top-5 p-3 flex flex-col gap-1.5">
+                  <div className="h-2.5 w-2/3 rounded" style={{ backgroundColor: site.accent, opacity: 0.9 }} />
+                  <div className="h-1.5 w-full rounded" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
+                  <div className="h-1.5 w-4/5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.05)" }} />
+                  <div className="h-6 w-1/3 rounded mt-1" style={{ backgroundColor: site.accent, opacity: 0.5 }} />
+                </div>
+                <div className="absolute inset-0 top-5 flex flex-col justify-end p-3 bg-gradient-to-t from-black/75 to-transparent">
+                  <p className="text-white font-bold text-xs leading-tight">{site.name}</p>
+                  <p className="text-white/50 text-[10px] font-sans">{site.type}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-gray-400 text-xs mt-5 font-sans">
+            Todos los sitios son funcionales y entregados con formación incluida.
+          </p>
+        </div>
+      </section>
+
+      {/* ── PORTAFOLIO — grid visual de resultados ── */}
+      <section className="py-24 bg-[#FAF8F5]">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+            <div>
+              <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+                Resultados reales
+              </span>
+              <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-2">
+                Negocios que ya crecen
+              </h2>
+            </div>
+            <Link
+              to="/casos"
+              className="inline-flex items-center gap-2 text-[#0B2545] font-semibold text-sm border-b border-[#0B2545] pb-0.5 hover:text-[#C5A880] hover:border-[#C5A880] transition-colors"
+            >
+              Ver los 7 casos completos <ArrowRight size={13} />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {PORTFOLIO.map((p) => (
+              <div
+                key={p.business}
+                className="bg-white rounded-xl p-5 border border-gray-100 hover:shadow-md transition-shadow duration-200 group"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div
+                    className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                    style={{ backgroundColor: p.color }}
+                  >
+                    {p.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-[#0B2545] text-sm truncate">{p.business}</p>
+                    <p className="text-gray-400 text-xs">{p.sector}</p>
+                  </div>
+                </div>
+                <div className="bg-[#FAF8F5] rounded-lg p-3 mb-3">
+                  <p className="text-[#0B2545] font-bold text-lg leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    {p.metric}
+                  </p>
+                  <p className="text-gray-400 text-xs mt-0.5">{p.detail}</p>
+                </div>
+                <span className="text-[10px] text-[#C5A880] font-bold tracking-widest uppercase font-sans">
+                  {p.package}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── PROCESO — 4 pasos compactos ── */}
       <section id="como-funciona" className="py-20 bg-white">
         <div className="max-w-5xl mx-auto px-6">
@@ -458,7 +546,9 @@ export default function Home() {
         <div className="max-w-3xl mx-auto px-6 text-center">
           <div className="flex justify-center gap-0.5 mb-6">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} className="w-4 h-4 text-[#C5A880] fill-[#C5A880]" />
+              <svg key={i} className="w-4 h-4 text-[#C5A880] fill-[#C5A880]" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.799-2.033a1 1 0 00-1.175 0l-2.799 2.033c-.785.57-1.839-.197-1.54-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.079 8.71c-.783-.57-.381-1.81.588-1.81h3.462a1 1 0 00.95-.69L7.148 2.927z" />
+              </svg>
             ))}
           </div>
           <blockquote className="text-white text-xl md:text-2xl font-medium leading-relaxed mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -512,42 +602,114 @@ export default function Home() {
 
       {/* ── CONTACTO ── */}
       <section id="contacto" className="py-24 bg-[#FAF8F5]">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
-            Contacto
-          </span>
-          <h2 className="text-[#0B2545] text-3xl font-bold mt-3 mb-4">
-            ¿Tienes alguna pregunta?
-          </h2>
-          <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-lg mx-auto">
-            Escríbenos por WhatsApp o email. Sin presiones, sin vendedores. Solo una conversación honesta sobre tu negocio.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://wa.me/34658598442?text=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 bg-[#25D366] text-white font-bold px-8 py-4 rounded-xl text-sm tracking-wide hover:bg-[#1ebe5d] transition-all active:scale-[0.97]"
-            >
-              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              Hablar por WhatsApp
-            </a>
-            <a
-              href="mailto:veridiana@kendrick.com?subject=Consulta%20servicios&body=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
-              className="inline-flex items-center justify-center gap-3 bg-[#0B2545] text-white font-bold px-8 py-4 rounded-xl text-sm tracking-wide hover:bg-[#1a3a6b] transition-all active:scale-[0.97]"
-            >
-              <svg viewBox="0 0 24 24" className="w-5 h-5 fill-current" xmlns="http://www.w3.org/2000/svg">
-                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-              </svg>
-              Enviar email
-            </a>
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16 items-start">
+            <div>
+              <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+                Contacto
+              </span>
+              <h2 className="text-[#0B2545] text-3xl font-bold mt-3 mb-4">
+                ¿Tienes alguna pregunta?
+              </h2>
+              <p className="text-gray-500 text-sm leading-relaxed mb-8">
+                Escríbenos. Sin presiones, sin vendedores. Solo una conversación honesta sobre tu negocio.
+              </p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[#C5A880] text-xs">✉</div>
+                  <span className="text-[#0B2545] text-sm font-semibold">veridiana@kendrick.com</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[#C5A880] text-xs">⏱</div>
+                  <span className="text-[#0B2545] text-sm font-semibold">Respuesta en menos de 24 horas</span>
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={handleContact} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Nombre *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
+                    placeholder="Tu nombre"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Email *</label>
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
+                    placeholder="tu@email.com"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Negocio</label>
+                <input
+                  type="text"
+                  value={form.company}
+                  onChange={(e) => setForm({ ...form, company: e.target.value })}
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
+                  placeholder="Ej: Clínica Dental García"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">¿En qué podemos ayudarte? *</label>
+                <textarea
+                  required
+                  rows={4}
+                  value={form.message}
+                  onChange={(e) => setForm({ ...form, message: e.target.value })}
+                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors resize-none"
+                  placeholder="Cuéntanos brevemente tu situación..."
+                />
+              </div>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.consent}
+                  onChange={(e) => setForm({ ...form, consent: e.target.checked })}
+                  className="mt-0.5 shrink-0 accent-[#0B2545]"
+                />
+                <span className="text-xs text-gray-400 leading-relaxed">
+                  He leído y acepto la{" "}
+                  <Link to="/privacidad" className="text-[#0B2545] underline hover:text-[#C5A880]">
+                    Política de Privacidad
+                  </Link>
+                  .
+                </span>
+              </label>
+              <button
+                type="submit"
+                disabled={sending}
+                className="w-full bg-[#0B2545] text-white font-bold py-3.5 rounded-lg text-sm hover:bg-[#1a3a6b] transition-colors disabled:opacity-60 active:scale-[0.97]"
+              >
+                {sending ? "Enviando..." : "Enviar mensaje →"}
+              </button>
+              <p className="text-center text-gray-400 text-xs font-sans">
+                O escríbenos directamente por{" "}
+                <a
+                  href="https://wa.me/34658598442?text=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20sus%20servicios."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[#25D366] font-semibold hover:underline"
+                >
+                  WhatsApp
+                </a>
+              </p>
+            </form>
           </div>
-          <p className="text-gray-400 text-xs mt-4 font-sans">Respuesta en menos de 24 horas</p>
         </div>
       </section>
+
     </main>
-    </>
   );
 }

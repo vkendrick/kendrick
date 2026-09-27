@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 
-// ─── DATOS ────────────────────────────────────────────────────────────────────
-
+// Casos y proyectos con datos alineados con los materiales entregados.
+// Las métricas solo se muestran cuando están documentadas como resultado;
+// en el resto se describen entregables y objetivos, no promesas.
 const CASES = [
   {
     id: 1,
@@ -14,53 +15,51 @@ const CASES = [
     sector: "Fisioterapia · Madrid",
     package: "Nivel 01",
     packageName: "Arranque Digital Mínimo",
-    price: "€520",
-    tagline: "8 años con la clínica, cero presencia en Google",
-    quote: "En tres semanas pasé de que nadie me encontrara a tener la agenda llena los martes y jueves.",
+    tagline: "Clínica de fisioterapia en Chamberí con presencia digital por construir",
+    quote: "Una presencia digital clara para que más pacientes puedan encontrar y contactar con la clínica.",
     metrics: [
-      { label: "Nuevos pacientes/mes", before: "0", after: "6-8" },
-      { label: "Reseñas Google", before: "0", after: "47 ⭐" },
-      { label: "Posición Google", before: "No aparecía", after: "Top 3" },
-      { label: "Facturación extra", before: "€0", after: "+€840/mes" },
+      { label: "Entrega principal", before: "Sin web propia", after: "Landing page" },
+      { label: "Contacto", before: "Canales dispersos", after: "Cita y WhatsApp" },
+      { label: "Visibilidad", before: "Por reforzar", after: "SEO local preparado" },
+      { label: "Contenido", before: "Sin estructura", after: "Servicios y confianza" },
     ],
     before: [
-      "No aparecía en Google ni Google Maps",
-      "Sin página web — solo un PDF por WhatsApp",
-      "100% de clientes por boca a boca",
+      "Presencia digital poco estructurada",
+      "Sin una landing page centrada en pedir cita",
+      "Dificultad para explicar servicios y especialidades",
     ],
     after: [
-      "Top 3 en 'fisioterapeuta Madrid Chamberí'",
-      "Web con reserva online — 12 citas el primer mes",
-      "47 reseñas con media de 4.9 ⭐",
+      "Landing page de fisioterapia para Chamberí",
+      "Estructura clara de tratamientos y credenciales",
+      "Formulario de contacto y acceso directo a WhatsApp",
     ],
   },
   {
     id: 2,
-    initials: "MS",
+    initials: "MJ",
     color: "#7c3aed",
     business: "Barbería Don Mateo",
-    client: "Mateo Sánchez",
-    sector: "Barbería · Sevilla",
+    client: "Mateo Jiménez",
+    sector: "Barbería · Triana, Sevilla",
     package: "Nivel 01",
     packageName: "Arranque Digital Mínimo",
-    price: "€520",
-    tagline: "12 años de reputación, invisible en internet",
-    quote: "Ahora cuando alguien busca barbería en Triana, me encuentran a mí. Eso vale más que cualquier anuncio.",
+    tagline: "12 años de reputación en Triana, sin presencia digital consolidada",
+    quote: "Una barbería tradicional debe poder mostrar su historia, sus servicios y cómo reservar sin fricción.",
     metrics: [
-      { label: "Reservas online/mes", before: "0", after: "23" },
-      { label: "Reseñas Google", before: "0", after: "38 ⭐" },
-      { label: "Clientes nuevos/mes", before: "0", after: "8-10" },
-      { label: "Facturación extra", before: "€0", after: "+€600/mes" },
+      { label: "Entrega principal", before: "Sin web", after: "Landing page" },
+      { label: "Reservas", before: "Por llamada", after: "Formulario preparado" },
+      { label: "Visibilidad local", before: "No aparecía", after: "SEO local preparado" },
+      { label: "Contenido", before: "Instagram irregular", after: "Servicios y galería" },
     ],
     before: [
-      "12 años de negocio sin presencia digital",
-      "Instagram con 2.100 seguidores pero sin web",
-      "Sin sistema de reservas — todo por llamada",
+      "Sin página web propia",
+      "Sin sistema de reserva online",
+      "Presencia local difícil de encontrar en Google",
     ],
     after: [
-      "Ficha Google Business con 38 reseñas (4.8 ⭐)",
-      "23 reservas online el primer mes",
-      "Clientes de otros barrios que llegan por Google",
+      "Landing page con historia, servicios y precios",
+      "Botón de reserva visible y estructura para WhatsApp",
+      "Contenido preparado para búsquedas de Triana y Sevilla",
     ],
   },
   {
@@ -72,24 +71,23 @@ const CASES = [
     sector: "Academia de idiomas · Online",
     package: "Nivel 02",
     packageName: "Estructura de Ventas Integrada",
-    price: "€950",
-    tagline: "Clases online sin sistema de captación",
-    quote: "Antes dependía de Instagram para todo. Ahora tengo un embudo que funciona solo y me trae alumnos mientras duermo.",
+    tagline: "Clases online con captación y seguimiento todavía manuales",
+    quote: "El objetivo fue convertir el interés que llegaba desde redes en un proceso de seguimiento más ordenado.",
     metrics: [
-      { label: "Alumnos nuevos/mes", before: "2-3", after: "9-11" },
-      { label: "Tasa de conversión", before: "8%", after: "31%" },
-      { label: "Coste por alumno", before: "€0 (pero tiempo)", after: "€18" },
-      { label: "Facturación extra", before: "€0", after: "+€1.200/mes" },
+      { label: "Captación", before: "Manual", after: "Embudo definido" },
+      { label: "Seguimiento", before: "Sin sistema", after: "CRM organizado" },
+      { label: "Automatización", before: "No disponible", after: "Secuencia de emails" },
+      { label: "Control", before: "Sin panel", after: "Panel Notion" },
     ],
     before: [
-      "Captación 100% manual por Instagram",
-      "Sin seguimiento de leads — respondía cuando podía",
-      "Sin datos de qué funcionaba y qué no",
+      "Captación dependiente de Instagram",
+      "Sin seguimiento sistemático de leads",
+      "Sin una vista centralizada de métricas",
     ],
     after: [
-      "Embudo automatizado: web → email → llamada",
-      "CRM con seguimiento de cada alumno potencial",
-      "Panel con métricas en tiempo real",
+      "Embudo definido: web → email → llamada",
+      "Secuencia de emails de seguimiento",
+      "Panel Notion para organizar leads y métricas",
     ],
   },
   {
@@ -101,111 +99,107 @@ const CASES = [
     sector: "Arquitectura · Valencia",
     package: "Nivel 02",
     packageName: "Estructura de Ventas Integrada",
-    price: "€1.100",
-    tagline: "Portfolio increíble, sin sistema para conseguir proyectos",
-    quote: "Tenía un portfolio espectacular que nadie veía. Ahora recibo 3 veces más solicitudes de presupuesto al mes.",
+    tagline: "Portfolio sólido, sin un sistema constante para captar proyectos",
+    quote: "El trabajo se centró en convertir un buen portfolio en una base más clara para captar y seguir oportunidades.",
     metrics: [
-      { label: "Solicitudes/mes", before: "2-3", after: "7-9" },
-      { label: "Proyectos cerrados", before: "1-2", after: "3-4" },
-      { label: "Ticket medio", before: "€8.000", after: "€12.000" },
-      { label: "Facturación extra", before: "€0", after: "+€24.000/año" },
+      { label: "Estrategia", before: "Sin plan integrado", after: "Plan de 8 semanas" },
+      { label: "Captación", before: "Por referidos", after: "Canales definidos" },
+      { label: "Publicidad", before: "Sin propuesta", after: "Propuesta Meta Ads" },
+      { label: "Seguimiento", before: "Disperso", after: "Proceso definido" },
     ],
     before: [
-      "Web bonita pero sin SEO ni captación",
-      "Sin presencia en LinkedIn profesional",
-      "Proyectos solo por referidos del sector",
+      "Portfolio sin sistema de captación asociado",
+      "Dependencia de referidos del sector",
+      "Sin propuesta estructurada para Meta Ads",
     ],
     after: [
-      "Posicionado en búsquedas de arquitectos en Valencia",
-      "LinkedIn optimizado con 3× más conexiones relevantes",
-      "Sistema de seguimiento de presupuestos enviados",
+      "Plan estratégico de captación y posicionamiento",
+      "Propuesta de campañas para Meta Ads",
+      "Recorrido definido para solicitudes de presupuesto",
     ],
   },
   {
     id: 5,
-    initials: "DL",
+    initials: "CE",
     color: "#be185d",
     business: "Pastelería Dulce Luna",
-    client: "Elena Vega",
-    sector: "Pastelería artesanal · Bilbao",
+    client: "Carmen Etxebarria",
+    sector: "Pastelería artesanal · Indautxu, Bilbao",
     package: "Nivel 01",
     packageName: "Arranque Digital Mínimo",
-    price: "€480",
-    tagline: "Pasteles increíbles que nadie conocía",
-    quote: "Pensaba que Instagram era suficiente. En 4 semanas entendí que necesitaba Google para que me encontraran los que no me seguían.",
+    tagline: "Contenido visual atractivo, pero sin un camino claro hasta el pedido",
+    quote: "El trabajo convierte un escaparate visual muy potente en una experiencia más sencilla para pedir información o encargar una tarta.",
     metrics: [
-      { label: "Pedidos online/mes", before: "0", after: "18-22" },
-      { label: "Nuevos clientes", before: "Solo referidos", after: "+15/mes" },
-      { label: "Radio de clientes", before: "Barrio", after: "Toda la ciudad" },
-      { label: "Facturación extra", before: "€0", after: "+€1.400/mes" },
+      { label: "Presencia", before: "Solo Instagram", after: "Landing page" },
+      { label: "Pedidos", before: "Por DM", after: "Formulario" },
+      { label: "Visibilidad", before: "Sin Google Business", after: "Plan local" },
+      { label: "Gestión", before: "Manual", after: "WhatsApp preparado" },
     ],
     before: [
-      "Solo Instagram — sin web ni Google Maps",
-      "Pedidos solo por DM, sin sistema",
-      "Clientes solo del barrio inmediato",
+      "Sin página web ni ficha en Google Business Profile",
+      "Pedidos gestionados únicamente por mensajes directos",
+      "Sin información centralizada sobre proceso y plazos",
     ],
     after: [
-      "Web con catálogo y formulario de pedidos",
-      "Google Maps optimizado con 29 reseñas",
-      "Pedidos desde toda la ciudad y eventos corporativos",
+      "Landing page con galería, precios orientativos y FAQs",
+      "Formulario de pedido con fecha, tipo y presupuesto",
+      "Estructura preparada para WhatsApp Business y Google",
     ],
   },
   {
     id: 6,
-    initials: "YA",
+    initials: "VM",
     color: "#065f46",
     business: "Yoga Alma Serena",
-    client: "Lucía Fernández",
-    sector: "Bienestar · Barcelona",
-    package: "Nivel 03",
-    packageName: "Mentoría de Crecimiento Avanzado",
-    price: "€1.800",
-    tagline: "Estudio lleno de potencial, clases con plazas vacías",
-    quote: "Con la publicidad correcta, en 6 semanas tenía todas las clases llenas y lista de espera. No me lo esperaba tan rápido.",
+    client: "Valentina Morales",
+    sector: "Centro de yoga · Realejo, Granada",
+    package: "Nivel 01",
+    packageName: "Arranque Digital Mínimo",
+    tagline: "Comunidad activa en Instagram, sin web ni presencia local propia",
+    quote: "La propuesta crea un puente entre la comunidad del centro y una inscripción más sencilla para nuevos alumnos.",
     metrics: [
-      { label: "Ocupación clases", before: "45%", after: "97%" },
-      { label: "Nuevos alumnos/mes", before: "3-4", after: "18-22" },
-      { label: "Coste por alumno", before: "€0 (pero sin crecer)", after: "€12" },
-      { label: "Facturación extra", before: "€0", after: "+€2.800/mes" },
+      { label: "Presencia", before: "Solo Instagram", after: "Landing page" },
+      { label: "Inscripción", before: "Por DM", after: "Formulario" },
+      { label: "Visibilidad local", before: "Sin Google", after: "Ficha preparada" },
+      { label: "Conversión", before: "Sin CTA claro", after: "Clase de prueba" },
     ],
     before: [
-      "Clases con 45% de ocupación media",
-      "Sin publicidad — solo boca a boca y Instagram orgánico",
-      "Sin datos de qué tipo de alumno convierte mejor",
+      "Sin página web ni ficha en Google Business Profile",
+      "Horarios y precios repartidos entre publicaciones y mensajes",
+      "Sin proceso estructurado para nuevos alumnos",
     ],
     after: [
-      "Todas las clases llenas + lista de espera",
-      "Publicidad Meta con coste por alumno de €12",
-      "Audiencias similares a sus mejores alumnos",
+      "Landing page con horarios, bonos y tipos de yoga",
+      "Formulario de inscripción y llamada a clase de prueba",
+      "Plan de presencia local y conexión con WhatsApp",
     ],
   },
   {
     id: 7,
-    initials: "AF",
+    initials: "RS",
     color: "#374151",
     business: "Taller AutoFix",
-    client: "Roberto García",
+    client: "Roberto Sanz",
     sector: "Taller mecánico · Zaragoza",
     package: "Nivel 01",
     packageName: "Arranque Digital Mínimo",
-    price: "€500",
-    tagline: "30 años de oficio, sin una sola reseña en internet",
-    quote: "Mis clientes de siempre me recomendaban, pero los nuevos no me encontraban. Ahora Google me trae 5-6 clientes nuevos cada mes.",
+    tagline: "18 años de reputación, con una web antigua y poca visibilidad local",
+    quote: "El objetivo es hacer visible en Google la reputación que el taller ya tiene fuera de internet.",
     metrics: [
-      { label: "Clientes nuevos/mes", before: "0 desde internet", after: "5-6" },
-      { label: "Reseñas Google", before: "0", after: "34 ⭐" },
-      { label: "Posición Google", before: "No aparecía", after: "Top 5 local" },
-      { label: "Facturación extra", before: "€0", after: "+€1.100/mes" },
+      { label: "Web", before: "Antigua y lenta", after: "Landing page" },
+      { label: "Google", before: "Posición 11", after: "Plan local" },
+      { label: "Contacto", before: "Sin formulario", after: "Presupuesto online" },
+      { label: "Reseñas", before: "4 reseñas", after: "Plan de mejora" },
     ],
     before: [
-      "30 años de negocio sin presencia digital",
-      "Sin reseñas en ninguna plataforma",
-      "Clientes solo por recomendación directa",
+      "Web de 2015 no adaptada correctamente a móvil",
+      "Ficha de Google Business incompleta y posición local baja",
+      "Sin formulario específico para solicitar presupuesto",
     ],
     after: [
-      "Top 5 en 'taller mecánico Zaragoza'",
-      "34 reseñas con media de 4.8 ⭐",
-      "5-6 clientes nuevos al mes desde Google",
+      "Nueva landing page rápida y adaptada a móvil",
+      "Estructura de contacto con teléfono, WhatsApp y presupuesto",
+      "Plan de optimización de Google Business y reseñas",
     ],
   },
 ];
@@ -217,14 +211,11 @@ const PACKAGE_FILTERS = [
   { key: "Nivel 03", label: "Nivel 03" },
 ];
 
-// ─── CARD ─────────────────────────────────────────────────────────────────────
-
 function CaseCard({ c }: { c: typeof CASES[0] }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
-      {/* Header */}
       <div className="p-6 pb-4">
         <div className="flex items-start justify-between gap-3 mb-4">
           <div className="flex items-center gap-3">
@@ -245,7 +236,6 @@ function CaseCard({ c }: { c: typeof CASES[0] }) {
         </div>
         <p className="text-gray-400 text-xs italic mb-4">"{c.tagline}"</p>
 
-        {/* Metrics grid */}
         <div className="grid grid-cols-2 gap-2">
           {c.metrics.map((m) => (
             <div key={m.label} className="bg-[#FAF8F5] rounded-xl p-3">
@@ -260,7 +250,6 @@ function CaseCard({ c }: { c: typeof CASES[0] }) {
         </div>
       </div>
 
-      {/* Quote */}
       <div className="px-6 pb-4">
         <blockquote className="text-gray-500 text-xs leading-relaxed italic border-l-2 border-[#C5A880] pl-3">
           "{c.quote}"
@@ -268,7 +257,6 @@ function CaseCard({ c }: { c: typeof CASES[0] }) {
         </blockquote>
       </div>
 
-      {/* Expand toggle */}
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full px-6 py-3 text-xs text-gray-400 font-sans border-t border-gray-50 hover:bg-gray-50 transition-colors text-left flex items-center justify-between"
@@ -305,29 +293,24 @@ function CaseCard({ c }: { c: typeof CASES[0] }) {
   );
 }
 
-// ─── PÁGINA ───────────────────────────────────────────────────────────────────
-
 export default function Casos() {
   const [filter, setFilter] = useState("all");
-
   const filtered = filter === "all" ? CASES : CASES.filter((c) => c.package === filter);
 
   return (
     <main>
-      {/* Header */}
       <section className="bg-[#0B2545] pt-32 pb-16 px-6 text-center">
         <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
-          Resultados reales
+          Casos y proyectos
         </span>
         <h1 className="text-white text-4xl md:text-5xl font-bold mt-3 mb-4">
-          Negocios que ya crecen
+          Trabajo que se puede ver
         </h1>
         <p className="text-white/50 text-base max-w-md mx-auto">
-          7 casos reales con métricas concretas. Sin promesas vacías.
+          7 proyectos documentados: entregables claros, contexto y objetivos sin promesas vacías.
         </p>
       </section>
 
-      {/* Filtros */}
       <section className="bg-white border-b border-gray-100 sticky top-16 z-30">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-2 overflow-x-auto">
           {PACKAGE_FILTERS.map((f) => (
@@ -349,7 +332,6 @@ export default function Casos() {
         </div>
       </section>
 
-      {/* Grid de casos */}
       <section className="py-16 bg-[#FAF8F5]">
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -360,7 +342,6 @@ export default function Casos() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-20 bg-white text-center px-6">
         <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
           ¿El siguiente eres tú?
