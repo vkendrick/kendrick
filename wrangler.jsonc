@@ -1,6 +1,6 @@
 {
   "$schema": "https://json.schemastore.org/wrangler.jsonc",
-  "name": "kendrick-consultoria",
+  "name": "kendrick",
   "compatibility_date": "2026-09-27",
   "pages_build_output_dir": "./dist",
   "vars": {
@@ -10,7 +10,7 @@
     "GOOGLE_SHEETS_LEADS_RANGE": "Leads!A:G",
     "GOOGLE_SHEETS_CONTACTS_RANGE": "Contacts!A:F",
     "RESEND_API_KEY": "",
-    "OWNER_EMAIL": "veridiana@kendrick.com",
+    "OWNER_EMAIL": "veridianakendrick@hotmail.com",
     "CALLMEBOT_APIKEY": ""
   }
 }
