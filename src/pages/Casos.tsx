@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 // Casos y proyectos con datos alineados con los materiales entregados.
 // Las métricas solo se muestran cuando están documentadas como resultado;
@@ -114,7 +113,7 @@ const CASES = [
     ],
     after: [
       "Plan estratégico de captación y posicionamiento",
-      "Propuesta de campañas para Meta Ads",
+      "Propuesta de campańas para Meta Ads",
       "Recorrido definido para solicitudes de presupuesto",
     ],
   },
@@ -204,141 +203,86 @@ const CASES = [
   },
 ];
 
-const PACKAGE_FILTERS = [
-  { key: "all", label: "Todos" },
-  { key: "Nivel 01", label: "Nivel 01" },
-  { key: "Nivel 02", label: "Nivel 02" },
-  { key: "Nivel 03", label: "Nivel 03" },
-];
+// Screenshots reales de cada entrega (sin cortes: aspect 21/10 ≈ proporción original)
+const SHOTS: Record<number, { image: string; url: string }> = {
+  1: { image: "/portfolio/fisiovida.webp", url: "fisiovidamadrid.es" },
+  2: { image: "/portfolio/barbearia.webp", url: "barberiadonmateo.es" },
+  3: { image: "/portfolio/linguaflow.webp", url: "linguaflow.es" },
+  4: { image: "/portfolio/reyes-arquitectura.webp", url: "reyesarquitectura.es" },
+  5: { image: "/portfolio/dulceluna.webp", url: "pasteleriadulceluna.es" },
+  6: { image: "/portfolio/alma-serena.webp", url: "almaserena.es" },
+  7: { image: "/portfolio/autofix.webp", url: "autofixzaragoza.es" },
+};
 
-function CaseCard({ c }: { c: typeof CASES[0] }) {
-  const [expanded, setExpanded] = useState(false);
-
+function CaseRow({ c }: { c: (typeof CASES)[0] }) {
+  const shot = SHOTS[c.id];
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200">
-      <div className="p-6 pb-4">
-        <div className="flex items-start justify-between gap-3 mb-4">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-11 h-11 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
-              style={{ backgroundColor: c.color }}
-            >
-              {c.initials}
-            </div>
-            <div>
-              <p className="font-bold text-[#0B2545] text-sm">{c.business}</p>
-              <p className="text-gray-400 text-xs">{c.sector}</p>
-            </div>
+    <article className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="grid md:grid-cols-5 gap-0">
+        <div className="md:col-span-3 bg-[#FAF8F5]">
+          <div className="flex items-center gap-1.5 px-3 h-9 bg-white border-b border-gray-100">
+            <span className="w-2 h-2 rounded-full bg-[#ff5f57]" />
+            <span className="w-2 h-2 rounded-full bg-[#febc2e]" />
+            <span className="w-2 h-2 rounded-full bg-[#28c840]" />
+            <span className="flex-1 min-w-0 truncate rounded-md bg-[#FAF8F5] border border-gray-200 px-2 py-0.5 text-[10px] text-gray-400 font-sans">
+              {shot.url}
+            </span>
           </div>
-          <span className="text-[10px] text-[#C5A880] font-bold tracking-widest uppercase font-sans shrink-0 mt-1">
-            {c.package}
+          <div className="aspect-[21/10] overflow-hidden">
+            <img
+              src={shot.image}
+              alt={`${c.business} — sitio entregado`}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
+        </div>
+        <div className="md:col-span-2 p-6 flex flex-col">
+          <span className="text-[10px] text-[#C5A880] font-bold tracking-widest uppercase font-sans">
+            {c.package} · {c.packageName}
           </span>
-        </div>
-        <p className="text-gray-400 text-xs italic mb-4">"{c.tagline}"</p>
-
-        <div className="grid grid-cols-2 gap-2">
-          {c.metrics.map((m) => (
-            <div key={m.label} className="bg-[#FAF8F5] rounded-xl p-3">
-              <p className="text-[10px] text-gray-400 font-sans mb-1">{m.label}</p>
-              <div className="flex items-center gap-1.5">
-                <span className="text-gray-300 text-xs line-through font-sans">{m.before}</span>
-                <span className="text-[#C5A880] text-[10px]">→</span>
-                <span className="text-[#0B2545] font-bold text-sm">{m.after}</span>
-              </div>
-            </div>
-          ))}
+          <h2 className="text-[#0B2545] text-xl font-bold mt-1">{c.business}</h2>
+          <p className="text-gray-400 text-xs mb-3">{c.sector}</p>
+          <p className="text-gray-500 text-sm leading-relaxed mb-4">{c.tagline}</p>
+          <p className="text-xs font-bold text-[#0B2545] mb-2 font-sans">Recibió:</p>
+          <ul className="space-y-2 mb-4">
+            {c.after.map((a) => (
+              <li key={a} className="flex items-start gap-2 text-sm text-gray-600">
+                <CheckCircle2 size={14} className="text-[#C5A880] mt-0.5 shrink-0" />
+                {a}
+              </li>
+            ))}
+          </ul>
+          <blockquote className="mt-auto text-gray-500 text-xs leading-relaxed italic border-l-2 border-[#C5A880] pl-3">
+            "{c.quote}"
+            <span className="block text-[#C5A880] font-semibold not-italic mt-1">— {c.client}</span>
+          </blockquote>
         </div>
       </div>
-
-      <div className="px-6 pb-4">
-        <blockquote className="text-gray-500 text-xs leading-relaxed italic border-l-2 border-[#C5A880] pl-3">
-          "{c.quote}"
-          <span className="block text-[#C5A880] font-semibold not-italic mt-1">— {c.client}</span>
-        </blockquote>
-      </div>
-
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full px-6 py-3 text-xs text-gray-400 font-sans border-t border-gray-50 hover:bg-gray-50 transition-colors text-left flex items-center justify-between"
-      >
-        <span>{expanded ? "Ocultar detalle" : "Ver antes / después"}</span>
-        <span className="text-[#C5A880]">{expanded ? "↑" : "↓"}</span>
-      </button>
-
-      {expanded && (
-        <div className="px-6 pb-6 grid grid-cols-2 gap-4 border-t border-gray-50 pt-4">
-          <div>
-            <p className="text-xs font-bold text-red-400 mb-2 font-sans">Antes</p>
-            <ul className="space-y-1.5">
-              {c.before.map((b) => (
-                <li key={b} className="flex items-start gap-1.5 text-xs text-gray-500">
-                  <span className="text-red-300 shrink-0 mt-0.5">✗</span> {b}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-green-500 mb-2 font-sans">Después</p>
-            <ul className="space-y-1.5">
-              {c.after.map((a) => (
-                <li key={a} className="flex items-start gap-1.5 text-xs text-gray-600 font-medium">
-                  <span className="text-green-400 shrink-0 mt-0.5">✓</span> {a}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      )}
-    </div>
+    </article>
   );
 }
 
 export default function Casos() {
-  const [filter, setFilter] = useState("all");
-  const filtered = filter === "all" ? CASES : CASES.filter((c) => c.package === filter);
-
   return (
     <main>
       <section className="bg-[#0B2545] pt-32 pb-16 px-6 text-center">
         <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
-          Casos y proyectos
+          Antes → Después
         </span>
         <h1 className="text-white text-4xl md:text-5xl font-bold mt-3 mb-4">
-          Trabajo que se puede ver
+          7 entregas que se pueden ver
         </h1>
         <p className="text-white/50 text-base max-w-md mx-auto">
-          7 proyectos documentados: entregables claros, contexto y objetivos sin promesas vacías.
+          Cada proyecto: lo que había, lo que entregamos. Sin promesas vacías.
         </p>
       </section>
 
-      <section className="bg-white border-b border-gray-100 sticky top-16 z-30">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-2 overflow-x-auto">
-          {PACKAGE_FILTERS.map((f) => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={`px-4 py-2 rounded-full text-xs font-semibold font-sans whitespace-nowrap transition-all ${
-                filter === f.key
-                  ? "bg-[#0B2545] text-white"
-                  : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
-          <span className="text-gray-300 text-xs font-sans ml-2 shrink-0">
-            {filtered.length} caso{filtered.length !== 1 ? "s" : ""}
-          </span>
-        </div>
-      </section>
-
       <section className="py-16 bg-[#FAF8F5]">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {filtered.map((c) => (
-              <CaseCard key={c.id} c={c} />
-            ))}
-          </div>
+        <div className="max-w-6xl mx-auto px-6 space-y-6">
+          {CASES.map((c) => (
+            <CaseRow key={c.id} c={c} />
+          ))}
         </div>
       </section>
 

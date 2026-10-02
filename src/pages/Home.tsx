@@ -5,6 +5,7 @@ const SHOWCASE = [
   {
     name: "FisioVida Madrid",
     sector: "Fisioterapia · Madrid",
+    url: "fisiovidamadrid.es",
     image: "/portfolio/fisiovida.webp",
     metric: "+6 pacientes/mes",
     detail: "De invisible a Top 3 en Google en 4 semanas",
@@ -12,6 +13,7 @@ const SHOWCASE = [
   {
     name: "Barbería Don Mateo",
     sector: "Barbería · Sevilla",
+    url: "barberiadonmateo.es",
     image: "/portfolio/barbearia.webp",
     metric: "23 reservas online/mes",
     detail: "12 años de negocio, cero presencia digital",
@@ -19,6 +21,7 @@ const SHOWCASE = [
   {
     name: "Pastelería Dulce Luna",
     sector: "Pastelería · Bilbao",
+    url: "pasteleriadulceluna.es",
     image: "/portfolio/dulceluna.webp",
     metric: "+40% ventas online",
     detail: "Del barrio a toda la ciudad con Google Maps",
@@ -43,7 +46,7 @@ const PACKAGES = [
       "Botón de WhatsApp para que te escriban",
     ],
     cta: "Empezar desde cero",
-    note: null,
+    note: "Garantía: si en 4 semanas no apareces en Google, seguimos trabajando sin coste hasta conseguirlo.",
   },
   {
     step: "02",
@@ -383,13 +386,21 @@ export default function Home() {
               <Link
                 key={item.name}
                 to="/casos"
-                className="rounded-xl overflow-hidden border border-gray-100 bg-white hover:shadow-md transition-shadow duration-200"
+                className="group rounded-xl overflow-hidden border border-gray-200 bg-white hover:shadow-lg transition-shadow duration-200"
               >
-                <div className="aspect-video overflow-hidden bg-[#FAF8F5]">
+                <div className="flex items-center gap-1.5 bg-[#FAF8F5] border-b border-gray-100 px-3 h-9">
+                  <span className="w-2 h-2 rounded-full bg-[#ff5f57]" />
+                  <span className="w-2 h-2 rounded-full bg-[#febc2e]" />
+                  <span className="w-2 h-2 rounded-full bg-[#28c840]" />
+                  <span className="flex-1 min-w-0 truncate rounded-md bg-white border border-gray-200 px-2 py-0.5 text-[10px] text-gray-400 font-sans">
+                    {item.url}
+                  </span>
+                </div>
+                <div className="aspect-[21/10] overflow-hidden bg-[#FAF8F5]">
                   <img
                     src={item.image}
                     alt={`${item.name} — ${item.sector}`}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                     loading="lazy"
                   />
                 </div>
@@ -404,9 +415,10 @@ export default function Home() {
               </Link>
             ))}
           </div>
-          <p className="text-center mt-6">
-            <Link to="/casos" className="text-[#0B2545] font-semibold text-sm underline hover:text-[#C5A880]">
-              Ver los 7 casos completos →
+          <p className="text-center mt-6 text-sm text-gray-500">
+            Estos 3 sitios son <span className="font-bold text-[#0B2545]">Nivel 01 — desde €450</span>, entregados en 4 semanas.{" "}
+            <Link to="/casos" className="text-[#0B2545] font-semibold underline hover:text-[#C5A880]">
+              Ver los 7 casos →
             </Link>
           </p>
         </div>
