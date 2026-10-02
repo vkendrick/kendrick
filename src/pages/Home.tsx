@@ -1,12 +1,21 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Star } from "lucide-react";
+import SiteShot from "../components/SiteShot";
 const SHOWCASE = [
   {
     name: "FisioVida Madrid",
     sector: "Fisioterapia · Madrid",
     url: "fisiovidamadrid.es",
-    image: "/portfolio/fisiovida.webp",
+    shot: {
+      photo: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=60",
+      kicker: "Fisioterapia · Madrid",
+      title: "Recupera tu",
+      highlight: "movilidad",
+      cta: "Pedir cita",
+      base: "#0B2545",
+      accent: "#C5A880",
+    },
     metric: "+6 pacientes/mes",
     detail: "De invisible a Top 3 en Google en 4 semanas",
   },
@@ -14,7 +23,15 @@ const SHOWCASE = [
     name: "Barbería Don Mateo",
     sector: "Barbería · Sevilla",
     url: "barberiadonmateo.es",
-    image: "/portfolio/barbearia.webp",
+    shot: {
+      photo: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=800&q=60",
+      kicker: "Barbería · Sevilla",
+      title: "El arte del",
+      highlight: "corte",
+      cta: "Reservar",
+      base: "#141414",
+      accent: "#d4a94e",
+    },
     metric: "23 reservas online/mes",
     detail: "12 años de negocio, cero presencia digital",
   },
@@ -22,7 +39,15 @@ const SHOWCASE = [
     name: "Pastelería Dulce Luna",
     sector: "Pastelería · Bilbao",
     url: "pasteleriadulceluna.es",
-    image: "/portfolio/dulceluna.webp",
+    shot: {
+      photo: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=60",
+      kicker: "Pastelería · Bilbao",
+      title: "Tartas que",
+      highlight: "enamoran",
+      cta: "Encargar",
+      base: "#5b1229",
+      accent: "#f472b6",
+    },
     metric: "+40% ventas online",
     detail: "Del barrio a toda la ciudad con Google Maps",
   },
@@ -396,13 +421,8 @@ export default function Home() {
                     {item.url}
                   </span>
                 </div>
-                <div className="aspect-[21/10] overflow-hidden bg-[#FAF8F5]">
-                  <img
-                    src={item.image}
-                    alt={`${item.name} — ${item.sector}`}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
-                  />
+                <div className="aspect-[21/10] overflow-hidden bg-[#FAF8F5] transition-transform duration-500 group-hover:scale-[1.01]">
+                  <SiteShot {...item.shot} />
                 </div>
                 <div className="p-5">
                   <h3 className="text-[#0B2545] font-bold text-base">{item.name}</h3>

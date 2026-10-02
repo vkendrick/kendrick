@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import SiteShot from "../components/SiteShot";
 
 // Casos y proyectos con datos alineados con los materiales entregados.
 // Las métricas solo se muestran cuando están documentadas como resultado;
@@ -203,15 +204,32 @@ const CASES = [
   },
 ];
 
-// Screenshots de cada entrega + métrica ilustrativa de resultado
-const SHOTS: Record<number, { image: string; url: string; metric: string; detail: string }> = {
-  1: { image: "/portfolio/fisiovida.webp", url: "fisiovidamadrid.es", metric: "+6 pacientes/mes", detail: "De invisible a Top 3 en Google" },
-  2: { image: "/portfolio/barbearia.webp", url: "barberiadonmateo.es", metric: "23 reservas online", detail: "En el primer mes" },
-  3: { image: "/portfolio/linguaflow.webp", url: "linguaflow.es", metric: "+€1.200/mes", detail: "Facturación extra" },
-  4: { image: "/portfolio/reyes-arquitectura.webp", url: "reyesarquitectura.es", metric: "3× presupuestos", detail: "Solicitudes al mes" },
-  5: { image: "/portfolio/dulceluna.webp", url: "pasteleriadulceluna.es", metric: "+40% ventas", detail: "Pedidos online" },
-  6: { image: "/portfolio/alma-serena.webp", url: "almaserena.es", metric: "97% ocupación", detail: "Clases llenas en 6 semanas" },
-  7: { image: "/portfolio/autofix.webp", url: "autofixzaragoza.es", metric: "+5 clientes/mes", detail: "Que llegan desde Google" },
+// Miniaturas vivas de cada entrega + métrica ilustrativa de resultado
+const SHOTS: Record<number, {
+  url: string; metric: string; detail: string;
+  photo: string; kicker: string; title: string; highlight: string; cta: string; base: string; accent: string;
+}> = {
+  1: { url: "fisiovidamadrid.es", metric: "+6 pacientes/mes", detail: "De invisible a Top 3 en Google",
+      photo: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=60",
+      kicker: "Fisioterapia · Madrid", title: "Recupera tu", highlight: "movilidad", cta: "Pedir cita", base: "#0B2545", accent: "#C5A880" },
+  2: { url: "barberiadonmateo.es", metric: "23 reservas online", detail: "En el primer mes",
+      photo: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=800&q=60",
+      kicker: "Barbería · Sevilla", title: "El arte del", highlight: "corte", cta: "Reservar", base: "#141414", accent: "#d4a94e" },
+  3: { url: "linguaflow.es", metric: "+€1.200/mes", detail: "Facturación extra",
+      photo: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=60",
+      kicker: "Idiomas · Online", title: "Habla inglés", highlight: "en 6 meses", cta: "Probar gratis", base: "#0e4a5c", accent: "#38bdf8" },
+  4: { url: "reyesarquitectura.es", metric: "3× presupuestos", detail: "Solicitudes al mes",
+      photo: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=800&q=60",
+      kicker: "Arquitectura · Valencia", title: "Espacios que", highlight: "inspiran", cta: "Pedir presupuesto", base: "#2d1b00", accent: "#d4a94e" },
+  5: { url: "pasteleriadulceluna.es", metric: "+40% ventas", detail: "Pedidos online",
+      photo: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=60",
+      kicker: "Pastelería · Bilbao", title: "Tartas que", highlight: "enamoran", cta: "Encargar", base: "#5b1229", accent: "#f472b6" },
+  6: { url: "almaserena.es", metric: "97% ocupación", detail: "Clases llenas en 6 semanas",
+      photo: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=800&q=60",
+      kicker: "Yoga · Granada", title: "Respira, estira,", highlight: "vive", cta: "Clase de prueba", base: "#022c22", accent: "#34d399" },
+  7: { url: "autofixzaragoza.es", metric: "+5 clientes/mes", detail: "Que llegan desde Google",
+      photo: "https://images.unsplash.com/photo-1493238792000-8113da705763?auto=format&fit=crop&w=800&q=60",
+      kicker: "Taller · Zaragoza", title: "Tu coche en", highlight: "buenas manos", cta: "Pedir presupuesto", base: "#1f2937", accent: "#fbbf24" },
 };
 
 function CaseRow({ c }: { c: (typeof CASES)[0] }) {
@@ -229,11 +247,14 @@ function CaseRow({ c }: { c: (typeof CASES)[0] }) {
             </span>
           </div>
           <div className="aspect-[21/10] overflow-hidden">
-            <img
-              src={shot.image}
-              alt={`${c.business} — sitio entregado`}
-              className="h-full w-full object-cover"
-              loading="lazy"
+            <SiteShot
+              photo={shot.photo}
+              kicker={shot.kicker}
+              title={shot.title}
+              highlight={shot.highlight}
+              cta={shot.cta}
+              base={shot.base}
+              accent={shot.accent}
             />
           </div>
         </div>
