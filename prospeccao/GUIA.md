@@ -25,11 +25,16 @@ Ordem: msg 1 + print → D+2 sem resposta: msg 2 → com interesse: msg 3.
 
 ## 4. Proposta visual (print)
 
-1. Abra `proposta-modelo.html` no Chrome com os dados na URL:
-   `proposta-modelo.html?nome=Clínica Dental Sonrisa&cidade=Madrid&categoria=dentista&tel=34600111222`
-2. Clique **"Esconder barra e gerar link limpo ✓"**
-3. Print de página inteira: `F12` → `Ctrl+Shift+P` → **"Capture full size screenshot"**
-4. Anexe o print na msg 1 do WhatsApp
+Use a versão **online** (funciona no celular também):
+`https://kendrick-z4b.pages.dev/proposta/?nome=Clínica+Dental+Sonrisa&cidade=Madrid&categoria=dentista&tel=34600111222`
+
+Ou local: abra `prospeccao/proposta-modelo.html` no Chrome com os mesmos parâmetros.
+
+1. Clique **"Esconder barra e gerar link limpo ✓"**
+2. Print de página inteira: `F12` → `Ctrl+Shift+P` → **"Capture full size screenshot"**
+3. Anexe o print na msg 1 do WhatsApp
+
+> Nota: o arquivo publicado é gerado automaticamente do `prospeccao/proposta-modelo.html` a cada deploy. Edite sempre o original.
 
 ## 5. Rotina diária (validação)
 

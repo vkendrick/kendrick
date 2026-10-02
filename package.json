@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build && npm run copy-functions && npm run generate-sitemap && npm run inject-analytics",
+    "build": "tsc -b && vite build && npm run copy-functions && npm run copy-proposta && npm run generate-sitemap && npm run inject-analytics",
     "copy-functions": "xcopy /E /I /Y functions dist\\functions 2>nul || cp -r functions dist/functions",
+    "copy-proposta": "node scripts/copy-proposta.mjs",
     "generate-sitemap": "node scripts/generate-sitemap.mjs",
     "inject-analytics": "node scripts/inject-analytics.mjs",
     "lint": "eslint .",
