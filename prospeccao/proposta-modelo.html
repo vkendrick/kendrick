@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta — Muestra gratis</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #e9e4da; color: #1a1a2e; }
+  .page { max-width: 620px; margin: 0 auto; background: #fff; }
+  .helper { background: #0B2545; color: #fff; padding: 14px 18px; font-size: 13px; line-height: 1.6; }
+  .helper b { color: #C5A880; }
+  .helper code { background: rgba(255,255,255,.12); padding: 1px 6px; border-radius: 4px; font-size: 12px; }
+  .helper button { margin-top: 8px; background: #C5A880; color: #0B2545; border: 0; font-weight: bold; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px solid #eee; }
+  .brand { font-family: Georgia, serif; font-weight: bold; font-size: 18px; color: #0B2545; }
+  .brand small { display: block; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-weight: normal; font-size: 11px; color: #888; }
+  .call { background: #25D366; color: #fff; text-decoration: none; font-weight: bold; font-size: 13px; padding: 10px 18px; border-radius: 8px; }
+  .hero { background: #0B2545; color: #fff; padding: 44px 24px; text-align: center; }
+  .hero .kicker { color: #C5A880; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; font-weight: bold; }
+  .hero h1 { font-family: Georgia, serif; font-size: 32px; line-height: 1.15; margin: 12px 0; }
+  .hero h1 em { color: #C5A880; }
+  .hero p { color: rgba(255,255,255,.65); font-size: 15px; margin-bottom: 24px; }
+  .btn { display: inline-block; background: #C5A880; color: #0B2545; font-weight: bold; font-size: 14px; padding: 14px 30px; border-radius: 8px; text-decoration: none; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 24px 20px; background: #FAF8F5; }
+  .card { background: #fff; border: 1px solid #eee; border-radius: 12px; padding: 18px 16px; }
+  .card.bad { border-top: 4px solid #e05252; }
+  .card.good { border-top: 4px solid #25D366; }
+  .card h3 { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+  .card.bad h3 { color: #e05252; }
+  .card.good h3 { color: #1da851; }
+  .card li { list-style: none; font-size: 13px; padding: 6px 0; color: #444; border-bottom: 1px solid #f3f3f3; }
+  .card li:last-child { border: 0; }
+  .incl { padding: 28px 20px; }
+  .incl h2 { font-family: Georgia, serif; color: #0B2545; font-size: 22px; text-align: center; margin-bottom: 18px; }
+  .incl li { list-style: none; display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid #f3f3f3; font-size: 14px; }
+  .incl li:last-child { border: 0; }
+  .check { color: #C5A880; font-weight: bold; }
+  .map { padding: 0 20px 8px; }
+  .map h2 { font-family: Georgia, serif; color: #0B2545; font-size: 22px; text-align: center; margin-bottom: 14px; }
+  .map iframe { width: 100%; height: 240px; border: 0; border-radius: 12px; }
+  .price { text-align: center; padding: 30px 20px; background: #FAF8F5; margin-top: 20px; }
+  .price .from { font-size: 13px; color: #888; }
+  .price .val { font-family: Georgia, serif; font-size: 40px; color: #0B2545; font-weight: bold; }
+  .price .time { font-size: 13px; color: #888; margin-bottom: 18px; }
+  .foot { background: #0B2545; color: rgba(255,255,255,.6); text-align: center; padding: 22px 20px; font-size: 12px; line-height: 1.8; }
+  .foot b { color: #C5A880; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="helper" id="helper">
+    <b>Como usar:</b> abra este arquivo com os dados do lead na URL, ex:<br>
+    <code>?nome=Clínica Dental Sonrisa&amp;cidade=Madrid&amp;categoria=dentista&amp;tel=34600000000</code><br>
+    Depois clique abaixo para esconder esta barra e tirar o print.
+    <br><button onclick="limpar()">Esconder barra e gerar link limpo ✓</button>
+  </div>
+
+  <div class="topbar">
+    <div class="brand"><span data-f="nome">Tu Negocio</span><small><span data-f="categoria">Tu sector</span> · <span data-f="cidade">Tu ciudad</span></small></div>
+    <a class="call" data-wa href="https://wa.me/34658598442" target="_blank">Llamar</a>
+  </div>
+
+  <div class="hero">
+    <div class="kicker">Muestra gratis · Sin compromiso</div>
+    <h1><span data-f="nome">Tu Negocio</span> en el <em>Top 3 de Google</em> en <span data-f="cidade">tu ciudad</span></h1>
+    <p>Así se vería tu negocio cuando alguien busque <span data-f="categoria">tu sector</span> en Google.</p>
+    <a class="btn" data-wa href="https://wa.me/34658598442" target="_blank">Quiero esto por WhatsApp →</a>
+  </div>
+
+  <div class="compare">
+    <div class="card bad">
+      <h3>✗ Hoy</h3>
+      <ul>
+        <li>No apareces en Google</li>
+        <li><span data-f="reviews">0</span> reseñas (<span data-f="rating">–</span>★)</li>
+        <li>Sin web propia</li>
+        <li>Clientes solo por boca a boca</li>
+      </ul>
+    </div>
+    <div class="card good">
+      <h3>✓ En 4 semanas</h3>
+      <ul>
+        <li>Top 3 en Google Maps</li>
+        <li>Reseñas nuevas cada mes</li>
+        <li>Web sencilla que recibe clientes</li>
+        <li>Botón directo a tu WhatsApp</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="incl">
+    <h2>Qué incluye</h2>
+    <ul>
+      <li><span class="check">✓</span> Una web sencilla que recibe clientes</li>
+      <li><span class="check">✓</span> Tu negocio verificado en Google Maps</li>
+      <li><span class="check">✓</span> Botón de WhatsApp para que te escriban</li>
+    </ul>
+  </div>
+
+  <div class="map">
+    <h2>Te encuentran aquí</h2>
+    <iframe id="mapa" title="Mapa" loading="lazy" src="https://maps.google.com/maps?q=Madrid&z=14&output=embed"></iframe>
+  </div>
+
+  <div class="price">
+    <div class="from">Todo esto desde</div>
+    <div class="val">€450</div>
+    <div class="time">listo en 4 semanas</div>
+    <a class="btn" data-wa href="https://wa.me/34658598442" target="_blank">Hablar por WhatsApp →</a>
+  </div>
+
+  <div class="foot">
+    Propuesta preparada por <b>Kendrick Consultoria Digital</b><br>
+    +34 658 598 442 · veridiana@kendrick.com
+  </div>
+
+</div>
+<script>
+  const q = new URLSearchParams(location.search);
+  const get = (k, fb) => (q.get(k) || fb).trim();
+  const nome = get("nome", "Tu Negocio");
+  const cidade = get("cidade", "tu ciudad");
+  const categoria = get("categoria", "tu sector");
+  const tel = (get("tel", "")).replace(/\D/g, "");
+  document.querySelectorAll('[data-f="nome"]').forEach(e => e.textContent = nome);
+  document.querySelectorAll('[data-f="cidade"]').forEach(e => e.textContent = cidade);
+  document.querySelectorAll('[data-f="categoria"]').forEach(e => e.textContent = categoria);
+  document.querySelectorAll('[data-f="reviews"]').forEach(e => e.textContent = get("reviews", "0"));
+  document.querySelectorAll('[data-f="rating"]').forEach(e => e.textContent = get("rating", "–"));
+  document.title = "Propuesta — " + nome;
+  const waNum = tel || "34658598442";
+  const msg = encodeURIComponent("Hola, vi la muestra para " + nome + " y me gustaría saber más.");
+  document.querySelectorAll("[data-wa]").forEach(a => {
+    a.href = "https://wa.me/" + waNum + "?text=" + msg;
+  });
+  document.getElementById("mapa").src =
+    "https://maps.google.com/maps?q=" + encodeURIComponent(categoria + " " + cidade) + "&z=14&output=embed";
+  if (q.get("clean") === "1") document.getElementById("helper").style.display = "none";
+  function limpar() {
+    q.set("clean", "1");
+    location.search = q.toString();
+  }
+</script>
+</body>
+</html>
