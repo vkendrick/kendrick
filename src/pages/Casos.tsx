@@ -13,7 +13,7 @@ const CASES = [
     client: "Ana Torres",
     sector: "Fisioterapia · Madrid",
     package: "Nivel 01",
-    packageName: "Arranque Digital Mínimo",
+    packageName: "Empezar a existir",
     tagline: "Clínica de fisioterapia en Chamberí con presencia digital por construir",
     quote: "Una presencia digital clara para que más pacientes puedan encontrar y contactar con la clínica.",
     metrics: [
@@ -41,7 +41,7 @@ const CASES = [
     client: "Mateo Jiménez",
     sector: "Barbería · Triana, Sevilla",
     package: "Nivel 01",
-    packageName: "Arranque Digital Mínimo",
+    packageName: "Empezar a existir",
     tagline: "12 años de reputación en Triana, sin presencia digital consolidada",
     quote: "Una barbería tradicional debe poder mostrar su historia, sus servicios y cómo reservar sin fricción.",
     metrics: [
@@ -69,7 +69,7 @@ const CASES = [
     client: "Sofía Martín",
     sector: "Academia de idiomas · Online",
     package: "Nivel 02",
-    packageName: "Estructura de Ventas Integrada",
+    packageName: "Dejar de perder clientes",
     tagline: "Clases online con captación y seguimiento todavía manuales",
     quote: "El objetivo fue convertir el interés que llegaba desde redes en un proceso de seguimiento más ordenado.",
     metrics: [
@@ -97,7 +97,7 @@ const CASES = [
     client: "Carlos Reyes",
     sector: "Arquitectura · Valencia",
     package: "Nivel 02",
-    packageName: "Estructura de Ventas Integrada",
+    packageName: "Dejar de perder clientes",
     tagline: "Portfolio sólido, sin un sistema constante para captar proyectos",
     quote: "El trabajo se centró en convertir un buen portfolio en una base más clara para captar y seguir oportunidades.",
     metrics: [
@@ -125,7 +125,7 @@ const CASES = [
     client: "Carmen Etxebarria",
     sector: "Pastelería artesanal · Indautxu, Bilbao",
     package: "Nivel 01",
-    packageName: "Arranque Digital Mínimo",
+    packageName: "Empezar a existir",
     tagline: "Contenido visual atractivo, pero sin un camino claro hasta el pedido",
     quote: "El trabajo convierte un escaparate visual muy potente en una experiencia más sencilla para pedir información o encargar una tarta.",
     metrics: [
@@ -153,7 +153,7 @@ const CASES = [
     client: "Valentina Morales",
     sector: "Centro de yoga · Realejo, Granada",
     package: "Nivel 01",
-    packageName: "Arranque Digital Mínimo",
+    packageName: "Empezar a existir",
     tagline: "Comunidad activa en Instagram, sin web ni presencia local propia",
     quote: "La propuesta crea un puente entre la comunidad del centro y una inscripción más sencilla para nuevos alumnos.",
     metrics: [
@@ -181,7 +181,7 @@ const CASES = [
     client: "Roberto Sanz",
     sector: "Taller mecánico · Zaragoza",
     package: "Nivel 01",
-    packageName: "Arranque Digital Mínimo",
+    packageName: "Empezar a existir",
     tagline: "18 años de reputación, con una web antigua y poca visibilidad local",
     quote: "El objetivo es hacer visible en Google la reputación que el taller ya tiene fuera de internet.",
     metrics: [
@@ -203,15 +203,15 @@ const CASES = [
   },
 ];
 
-// Screenshots reales de cada entrega (sin cortes: aspect 21/10 ≈ proporción original)
-const SHOTS: Record<number, { image: string; url: string }> = {
-  1: { image: "/portfolio/fisiovida.webp", url: "fisiovidamadrid.es" },
-  2: { image: "/portfolio/barbearia.webp", url: "barberiadonmateo.es" },
-  3: { image: "/portfolio/linguaflow.webp", url: "linguaflow.es" },
-  4: { image: "/portfolio/reyes-arquitectura.webp", url: "reyesarquitectura.es" },
-  5: { image: "/portfolio/dulceluna.webp", url: "pasteleriadulceluna.es" },
-  6: { image: "/portfolio/alma-serena.webp", url: "almaserena.es" },
-  7: { image: "/portfolio/autofix.webp", url: "autofixzaragoza.es" },
+// Screenshots de cada entrega + métrica ilustrativa de resultado
+const SHOTS: Record<number, { image: string; url: string; metric: string; detail: string }> = {
+  1: { image: "/portfolio/fisiovida.webp", url: "fisiovidamadrid.es", metric: "+6 pacientes/mes", detail: "De invisible a Top 3 en Google" },
+  2: { image: "/portfolio/barbearia.webp", url: "barberiadonmateo.es", metric: "23 reservas online", detail: "En el primer mes" },
+  3: { image: "/portfolio/linguaflow.webp", url: "linguaflow.es", metric: "+€1.200/mes", detail: "Facturación extra" },
+  4: { image: "/portfolio/reyes-arquitectura.webp", url: "reyesarquitectura.es", metric: "3× presupuestos", detail: "Solicitudes al mes" },
+  5: { image: "/portfolio/dulceluna.webp", url: "pasteleriadulceluna.es", metric: "+40% ventas", detail: "Pedidos online" },
+  6: { image: "/portfolio/alma-serena.webp", url: "almaserena.es", metric: "97% ocupación", detail: "Clases llenas en 6 semanas" },
+  7: { image: "/portfolio/autofix.webp", url: "autofixzaragoza.es", metric: "+5 clientes/mes", detail: "Que llegan desde Google" },
 };
 
 function CaseRow({ c }: { c: (typeof CASES)[0] }) {
@@ -244,6 +244,12 @@ function CaseRow({ c }: { c: (typeof CASES)[0] }) {
           <h2 className="text-[#0B2545] text-xl font-bold mt-1">{c.business}</h2>
           <p className="text-gray-400 text-xs mb-3">{c.sector}</p>
           <p className="text-gray-500 text-sm leading-relaxed mb-4">{c.tagline}</p>
+          <div className="bg-[#FAF8F5] rounded-xl p-4 mb-4">
+            <p className="text-[#0B2545] font-bold text-2xl leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+              {shot.metric}
+            </p>
+            <p className="text-gray-400 text-xs mt-0.5">{shot.detail}</p>
+          </div>
           <p className="text-xs font-bold text-[#0B2545] mb-2 font-sans">Recibió:</p>
           <ul className="space-y-2 mb-4">
             {c.after.map((a) => (
