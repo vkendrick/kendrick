@@ -1,75 +1,81 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Star } from "lucide-react";
-import PortfolioCarousel from "../components/PortfolioCarousel";
+const SHOWCASE = [
+  {
+    name: "FisioVida Madrid",
+    sector: "Fisioterapia · Madrid",
+    image: "/portfolio/fisiovida.webp",
+    metric: "+6 pacientes/mes",
+    detail: "De invisible a Top 3 en Google en 4 semanas",
+  },
+  {
+    name: "Barbería Don Mateo",
+    sector: "Barbería · Sevilla",
+    image: "/portfolio/barbearia.webp",
+    metric: "23 reservas online/mes",
+    detail: "12 años de negocio, cero presencia digital",
+  },
+  {
+    name: "Pastelería Dulce Luna",
+    sector: "Pastelería · Bilbao",
+    image: "/portfolio/dulceluna.webp",
+    metric: "+40% ventas online",
+    detail: "Del barrio a toda la ciudad con Google Maps",
+  },
+];
 
 // ─── DATOS ────────────────────────────────────────────────────────────────────
 
-const STATS = [
-  { value: "+120", label: "Negocios ayudados" },
-  { value: "3×", label: "Más clientes" },
-  { value: "4 sem.", label: "Primeros resultados" },
-  { value: "98%", label: "Satisfacción" },
-];
-
-// Paquetes diseñados como escalera progresiva — cada nivel incluye el anterior
+// Paquetes en escalera — cada nivel incluye el anterior. Copy simple, sin jerga.
 const PACKAGES = [
   {
     step: "01",
-    name: "Arranque Digital Mínimo",
-    price: "€450 – €600",
+    name: "Empezar a existir",
+    price: "desde €450",
     duration: "4 semanas",
-    tagline: "Sin presencia online",
+    tagline: "Para quien no aparece en internet",
     badge: null,
     highlight: false,
     includes: [
-      "Web de una página lista para recibir clientes",
-      "Google Maps optimizado y verificado",
-      "Botón WhatsApp directo",
-      "Informe de situación digital (PDF)",
-      "Guía de mantenimiento de 15 min/semana",
+      "Una web sencilla que recibe clientes",
+      "Tu negocio verificado en Google Maps",
+      "Botón de WhatsApp para que te escriban",
     ],
     cta: "Empezar desde cero",
     note: null,
   },
   {
     step: "02",
-    name: "Estructura de Ventas Integrada",
-    price: "€850 – €1.200",
+    name: "Dejar de perder clientes",
+    price: "desde €850",
     duration: "6 semanas",
-    tagline: "Presencia sin sistema",
+    tagline: "Para quien ya está, pero sin sistema",
     badge: "Más solicitado",
     highlight: true,
     includes: [
-      "Todo lo del Nivel 01 +",
-      "Auditoría completa de web y redes",
-      "CRM gratuito configurado (Brevo/HubSpot)",
-      "3 emails automáticos de seguimiento",
-      "Píxeles de seguimiento instalados",
-      "Panel Notion con tus métricas clave",
-      "Sesión de formación grabada (90 min)",
+      "Todo lo del Nivel 01",
+      "Respuestas automáticas a quien te escribe",
+      "Una hoja simple con tus números: de dónde viene cada cliente",
     ],
     cta: "Conectar mi negocio",
     note: null,
   },
   {
     step: "03",
-    name: "Mentoría de Crecimiento Avanzado",
-    price: "€1.500 – €2.000",
+    name: "Crecer con anuncios",
+    price: "desde €1.500",
     duration: "8 semanas",
-    tagline: "Listo para escalar",
+    tagline: "Para quien está listo para escalar",
     badge: null,
     highlight: false,
     includes: [
-      "Todo lo del Nivel 02 +",
-      "Publicidad en Facebook/Instagram y Google",
-      "Panel en tiempo real de anuncios",
-      "Revisiones quincenales de resultados",
-      "Estrategia de audiencias similares",
-      "Manual personalizado de crecimiento",
+      "Todo lo del Nivel 02",
+      "Anuncios en Instagram y Google",
+      "Revisamos los resultados contigo cada 15 días",
     ],
     cta: "Escalar con publicidad",
-    note: "El presupuesto de publicidad (lo que pagas a Meta/Google) no está incluido.",
+    note: "Lo que pagas a Instagram/Google por los anuncios no está incluido.",
   },
 ];
 
@@ -141,23 +147,15 @@ const PROCESS = [
 const FAQS = [
   {
     q: "¿Necesito saber de tecnología?",
-    a: "No. Nos encargamos de todo lo técnico. Al final te entregamos todo funcionando y te explicamos cómo usarlo en palabras simples.",
+    a: "No. Lo hacemos todo nosotros y te lo entregamos funcionando, explicado en palabras simples.",
   },
   {
     q: "¿Cuánto tiempo tengo que dedicarle yo?",
-    a: "Reunión inicial de 60 min + revisiones cortas semanales. Al terminar, mantienes todo en 15 min/semana.",
-  },
-  {
-    q: "¿Los paquetes son acumulativos?",
-    a: "Sí. Cada nivel incluye todo lo del anterior. Si empiezas con el Nivel 01 y quieres crecer, el Nivel 02 parte de lo que ya tienes construido — no empezamos de cero.",
-  },
-  {
-    q: "¿Qué pasa si no me gustan los resultados?",
-    a: "Firmamos un contrato con los entregables exactos. Revisamos juntos cada pieza antes de cerrarla. Si algo no cumple lo acordado, lo corregimos sin coste adicional.",
+    a: "Una charla inicial de 60 min y revisiones cortas por semana. Después, 15 min por semana para mantenerlo.",
   },
   {
     q: "¿Cuándo empiezo a ver resultados?",
-    a: "Con el Nivel 01, en 2-3 semanas ya apareces en Google. Los primeros clientes desde internet suelen llegar entre la semana 3 y 6.",
+    a: "En 2-3 semanas ya apareces en Google. Los primeros clientes suelen llegar entre la semana 3 y 6.",
   },
 ];
 
@@ -213,9 +211,8 @@ export default function Home() {
                 ))}
               </span>
               <span className="font-semibold text-[#0B2545]">4.9/5</span>
-              <span className="px-3 border-l border-gray-200">47 reseñas Google</span>
-              <span className="px-3 border-l border-gray-200">+€50k facturación extra generada</span>
-              <span className="px-3 border-l border-gray-200">7 casos documentados</span>
+              <span className="px-3 border-l border-gray-200">47 reseñas en Google</span>
+              <span className="px-3 border-l border-gray-200">7 negocios con resultados</span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -235,18 +232,6 @@ export default function Home() {
             </div>
 
             <p className="text-gray-400 text-xs mt-4 font-sans">Sin tarjeta · Sin compromiso · Respuesta en 24h</p>
-          </div>
-
-          {/* Stats strip */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-10">
-            {STATS.map((s) => (
-              <div key={s.label} className="bg-[#FAF8F5] border border-gray-100 rounded-lg p-5 text-center">
-                <div className="text-[#C5A880] text-2xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  {s.value}
-                </div>
-                <div className="text-gray-400 text-xs font-sans">{s.label}</div>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -382,10 +367,50 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PORTAFOLIO REAL — screenshots de proyectos entregados ── */}
-      <div id="portfolio">
-        <PortfolioCarousel />
-      </div>
+      {/* ── TRABAJOS REALES — 3 casos, sin carrusel ── */}
+      <section id="portfolio" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="text-center mb-10">
+            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+              Nuestro trabajo
+            </span>
+            <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-2">
+              Negocios como el tuyo, con resultados
+            </h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {SHOWCASE.map((item) => (
+              <Link
+                key={item.name}
+                to="/casos"
+                className="rounded-xl overflow-hidden border border-gray-100 bg-white hover:shadow-md transition-shadow duration-200"
+              >
+                <div className="aspect-video overflow-hidden bg-[#FAF8F5]">
+                  <img
+                    src={item.image}
+                    alt={`${item.name} — ${item.sector}`}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="text-[#0B2545] font-bold text-base">{item.name}</h3>
+                  <p className="text-gray-400 text-xs mb-3">{item.sector}</p>
+                  <p className="text-[#0B2545] font-bold text-lg leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+                    {item.metric}
+                  </p>
+                  <p className="text-gray-500 text-xs mt-1">{item.detail}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <p className="text-center mt-6">
+            <Link to="/casos" className="text-[#0B2545] font-semibold text-sm underline hover:text-[#C5A880]">
+              Ver los 7 casos completos →
+            </Link>
+          </p>
+        </div>
+      </section>
 
       {/* ── PORTAFOLIO — grid visual de resultados ── */}
       <section className="py-24 bg-[#FAF8F5]">
@@ -505,8 +530,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA FINAL ── */}
-      <section className="py-24 bg-white">
+      {/* ── CTA FINAL + CONTACTO (una sola sección) ── */}
+      <section id="contacto" className="py-24 bg-white">
         <div className="max-w-2xl mx-auto px-6 text-center">
           <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
             Empieza hoy
@@ -519,43 +544,32 @@ export default function Home() {
           </p>
           <Link
             to="/quiz"
-            className="inline-flex items-center gap-2 bg-[#0B2545] text-white font-bold px-10 py-4 rounded text-sm tracking-wide hover:bg-[#1a3a6b] transition-colors active:scale-[0.97]"
+            className="inline-flex items-center gap-2 bg-[#0B2545] text-white font-bold px-10 py-4 rounded text-sm tracking-wide hover:bg-[#1a3a6b] transition-colors active:scale-[0.97] w-full sm:w-auto justify-center"
           >
             Diagnóstico gratuito <ArrowRight size={15} />
           </Link>
-          <p className="text-gray-300 text-xs mt-4 font-sans">Sin tarjeta · Sin compromiso · 3 minutos</p>
-        </div>
-      </section>
+          <p className="text-gray-300 text-xs mt-4 mb-8 font-sans">Sin tarjeta · Sin compromiso · 3 minutos</p>
 
-      {/* ── CONTACTO — solo WhatsApp + Email ── */}
-      <section id="contacto" className="py-24 bg-[#FAF8F5]">
-        <div className="max-w-2xl mx-auto px-6 text-center">
-          <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
-            Contacto
-          </span>
-          <h2 className="text-[#0B2545] text-3xl font-bold mt-3 mb-4">
-            ¿Tienes alguna pregunta?
-          </h2>
-          <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-lg mx-auto">
-            Escríbenos por WhatsApp o email. Sin presiones, sin vendedores. Solo una conversación honesta sobre tu negocio.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://wa.me/34658598442?text=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-3 bg-[#25D366] text-white font-bold px-8 py-4 rounded-xl text-sm tracking-wide hover:bg-[#1ebe5d] transition-all active:scale-[0.97]"
-            >
-              Hablar por WhatsApp
-            </a>
-            <a
-              href="mailto:veridiana@kendrick.com?subject=Consulta%20servicios&body=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
-              className="inline-flex items-center justify-center gap-3 bg-[#0B2545] text-white font-bold px-8 py-4 rounded-xl text-sm tracking-wide hover:bg-[#1a3a6b] transition-all active:scale-[0.97]"
-            >
-              Enviar email
-            </a>
+          <div className="border-t border-gray-100 pt-8">
+            <p className="text-gray-400 text-xs mb-4 font-sans">¿Prefieres hablar directo? Sin presiones, sin vendedores.</p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <a
+                href="https://wa.me/34658598442?text=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold px-8 py-3.5 rounded-xl text-sm hover:bg-[#1ebe5d] transition-all active:scale-[0.97]"
+              >
+                WhatsApp
+              </a>
+              <a
+                href="mailto:veridiana@kendrick.com?subject=Consulta%20servicios&body=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
+                className="inline-flex items-center justify-center gap-2 border border-[#0B2545]/20 text-[#0B2545] font-bold px-8 py-3.5 rounded-xl text-sm hover:bg-[#0B2545]/5 transition-all active:scale-[0.97]"
+              >
+                veridiana@kendrick.com
+              </a>
+            </div>
+            <p className="text-gray-400 text-xs mt-4 font-sans">+34 658 598 442 · Respuesta en menos de 24 horas</p>
           </div>
-          <p className="text-gray-400 text-xs mt-4 font-sans">+34 658 598 442 · veridiana@kendrick.com · Respuesta en menos de 24 horas</p>
         </div>
       </section>
 
