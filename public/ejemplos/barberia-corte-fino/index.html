@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Barbería El Corte Fino · Triana, Sevilla</title>
+<meta name="description" content="Barbería en Triana, Sevilla. Corte + barba €25. Reserva por WhatsApp, sin esperas.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #f2ede4; background: #121212; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 680px; margin: 0 auto; background: #121212; }
+  .gold { color: #d4a94e; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: #0c0c0c; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid #2a2a2a; }
+  .logo { font-family: Georgia, serif; font-weight: 700; font-size: 18px; color: #f2ede4; }
+  .logo small { display: block; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-weight: 400; font-size: 11px; color: #9a8f7d; letter-spacing: 2px; text-transform: uppercase; }
+  .tel { color: #d4a94e; font-weight: 700; font-size: 14px; text-decoration: none; border: 1.5px solid #d4a94e; padding: 8px 14px; border-radius: 999px; }
+  .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-end; background: #0c0c0c; }
+  .hero img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.94) 25%, rgba(0,0,0,.35) 65%, rgba(0,0,0,.3)); }
+  .hero .txt { position: relative; padding: 28px 22px 34px; width: 100%; }
+  .kicker { display: inline-block; color: #d4a94e; border: 1px solid rgba(212,169,78,.5); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; margin-bottom: 14px; }
+  h1 { font-family: Georgia, serif; font-size: 40px; line-height: 1.05; margin-bottom: 12px; }
+  h1 em { color: #d4a94e; }
+  .stars { color: #d4a94e; font-size: 15px; letter-spacing: 2px; }
+  .rev { font-size: 13px; color: rgba(242,237,228,.8); margin: 6px 0 20px; }
+  .cta { display: block; text-align: center; background: #d4a94e; color: #121212; font-weight: 800; font-size: 16px; padding: 16px; border-radius: 12px; text-decoration: none; }
+  .micro { text-align: center; font-size: 12px; color: rgba(242,237,228,.65); margin-top: 10px; }
+  .strip { display: grid; grid-template-columns: repeat(3, 1fr); background: #0c0c0c; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a; text-align: center; }
+  .strip div { padding: 16px 6px; }
+  .strip b { display: block; font-size: 20px; color: #d4a94e; font-family: Georgia, serif; }
+  .strip span { font-size: 11px; color: #9a8f7d; }
+  section { padding: 34px 22px; }
+  h2 { font-family: Georgia, serif; font-size: 26px; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: #9a8f7d; margin-bottom: 18px; }
+  .serv { border: 1px solid #2a2a2a; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #181818; }
+  .serv b { font-size: 15px; }
+  .serv small { display: block; font-weight: 400; font-size: 12px; color: #9a8f7d; margin-top: 3px; }
+  .price { font-family: Georgia, serif; font-weight: 700; font-size: 20px; color: #d4a94e; white-space: nowrap; }
+  .serv.star { border-color: #d4a94e; }
+  .tag { display: inline-block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #121212; background: #d4a94e; font-weight: 800; padding: 3px 8px; border-radius: 999px; margin-bottom: 6px; }
+  .gal { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .gal div { border-radius: 12px; overflow: hidden; aspect-ratio: 3/4; background: linear-gradient(160deg, #2a2a2a, #121212); }
+  .gal img { width: 100%; height: 100%; object-fit: cover; }
+  .op { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 14px; padding: 18px; margin-bottom: 12px; }
+  .op p { font-size: 14px; line-height: 1.6; margin: 8px 0; color: #e8e2d6; }
+  .op b { font-size: 13px; color: #d4a94e; }
+  iframe.map { width: 100%; height: 250px; border: 0; border-radius: 14px; filter: grayscale(1) invert(.92) contrast(.9); }
+  .hours { font-size: 14px; margin-top: 14px; line-height: 2; color: #e8e2d6; }
+  .hours a { color: #d4a94e; font-weight: 700; }
+  .faq details { border-bottom: 1px solid #2a2a2a; padding: 13px 0; font-size: 14px; }
+  .faq summary { font-weight: 700; cursor: pointer; }
+  .faq p { color: #9a8f7d; margin-top: 8px; line-height: 1.6; }
+  footer { background: #0c0c0c; border-top: 1px solid #2a2a2a; color: #9a8f7d; text-align: center; font-size: 12px; padding: 26px 20px 110px; line-height: 2; }
+  .stickybar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; display: grid; grid-template-columns: 1fr 1fr; box-shadow: 0 -4px 20px rgba(0,0,0,.4); }
+  .stickybar a { text-align: center; font-weight: 800; font-size: 15px; padding: 17px; text-decoration: none; }
+  .stickybar .c { background: #1a1a1a; color: #f2ede4; border-top: 1px solid #2a2a2a; }
+  .stickybar .w { background: #25D366; color: #fff; }
+  @media (min-width: 720px) { h1 { font-size: 56px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo">El Corte Fino<small>Barbería · Triana</small></div>
+    <a class="tel" href="tel:+34600333444">600 333 444</a>
+  </div>
+
+  <div class="hero">
+    <img class="bg" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1200&q=70" alt="Barbería" onerror="this.style.display='none'">
+    <div class="shade"></div>
+    <div class="txt">
+      <span class="kicker">Triana · Sevilla · Desde 2012</span>
+      <h1>El arte del <em>corte perfecto</em></h1>
+      <div class="stars">★★★★★</div>
+      <div class="rev"><b>4.8/5</b> · 214 reseñas en Google</div>
+      <a class="cta" href="https://wa.me/34600333444?text=Hola%2C%20quiero%20reservar%20en%20Barber%C3%ADa%20El%20Corte%20Fino" target="_blank">Reservar por WhatsApp</a>
+      <div class="micro">Corte + barba €25 · Sin esperas, con cita</div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div><b>12</b><span>años en Triana</span></div>
+    <div><b>+8k</b><span>cortes al año</span></div>
+    <div><b>4.8★</b><span>en Google</span></div>
+  </div>
+
+  <section>
+    <h2>Servicios y precios</h2>
+    <p class="sub">Lo que ves es lo que pagas. Sin sorpresas en caja.</p>
+    <div class="serv"><div><b>Corte clásico</b><small>Tijera + máquina, acabado a navaja</small></div><span class="price">€18</span></div>
+    <div class="serv star"><div><span class="tag">El favorito</span><b>Corte + barba</b><small>Toalla caliente + aceites esenciales</small></div><span class="price">€25</span></div>
+    <div class="serv"><div><b>Afeitado a navaja</b><small>Ritual tradicional completo</small></div><span class="price">€15</span></div>
+    <div class="serv"><div><b>Corte infantil</b><small>Hasta 12 años, con paciencia</small></div><span class="price">€14</span></div>
+  </section>
+
+  <section style="background:#0c0c0c;">
+    <h2>La barbería</h2>
+    <p class="sub">Sillones de 1960, café de verdad y buena conversación.</p>
+    <div class="gal">
+      <div><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=60" alt="Salón" loading="lazy" onerror="this.style.display='none'"></div>
+      <div><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=60" alt="Corte" loading="lazy" onerror="this.style.display='none'"></div>
+      <div><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=600&q=60" alt="Herramientas" loading="lazy" onerror="this.style.display='none'"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo que dicen en Google</h2>
+    <p class="sub">214 reseñas · media 4.8/5</p>
+    <div class="op"><div class="stars">★★★★★</div><p>"El único sitio donde salgo contento el 100% de las veces. La toalla caliente es otro nivel."</p><b>— Diego T.</b></div>
+    <div class="op"><div class="stars">★★★★★</div><p>"Reservé por WhatsApp a las 10 y a las 12 ya estaba sentado. Rápidos y unos cracks."</p><b>— Manuel R.</b></div>
+    <div class="op"><div class="stars">★★★★★</div><p>"Llevo a mi hijo desde los 6 años. Paciencia infinita con los niños."</p><b>— Antonio G.</b></div>
+  </section>
+
+  <section style="background:#0c0c0c;">
+    <h2>Dónde estamos</h2>
+    <p class="sub">Calle Betis 45 · Triana, Sevilla · Junto al puente</p>
+    <iframe class="map" title="Mapa" loading="lazy" src="https://maps.google.com/maps?q=Triana,Sevilla&z=15&output=embed"></iframe>
+    <div class="hours">🕘 Lun–Vie: 10:00 – 20:00<br>🕘 Sáb: 9:00 – 15:00 · Dom cerrado<br>📞 <a href="tel:+34600333444">600 333 444</a></div>
+  </section>
+
+  <section class="faq">
+    <h2>Dudas rápidas</h2>
+    <p class="sub">Lo que más nos preguntan.</p>
+    <details><summary>¿Necesito cita o puedo ir directo?</summary><p>Con cita entras a tu hora. Sin cita te atendemos si hay hueco, pero en fines de semana vuela.</p></details>
+    <details><summary>¿Cuánto dura un corte + barba?</summary><p>Unos 45 minutos, sin prisas. Es un ritual, no una carrera.</p></details>
+    <details><summary>¿Hacen arreglos de barba solo?</summary><p>Sí, perfilado y tratamiento por €15. Saldrás como nuevo.</p></details>
+  </section>
+
+  <footer>
+    <b style="color:#d4a94e;">Barbería El Corte Fino</b> · Triana, Sevilla<br>
+    +34 600 333 444 · Lun–Sáb<br><br>
+    <span style="opacity:.6;">Sitio de muestra creado por Kendrick Consultoria Digital</span>
+  </footer>
+
+  <div class="stickybar">
+    <a class="c" href="tel:+34600333444">📞 Llamar</a>
+    <a class="w" href="https://wa.me/34600333444?text=Hola%2C%20quiero%20reservar" target="_blank">WhatsApp</a>
+  </div>
+
+</div>
+</body>
+</html>

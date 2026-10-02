@@ -4,6 +4,9 @@ Variáveis (trocar antes de enviar):
 - `{negocio}` → nome do negócio (ex: Clínica Dental Sonrisa)
 - `{cidade}` → cidade (ex: Madrid)
 - `{categoria}` → categoria em minúsculo/plural natural (ex: dentistas, barberías, pastelerías)
+- `{ejemplo}` → link do exemplo mais parecido:
+  - Saúde/beleza/clínicas → `https://kendrick-z4b.pages.dev/ejemplos/clinica-dental-sonrisa/`
+  - Bares/barbearias/serviços masculinos → `https://kendrick-z4b.pages.dev/ejemplos/barberia-corte-fino/`
 
 Regras:
 - Enviar em horário comercial Espanha: **10h–13h e 16h–19h**
@@ -17,9 +20,10 @@ Regras:
 
 > Hola, soy Veridiana de Kendrick. Vi que {negocio} no aparece en Google cuando buscan {categoria} en {cidade} — sus competidores sí aparecen.
 >
-> Preparé una muestra gratis de cómo se vería su página 👇 [ANEXAR PRINT]
+> Mira lo que hicimos para un negocio parecido 👇
+> {ejemplo}
 >
-> ¿Le interesa que le explique en 5 min por aquí cómo conseguirlo?
+> ¿Le interesa algo así para {negocio}? Le explico en 5 min por aquí.
 
 ## Msg 2 — Follow-up 48h (sem resposta)
 

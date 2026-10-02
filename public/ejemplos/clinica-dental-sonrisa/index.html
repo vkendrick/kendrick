@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Clínica Dental Sonrisa · Dentista en Chamberí, Madrid</title>
+<meta name="description" content="Dentista en Chamberí, Madrid. Primera visita + limpieza desde €39. Pide cita por WhatsApp.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: #123; background: #fff; }
+  img { display: block; max-width: 100%; }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  .topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: #fff; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid #eef2f2; }
+  .logo { font-weight: 800; font-size: 18px; color: #0b6b68; }
+  .logo small { display: block; font-weight: 400; font-size: 11px; color: #7a8a8a; }
+  .tel { color: #0b6b68; font-weight: 700; font-size: 14px; text-decoration: none; border: 1.5px solid #0b6b68; padding: 8px 14px; border-radius: 999px; }
+  .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-end; background: linear-gradient(160deg, #0b6b68, #083f3d); }
+  .hero img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(4,32,31,.92) 20%, rgba(4,32,31,.35) 60%, rgba(4,32,31,.25)); }
+  .hero .txt { position: relative; padding: 28px 22px 34px; color: #fff; width: 100%; }
+  .kicker { display: inline-block; background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.35); font-size: 12px; padding: 6px 12px; border-radius: 999px; margin-bottom: 14px; }
+  h1 { font-size: 38px; line-height: 1.08; margin-bottom: 12px; }
+  h1 em { color: #ffd97a; font-style: normal; }
+  .stars { color: #ffd97a; font-size: 15px; letter-spacing: 2px; }
+  .rev { font-size: 13px; color: rgba(255,255,255,.85); margin: 6px 0 20px; }
+  .cta { display: block; text-align: center; background: #25D366; color: #fff; font-weight: 800; font-size: 16px; padding: 16px; border-radius: 12px; text-decoration: none; }
+  .micro { text-align: center; font-size: 12px; color: rgba(255,255,255,.75); margin-top: 10px; }
+  .strip { display: grid; grid-template-columns: repeat(3, 1fr); background: #0b6b68; color: #fff; text-align: center; }
+  .strip div { padding: 16px 6px; }
+  .strip b { display: block; font-size: 20px; }
+  .strip span { font-size: 11px; opacity: .8; }
+  section { padding: 34px 22px; }
+  h2 { font-size: 24px; color: #083f3d; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: #7a8a8a; margin-bottom: 18px; }
+  .treat { border: 1px solid #e3ecec; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .treat b { font-size: 15px; color: #123; }
+  .treat small { display: block; font-weight: 400; font-size: 12px; color: #7a8a8a; margin-top: 3px; }
+  .price { font-weight: 800; font-size: 17px; color: #0b6b68; white-space: nowrap; }
+  .check li { list-style: none; padding: 9px 0; border-bottom: 1px solid #eef2f2; font-size: 14px; }
+  .check li:last-child { border: 0; }
+  .check b { color: #0b6b68; margin-right: 8px; }
+  .gal { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+  .gal div { border-radius: 12px; overflow: hidden; aspect-ratio: 3/4; background: linear-gradient(160deg, #cde7e5, #9cc9c6); }
+  .gal img { width: 100%; height: 100%; object-fit: cover; }
+  .op { background: #f2f7f7; border-radius: 14px; padding: 18px; margin-bottom: 12px; }
+  .op p { font-size: 14px; line-height: 1.6; margin: 8px 0; }
+  .op b { font-size: 13px; color: #0b6b68; }
+  iframe.map { width: 100%; height: 250px; border: 0; border-radius: 14px; }
+  .hours { font-size: 14px; margin-top: 14px; line-height: 2; }
+  .faq details { border-bottom: 1px solid #eef2f2; padding: 13px 0; font-size: 14px; }
+  .faq summary { font-weight: 700; color: #083f3d; cursor: pointer; }
+  .faq p { color: #556; margin-top: 8px; line-height: 1.6; }
+  footer { background: #083f3d; color: rgba(255,255,255,.65); text-align: center; font-size: 12px; padding: 26px 20px 110px; line-height: 2; }
+  footer b { color: #ffd97a; }
+  .stickybar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; display: grid; grid-template-columns: 1fr 1fr; gap: 0; box-shadow: 0 -4px 20px rgba(0,0,0,.15); }
+  .stickybar a { text-align: center; font-weight: 800; font-size: 15px; padding: 17px; text-decoration: none; }
+  .stickybar .c { background: #fff; color: #0b6b68; border-top: 1px solid #e3ecec; }
+  .stickybar .w { background: #25D366; color: #fff; }
+  @media (min-width: 720px) { h1 { font-size: 52px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo">🦷 Sonrisa<small>Dentista · Chamberí, Madrid</small></div>
+    <a class="tel" href="tel:+34600111222">600 111 222</a>
+  </div>
+
+  <div class="hero">
+    <img class="bg" src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1200&q=70" alt="Clínica dental moderna" onerror="this.style.display='none'">
+    <div class="shade"></div>
+    <div class="txt">
+      <span class="kicker">Chamberí · Madrid</span>
+      <h1>Sonríe <em>sin miedo</em> al dentista</h1>
+      <div class="stars">★★★★★</div>
+      <div class="rev"><b>4.9/5</b> · 127 reseñas en Google</div>
+      <a class="cta" href="https://wa.me/34600111222?text=Hola%2C%20quiero%20pedir%20cita%20en%20Cl%C3%ADnica%20Dental%20Sonrisa" target="_blank">Pedir cita por WhatsApp</a>
+      <div class="micro">Primera visita + limpieza desde €39 · Sin esperas</div>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div><b>+2.500</b><span>pacientes</span></div>
+    <div><b>15</b><span>años contigo</span></div>
+    <div><b>4.9★</b><span>en Google</span></div>
+  </div>
+
+  <section>
+    <h2>Tratamientos y precios claros</h2>
+    <p class="sub">Sin letra pequeña. Sabes lo que pagas antes de sentarte.</p>
+    <div class="treat"><div><b>Limpieza dental</b><small>40 min · sin dolor</small></div><span class="price">€39</span></div>
+    <div class="treat"><div><b>Empaste</b><small>Material estética del color del diente</small></div><span class="price">desde €60</span></div>
+    <div class="treat"><div><b>Ortodoncia invisible</b><small>Estudio + plan a medida gratis</small></div><span class="price">desde €1.900</span></div>
+    <div class="treat"><div><b>Implante dental</b><small>Con corona incluida</small></div><span class="price">desde €750</span></div>
+  </section>
+
+  <section style="background:#f2f7f7;">
+    <h2>Tu primera visita incluye</h2>
+    <p class="sub">Todo esto, sin compromiso.</p>
+    <ul class="check">
+      <li><b>✓</b> Revisión completa y diagnóstico</li>
+      <li><b>✓</b> Limpieza dental profesional</li>
+      <li><b>✓</b> Presupuesto cerrado por escrito</li>
+      <li><b>✓</b> Plan de pago a plazos sin intereses</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>La clínica por dentro</h2>
+    <p class="sub">Equipos nuevos, cero dolor, trato de barrio.</p>
+    <div class="gal">
+      <div><img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=600&q=60" alt="Clínica" loading="lazy" onerror="this.style.display='none'"></div>
+      <div><img src="https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?auto=format&fit=crop&w=600&q=60" alt="Paciente" loading="lazy" onerror="this.style.display='none'"></div>
+      <div><img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=60" alt="Equipo" loading="lazy" onerror="this.style.display='none'"></div>
+    </div>
+  </section>
+
+  <section style="background:#f2f7f7;">
+    <h2>Lo que dicen en Google</h2>
+    <p class="sub">127 reseñas · media 4.9/5</p>
+    <div class="op"><div class="stars" style="color:#e8a800;">★★★★★</div><p>"Llevaba años con miedo al dentista. Aquí ni me enteré. La limpieza, rapidísima y sin dolor."</p><b>— Carmen R.</b></div>
+    <div class="op"><div class="stars" style="color:#e8a800;">★★★★★</div><p>"Me dieron el presupuesto por escrito antes de empezar y lo cumplieron al euro. Muy profesionales."</p><b>— Javier M.</b></div>
+    <div class="op"><div class="stars" style="color:#e8a800;">★★★★★</div><p>"Pedí cita por WhatsApp un lunes y el miércoles ya estaba sentada. Así da gusto."</p><b>— Lucía F.</b></div>
+  </section>
+
+  <section>
+    <h2>Dónde estamos</h2>
+    <p class="sub">Calle de Fuencarral 123 · Chamberí, Madrid · Metro Tribunal</p>
+    <iframe class="map" title="Mapa" loading="lazy" src="https://maps.google.com/maps?q=Chamberi,Madrid&z=15&output=embed"></iframe>
+    <div class="hours">🕘 Lun–Vie: 9:00 – 20:00<br>🕘 Sáb: 10:00 – 14:00<br>📞 <a href="tel:+34600111222" style="color:#0b6b68;font-weight:700;">600 111 222</a></div>
+  </section>
+
+  <section class="faq" style="background:#f2f7f7;">
+    <h2>Dudas rápidas</h2>
+    <p class="sub">Lo que más nos preguntan por WhatsApp.</p>
+    <details><summary>¿Duele la limpieza?</summary><p>No. Usamos ultrasonidos suaves y, si eres sensible, anestesia tópica. La mayoría sale diciendo "¿ya está?".</p></details>
+    <details><summary>¿Puedo pagar a plazos?</summary><p>Sí, hasta en 12 meses sin intereses para tratamientos desde €300.</p></details>
+    <details><summary>¿Atienden urgencias?</summary><p>Sí, todos los días. Escríbenos por WhatsApp y te buscamos hueco hoy mismo.</p></details>
+  </section>
+
+  <footer>
+    <b>Clínica Dental Sonrisa</b> · Chamberí, Madrid<br>
+    +34 600 111 222 · Lun–Vie 9–20h<br><br>
+    <span style="opacity:.6;">Sitio de muestra creado por Kendrick Consultoria Digital</span>
+  </footer>
+
+  <div class="stickybar">
+    <a class="c" href="tel:+34600111222">📞 Llamar</a>
+    <a class="w" href="https://wa.me/34600111222?text=Hola%2C%20quiero%20pedir%20cita" target="_blank">WhatsApp</a>
+  </div>
+
+</div>
+</body>
+</html>
