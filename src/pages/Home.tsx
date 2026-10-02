@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 
-// ─── DATOS ────────────────────────────────────────────────────────────
+// ─── DATOS ────────────────────────────────────────────────────────────────────
 
 const STATS = [
   { value: "+120", label: "Negocios ayudados" },
@@ -129,15 +129,6 @@ const PORTFOLIO = [
     metric: "Clases llenas en 6 sem.",
     detail: "Publicidad Meta + automatización de reservas",
   },
-  {
-    initials: "AF",
-    color: "#374151",
-    business: "Taller AutoFix",
-    sector: "Taller mecánico · Zaragoza",
-    package: "Nivel 01",
-    metric: "5-6 clientes/mes",
-    detail: "Google local + reseñas + mejor presencia digital",
-  },
 ];
 
 const PROCESS = [
@@ -170,7 +161,7 @@ const FAQS = [
   },
 ];
 
-// ─── COMPONENTES ────────────────────────────────────────────────────────
+// ─── COMPONENTES ──────────────────────────────────────────────────────────────
 
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
@@ -192,7 +183,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-// ─── PÁGINA ──────────────────────────────────────────────────────────
+// ─── PÁGINA ───────────────────────────────────────────────────────────────────
 
 export default function Home() {
   const [form, setForm] = useState({ name: "", email: "", company: "", message: "", consent: false });
@@ -210,6 +201,7 @@ export default function Home() {
       });
       if (res.ok) {
         toast.success("¡Mensaje enviado! Te respondemos en menos de 24 horas.");
+        // Open WhatsApp with prefilled message
         const waText = encodeURIComponent(`Hola, soy ${form.name}. ${form.message}`);
         window.open(`https://wa.me/34658598442?text=${waText}`, "_blank");
         setForm({ name: "", email: "", company: "", message: "", consent: false });
@@ -252,7 +244,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 to="/quiz"
-                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a]"
+                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a] active:scale-[0.97]"
               >
                 Diagnóstico gratuito — 3 min
                 <ArrowRight size={15} />
@@ -266,6 +258,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Stats strip */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-10">
             {STATS.map((s) => (
               <div key={s.label} className="border border-white/10 rounded-lg p-5 text-center">
@@ -321,6 +314,7 @@ export default function Home() {
             </p>
           </div>
 
+          {/* Flecha visual de progresión */}
           <div className="flex items-center justify-center gap-2 my-8 text-xs text-gray-300 font-sans">
             <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Sin presencia</span>
             <ArrowRight size={12} />
@@ -360,7 +354,7 @@ export default function Home() {
                       <li key={item} className="flex items-start gap-2">
                         <CheckCircle2
                           size={13}
-                          className="mt-0.5 shrink-0 text-[#C5A880]"
+                          className={`mt-0.5 shrink-0 ${pkg.highlight ? "text-[#C5A880]" : "text-[#C5A880]"}`}
                         />
                         <span className={`text-sm ${pkg.highlight ? "text-white/80" : "text-gray-600"}`}>
                           {item}
@@ -428,25 +422,27 @@ export default function Home() {
               { name: "Reyes Arquitectura", type: "Arquitectura · Nivel 02", bg: "#2d1b00", accent: "#b45309" },
               { name: "Pastelería Dulce Luna", type: "Pastelería · Nivel 01", bg: "#3b0a2a", accent: "#ec4899" },
               { name: "Yoga Alma Serena", type: "Bienestar · Nivel 03", bg: "#022c22", accent: "#10b981" },
-              { name: "Taller AutoFix", type: "Taller · Nivel 01", bg: "#111827", accent: "#9ca3af" },
             ].map((site) => (
               <div
                 key={site.name}
                 className="rounded-xl overflow-hidden border border-gray-100 relative group"
                 style={{ backgroundColor: site.bg, aspectRatio: "16/9" }}
               >
+                {/* Browser chrome */}
                 <div className="absolute top-0 left-0 right-0 h-5 flex items-center gap-1 px-2" style={{ backgroundColor: "rgba(0,0,0,0.35)" }}>
                   <div className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
                   <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
                   <div className="flex-1 mx-2 h-2.5 rounded-sm" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
                 </div>
+                {/* Fake content */}
                 <div className="absolute inset-0 top-5 p-3 flex flex-col gap-1.5">
                   <div className="h-2.5 w-2/3 rounded" style={{ backgroundColor: site.accent, opacity: 0.9 }} />
                   <div className="h-1.5 w-full rounded" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
                   <div className="h-1.5 w-4/5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.05)" }} />
                   <div className="h-6 w-1/3 rounded mt-1" style={{ backgroundColor: site.accent, opacity: 0.5 }} />
                 </div>
+                {/* Label */}
                 <div className="absolute inset-0 top-5 flex flex-col justify-end p-3 bg-gradient-to-t from-black/75 to-transparent">
                   <p className="text-white font-bold text-xs leading-tight">{site.name}</p>
                   <p className="text-white/50 text-[10px] font-sans">{site.type}</p>
@@ -474,7 +470,7 @@ export default function Home() {
             </div>
             <Link
               to="/casos"
-              className="inline-flex items-center gap-2 text-[#0B2545] font-semibold text-sm border-b border-[#0B2545] pb-0.5 hover:text-[#C5A880] hover:border-[#C5A880] transition-colors"
+              className="inline-flex items-center gap-2 text-[#0B2545] font-semibold text-sm border-b border-[#0B2545] pb-0.5 hover:text-[#C5A880] hover:border-[#C5A880] transition-colors shrink-0"
             >
               Ver los 7 casos completos <ArrowRight size={13} />
             </Link>
@@ -547,7 +543,7 @@ export default function Home() {
           <div className="flex justify-center gap-0.5 mb-6">
             {Array.from({ length: 5 }).map((_, i) => (
               <svg key={i} className="w-4 h-4 text-[#C5A880] fill-[#C5A880]" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.799-2.033a1 1 0 00-1.175 0l-2.799 2.033c-.785.57-1.839-.197-1.54-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.079 8.71c-.783-.57-.381-1.81.588-1.81h3.462a1 1 0 00.95-.69L7.148 2.927z" />
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             ))}
           </div>

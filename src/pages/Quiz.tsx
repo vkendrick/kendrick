@@ -432,22 +432,14 @@ export default function Quiz() {
               ))}
             </ul>
 
-            <div className="space-y-3">
-              <a
-                href="https://wa.me/34658598442?text=Hola%2C%20hice%20el%20diagn%C3%B3stico%20y%20me%20gustar%C3%ADa%20hablar%20sobre%20el%20${encodeURIComponent(pkg.name)}"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center bg-[#25D366] text-white font-bold py-3.5 rounded-xl text-sm hover:bg-[#1ebe5d] transition-all active:scale-[0.97]"
-              >
-                Hablar por WhatsApp →
-              </a>
-              <a
-                href="mailto:veridiana@kendrick.com?subject=Diagn%C3%B3stico%20-%20${encodeURIComponent(pkg.name)}&body=Hola%2C%20hice%20el%20diagn%C3%B3stico%20y%20mi%20nivel%20es%20${encodeURIComponent(r.label)}.%20Me%20gustar%C3%ADa%20saber%20m%C3%A1s."
-                className="block text-center bg-[#0B2545] text-white font-bold py-3.5 rounded-xl text-sm hover:bg-[#1a3a6b] transition-all active:scale-[0.97]"
-              >
-                Enviar email →
-              </a>
-            </div>
+            <a
+              href={r.calendlyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block text-center bg-[#C5A880] text-[#0B2545] font-bold py-3.5 rounded-xl text-sm hover:bg-[#d4bc9a] transition-all active:scale-[0.97]"
+            >
+              Reservar llamada gratuita →
+            </a>
           </div>
 
           {/* Próximo nivel */}
