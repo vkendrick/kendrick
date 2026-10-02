@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
-import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Star } from "lucide-react";
+import PortfolioCarousel from "../components/PortfolioCarousel";
 
 // ─── DATOS ────────────────────────────────────────────────────────────────────
 
@@ -186,35 +186,6 @@ function FaqItem({ q, a }: { q: string; a: string }) {
 // ─── PÁGINA ───────────────────────────────────────────────────────────────────
 
 export default function Home() {
-  const [form, setForm] = useState({ name: "", email: "", company: "", message: "", consent: false });
-  const [sending, setSending] = useState(false);
-
-  const handleContact = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.consent) { toast.error("Debes aceptar la política de privacidad"); return; }
-    setSending(true);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        toast.success("¡Mensaje enviado! Te respondemos en menos de 24 horas.");
-        // Open WhatsApp with prefilled message
-        const waText = encodeURIComponent(`Hola, soy ${form.name}. ${form.message}`);
-        window.open(`https://wa.me/34658598442?text=${waText}`, "_blank");
-        setForm({ name: "", email: "", company: "", message: "", consent: false });
-      } else {
-        toast.error("Algo salió mal. Escríbenos a veridiana@kendrick.com");
-      }
-    } catch {
-      toast.error("Error de conexión. Inténtalo de nuevo.");
-    } finally {
-      setSending(false);
-    }
-  };
-
   return (
     <main>
 
@@ -230,32 +201,46 @@ export default function Home() {
         </div>
 
         <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-12 w-full">
-          <div className="max-w-2xl">
-            <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-8">
-              Consultoría Digital · Para pequeños negocios
+          <div className="max-w-3xl">
+            <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-6">
+              Consultoría Digital · Negocios locales
             </span>
-            <h1 className="text-white text-5xl md:text-6xl font-bold leading-[1.1] mb-6">
-              Más clientes.{" "}
-              <span className="text-[#C5A880] italic">Sin complicaciones.</span>
+            <h1 className="text-white text-5xl md:text-6xl font-bold leading-[1.05] mb-6">
+              Consigo <span className="text-[#C5A880] italic">5-10 clientes nuevos/mes</span> para negocios invisibles en Google
             </h1>
-            <p className="text-white/60 text-lg mb-10 max-w-md leading-relaxed">
-              Construimos tu presencia digital y el sistema que convierte visitas en clientes.
+            <p className="text-white/60 text-lg md:text-xl mb-8 max-w-xl leading-relaxed">
+              Sistema Google Maps + Web + WhatsApp en 4 semanas. Sin tecnicismos. Sin depender del boca a boca.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
+
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 text-white/70 text-sm font-sans">
+              <span className="inline-flex items-center gap-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
+                ))}
+              </span>
+              <span className="font-semibold text-white">4.9/5</span>
+              <span className="px-3 border-l border-white/20">47 reseñas Google</span>
+              <span className="px-3 border-l border-white/20">+€50k facturación extra generada</span>
+              <span className="px-3 border-l border-white/20">7 casos documentados</span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 to="/quiz"
-                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a] active:scale-[0.97]"
+                className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a] active:scale-[0.97] w-full sm:w-auto"
               >
                 Diagnóstico gratuito — 3 min
                 <ArrowRight size={15} />
               </Link>
               <a
-                href="#servicios"
-                className="inline-flex items-center justify-center gap-2 border border-white/20 text-white/80 font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-white/5"
+                href="#portfolio"
+                className="inline-flex items-center justify-center gap-2 border border-white/20 text-white/80 font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-white/5 w-full sm:w-auto"
               >
-                Ver servicios
+                Ver casos reales
               </a>
             </div>
+
+            <p className="text-white/30 text-xs mt-4 font-sans">Sin tarjeta · Sin compromiso · Respuesta en 24h</p>
           </div>
 
           {/* Stats strip */}
@@ -403,58 +388,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PORTAFOLIO VISUAL — mockups de sites realizados ── */}
-      <section className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="text-center mb-10">
-            <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
-              Nuestro trabajo
-            </span>
-            <h2 className="text-[#0B2545] text-3xl font-bold mt-2">
-              Sitios que construimos
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {[
-              { name: "FisioVida Madrid", type: "Clínica · Nivel 01", bg: "#0B2545", accent: "#C5A880" },
-              { name: "Barbería Don Mateo", type: "Barbería · Nivel 01", bg: "#1a1a2e", accent: "#7c3aed" },
-              { name: "LinguaFlow", type: "Academia · Nivel 02", bg: "#0e4a5c", accent: "#0ea5e9" },
-              { name: "Reyes Arquitectura", type: "Arquitectura · Nivel 02", bg: "#2d1b00", accent: "#b45309" },
-              { name: "Pastelería Dulce Luna", type: "Pastelería · Nivel 01", bg: "#3b0a2a", accent: "#ec4899" },
-              { name: "Yoga Alma Serena", type: "Bienestar · Nivel 03", bg: "#022c22", accent: "#10b981" },
-            ].map((site) => (
-              <div
-                key={site.name}
-                className="rounded-xl overflow-hidden border border-gray-100 relative group"
-                style={{ backgroundColor: site.bg, aspectRatio: "16/9" }}
-              >
-                {/* Browser chrome */}
-                <div className="absolute top-0 left-0 right-0 h-5 flex items-center gap-1 px-2" style={{ backgroundColor: "rgba(0,0,0,0.35)" }}>
-                  <div className="w-1.5 h-1.5 rounded-full bg-red-400/70" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-yellow-400/70" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-400/70" />
-                  <div className="flex-1 mx-2 h-2.5 rounded-sm" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
-                </div>
-                {/* Fake content */}
-                <div className="absolute inset-0 top-5 p-3 flex flex-col gap-1.5">
-                  <div className="h-2.5 w-2/3 rounded" style={{ backgroundColor: site.accent, opacity: 0.9 }} />
-                  <div className="h-1.5 w-full rounded" style={{ backgroundColor: "rgba(255,255,255,0.08)" }} />
-                  <div className="h-1.5 w-4/5 rounded" style={{ backgroundColor: "rgba(255,255,255,0.05)" }} />
-                  <div className="h-6 w-1/3 rounded mt-1" style={{ backgroundColor: site.accent, opacity: 0.5 }} />
-                </div>
-                {/* Label */}
-                <div className="absolute inset-0 top-5 flex flex-col justify-end p-3 bg-gradient-to-t from-black/75 to-transparent">
-                  <p className="text-white font-bold text-xs leading-tight">{site.name}</p>
-                  <p className="text-white/50 text-[10px] font-sans">{site.type}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <p className="text-center text-gray-400 text-xs mt-5 font-sans">
-            Todos los sitios son funcionales y entregados con formación incluida.
-          </p>
-        </div>
-      </section>
+      {/* ── PORTAFOLIO REAL — screenshots de proyectos entregados ── */}
+      <div id="portfolio">
+        <PortfolioCarousel />
+      </div>
 
       {/* ── PORTAFOLIO — grid visual de resultados ── */}
       <section className="py-24 bg-[#FAF8F5]">
@@ -596,113 +533,35 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CONTACTO ── */}
+      {/* ── CONTACTO — solo WhatsApp + Email ── */}
       <section id="contacto" className="py-24 bg-[#FAF8F5]">
-        <div className="max-w-5xl mx-auto px-6">
-          <div className="grid md:grid-cols-2 gap-16 items-start">
-            <div>
-              <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
-                Contacto
-              </span>
-              <h2 className="text-[#0B2545] text-3xl font-bold mt-3 mb-4">
-                ¿Tienes alguna pregunta?
-              </h2>
-              <p className="text-gray-500 text-sm leading-relaxed mb-8">
-                Escríbenos. Sin presiones, sin vendedores. Solo una conversación honesta sobre tu negocio.
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[#C5A880] text-xs">✉</div>
-                  <span className="text-[#0B2545] text-sm font-semibold">veridiana@kendrick.com</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-white border border-gray-100 flex items-center justify-center text-[#C5A880] text-xs">⏱</div>
-                  <span className="text-[#0B2545] text-sm font-semibold">Respuesta en menos de 24 horas</span>
-                </div>
-              </div>
-            </div>
-
-            <form onSubmit={handleContact} className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Nombre *</label>
-                  <input
-                    type="text"
-                    required
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
-                    placeholder="Tu nombre"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Email *</label>
-                  <input
-                    type="email"
-                    required
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
-                    placeholder="tu@email.com"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">Negocio</label>
-                <input
-                  type="text"
-                  value={form.company}
-                  onChange={(e) => setForm({ ...form, company: e.target.value })}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors"
-                  placeholder="Ej: Clínica Dental García"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5 font-sans">¿En qué podemos ayudarte? *</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={form.message}
-                  onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  className="w-full bg-white border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:border-[#0B2545] transition-colors resize-none"
-                  placeholder="Cuéntanos brevemente tu situación..."
-                />
-              </div>
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={form.consent}
-                  onChange={(e) => setForm({ ...form, consent: e.target.checked })}
-                  className="mt-0.5 shrink-0 accent-[#0B2545]"
-                />
-                <span className="text-xs text-gray-400 leading-relaxed">
-                  He leído y acepto la{" "}
-                  <Link to="/privacidad" className="text-[#0B2545] underline hover:text-[#C5A880]">
-                    Política de Privacidad
-                  </Link>
-                  .
-                </span>
-              </label>
-              <button
-                type="submit"
-                disabled={sending}
-                className="w-full bg-[#0B2545] text-white font-bold py-3.5 rounded-lg text-sm hover:bg-[#1a3a6b] transition-colors disabled:opacity-60 active:scale-[0.97]"
-              >
-                {sending ? "Enviando..." : "Enviar mensaje →"}
-              </button>
-              <p className="text-center text-gray-400 text-xs font-sans">
-                O escríbenos directamente por{" "}
-                <a
-                  href="https://wa.me/34658598442?text=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20sus%20servicios."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[#25D366] font-semibold hover:underline"
-                >
-                  WhatsApp
-                </a>
-              </p>
-            </form>
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <span className="text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold">
+            Contacto
+          </span>
+          <h2 className="text-[#0B2545] text-3xl font-bold mt-3 mb-4">
+            ¿Tienes alguna pregunta?
+          </h2>
+          <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-lg mx-auto">
+            Escríbenos por WhatsApp o email. Sin presiones, sin vendedores. Solo una conversación honesta sobre tu negocio.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="https://wa.me/34658598442?text=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-3 bg-[#25D366] text-white font-bold px-8 py-4 rounded-xl text-sm tracking-wide hover:bg-[#1ebe5d] transition-all active:scale-[0.97]"
+            >
+              Hablar por WhatsApp
+            </a>
+            <a
+              href="mailto:veridiana@kendrick.com?subject=Consulta%20servicios&body=Hola%2C%20me%20gustar%C3%ADa%20saber%20m%C3%A1s%20sobre%20los%20servicios."
+              className="inline-flex items-center justify-center gap-3 bg-[#0B2545] text-white font-bold px-8 py-4 rounded-xl text-sm tracking-wide hover:bg-[#1a3a6b] transition-all active:scale-[0.97]"
+            >
+              Enviar email
+            </a>
           </div>
+          <p className="text-gray-400 text-xs mt-4 font-sans">+34 658 598 442 · veridiana@kendrick.com · Respuesta en menos de 24 horas</p>
         </div>
       </section>
 

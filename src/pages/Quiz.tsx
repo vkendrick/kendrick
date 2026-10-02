@@ -79,7 +79,6 @@ const RESULTS: Record<LevelKey, {
     includes: string[];
     nextLevel?: string;
   };
-  calendlyUrl: string;
 }> = {
   invisible_digital: {
     label: "Invisible Digital",
@@ -99,7 +98,6 @@ const RESULTS: Record<LevelKey, {
       ],
       nextLevel: "Cuando tengas la base, el Nivel 02 conecta todo en un sistema de ventas.",
     },
-    calendlyUrl: "https://calendly.com/kendrick-consultoria/arranque-digital",
   },
   estructura_desconectada: {
     label: "Estructura Desconectada",
@@ -121,7 +119,6 @@ const RESULTS: Record<LevelKey, {
       ],
       nextLevel: "Con el sistema listo, el Nivel 03 multiplica resultados con publicidad.",
     },
-    calendlyUrl: "https://calendly.com/kendrick-consultoria/estructura-ventas",
   },
   optimizacion_escala: {
     label: "Optimización y Escala",
@@ -141,7 +138,6 @@ const RESULTS: Record<LevelKey, {
         "Manual personalizado de crecimiento",
       ],
     },
-    calendlyUrl: "https://calendly.com/kendrick-consultoria/mentoria-crecimiento",
   },
 };
 
@@ -432,14 +428,22 @@ export default function Quiz() {
               ))}
             </ul>
 
-            <a
-              href={r.calendlyUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block text-center bg-[#C5A880] text-[#0B2545] font-bold py-3.5 rounded-xl text-sm hover:bg-[#d4bc9a] transition-all active:scale-[0.97]"
-            >
-              Reservar llamada gratuita →
-            </a>
+            <div className="space-y-3">
+              <a
+                href={`https://wa.me/34658598442?text=${encodeURIComponent(`Hola, hice el diagnóstico (${r.label}) y me gustaría hablar sobre ${pkg.name}.`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block text-center bg-[#25D366] text-white font-bold py-3.5 rounded-xl text-sm hover:bg-[#1ebe5d] transition-all active:scale-[0.97]"
+              >
+                Hablar por WhatsApp →
+              </a>
+              <a
+                href={`mailto:veridiana@kendrick.com?subject=${encodeURIComponent(`Diagnóstico - ${pkg.name}`)}&body=${encodeURIComponent(`Hola, hice el diagnóstico y mi nivel es ${r.label}. Me gustaría saber más.`)}`}
+                className="block text-center bg-[#0B2545] text-white font-bold py-3.5 rounded-xl text-sm hover:bg-[#1a3a6b] transition-all active:scale-[0.97]"
+              >
+                Enviar email →
+              </a>
+            </div>
           </div>
 
           {/* Próximo nivel */}
