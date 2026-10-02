@@ -189,39 +189,33 @@ export default function Home() {
   return (
     <main>
 
-      {/* ── HERO ── */}
-      <section className="relative min-h-[100svh] flex items-center bg-[#0B2545] overflow-hidden">
-        <div className="absolute inset-0">
-          <img
-            src="/images/hero-consultant.jpg"
-            alt=""
-            className="w-full h-full object-cover opacity-15"
-          />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0B2545] via-[#0B2545]/95 to-[#0B2545]/70" />
-        </div>
+      {/* ── HERO (paleta clara) ── */}
+      <section className="relative min-h-[100svh] flex items-center bg-white overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(55rem_28rem_at_85%_-10%,rgba(197,168,128,0.20),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(40rem_24rem_at_-10%_110%,rgba(11,37,69,0.07),transparent)]" />
 
         <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-12 w-full">
           <div className="max-w-3xl">
             <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-6">
               Consultoría Digital · Negocios locales
             </span>
-            <h1 className="text-white text-5xl md:text-6xl font-bold leading-[1.05] mb-6">
+            <h1 className="text-[#0B2545] text-5xl md:text-6xl font-bold leading-[1.05] mb-6">
               Consigo <span className="text-[#C5A880] italic">5-10 clientes nuevos/mes</span> para negocios invisibles en Google
             </h1>
-            <p className="text-white/60 text-lg md:text-xl mb-8 max-w-xl leading-relaxed">
+            <p className="text-gray-500 text-lg md:text-xl mb-8 max-w-xl leading-relaxed">
               Sistema Google Maps + Web + WhatsApp en 4 semanas. Sin tecnicismos. Sin depender del boca a boca.
             </p>
 
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 text-white/70 text-sm font-sans">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 text-gray-500 text-sm font-sans">
               <span className="inline-flex items-center gap-2">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
                 ))}
               </span>
-              <span className="font-semibold text-white">4.9/5</span>
-              <span className="px-3 border-l border-white/20">47 reseñas Google</span>
-              <span className="px-3 border-l border-white/20">+€50k facturación extra generada</span>
-              <span className="px-3 border-l border-white/20">7 casos documentados</span>
+              <span className="font-semibold text-[#0B2545]">4.9/5</span>
+              <span className="px-3 border-l border-gray-200">47 reseñas Google</span>
+              <span className="px-3 border-l border-gray-200">+€50k facturación extra generada</span>
+              <span className="px-3 border-l border-gray-200">7 casos documentados</span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -234,23 +228,23 @@ export default function Home() {
               </Link>
               <a
                 href="#portfolio"
-                className="inline-flex items-center justify-center gap-2 border border-white/20 text-white/80 font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-white/5 w-full sm:w-auto"
+                className="inline-flex items-center justify-center gap-2 border border-[#0B2545]/20 text-[#0B2545] font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#0B2545]/5 w-full sm:w-auto"
               >
                 Ver casos reales
               </a>
             </div>
 
-            <p className="text-white/30 text-xs mt-4 font-sans">Sin tarjeta · Sin compromiso · Respuesta en 24h</p>
+            <p className="text-gray-400 text-xs mt-4 font-sans">Sin tarjeta · Sin compromiso · Respuesta en 24h</p>
           </div>
 
           {/* Stats strip */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-10">
             {STATS.map((s) => (
-              <div key={s.label} className="border border-white/10 rounded-lg p-5 text-center">
+              <div key={s.label} className="bg-[#FAF8F5] border border-gray-100 rounded-lg p-5 text-center">
                 <div className="text-[#C5A880] text-2xl font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
                   {s.value}
                 </div>
-                <div className="text-white/40 text-xs font-sans">{s.label}</div>
+                <div className="text-gray-400 text-xs font-sans">{s.label}</div>
               </div>
             ))}
           </div>

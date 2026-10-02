@@ -7,6 +7,9 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const isQuiz = location.pathname === "/quiz";
+  // /casos tem header escuro → texto claro; demais páginas (hero/páginas claras) → texto azul-marinho
+  const darkHeader = location.pathname.startsWith("/casos");
+  const lightText = scrolled || darkHeader;
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -27,13 +30,17 @@ export default function Navbar() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-[#0B2545]/95 backdrop-blur-sm shadow-lg" : "bg-transparent"
+        scrolled
+          ? "bg-[#0B2545]/95 backdrop-blur-sm shadow-lg"
+          : darkHeader
+            ? "bg-transparent"
+            : "bg-white/85 backdrop-blur-sm border-b border-gray-100"
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex flex-col leading-none">
-          <span className="text-white font-bold text-lg tracking-wider" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <span className={`${lightText ? "text-white" : "text-[#0B2545]"} font-bold text-lg tracking-wider`} style={{ fontFamily: "'Playfair Display', serif" }}>
             KENDRICK
           </span>
           <span className="text-[#C5A880] text-[9px] tracking-[3px] uppercase font-sans">
@@ -48,7 +55,7 @@ export default function Navbar() {
               <Link
                 key={l.label}
                 to={l.href}
-                className="text-white/80 hover:text-[#C5A880] text-sm font-medium transition-colors duration-200"
+                className={`${lightText ? "text-white/80 hover:text-[#C5A880]" : "text-[#0B2545]/70 hover:text-[#0B2545]"} text-sm font-medium transition-colors duration-200`}
               >
                 {l.label}
               </Link>
@@ -56,12 +63,11 @@ export default function Navbar() {
               <a
                 key={l.label}
                 href={l.href}
-                className="text-white/80 hover:text-[#C5A880] text-sm font-medium transition-colors duration-200"
+                className={`${lightText ? "text-white/80 hover:text-[#C5A880]" : "text-[#0B2545]/70 hover:text-[#0B2545]"} text-sm font-medium transition-colors duration-200`}
               >
                 {l.label}
               </a>
-            )
-          )}
+            ))}
         </nav>
 
         {/* CTA */}
@@ -76,7 +82,7 @@ export default function Navbar() {
 
         {/* Mobile toggle */}
         <button
-          className="md:hidden text-white p-1"
+          className={`md:hidden p-1 ${lightText ? "text-white" : "text-[#0B2545]"}`}
           onClick={() => setOpen(!open)}
           aria-label="Menú"
         >
