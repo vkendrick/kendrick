@@ -30,7 +30,8 @@ function json(data: unknown, status = 200) {
 }
 
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env; params: unknown }) => {
-  if (!env.GOOGLE_AI_API_KEY) return json({ error: "IA no configurada" }, 503);
+  const apiKey = (env.GOOGLE_AI_API_KEY || "").trim();
+  if (!apiKey) return json({ error: "IA no configurada" }, 503);
 
   let body: { messages?: ChatMsg[]; stage?: string };
   try {
@@ -45,7 +46,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (!clean.length) return json({ error: "Sin mensajes" }, 400);
 
   const geminiRes = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + env.GOOGLE_AI_API_KEY,
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -59,7 +60,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       }),
     }
   ).catch(() => null);
-  if (!geminiRes || !geminiRes.ok) return json({ error: "Error IA" }, 502);
+  if (!geminiRes || !geminiRes.ok) return json({ error: "Error IA", up: geminiRes ? geminiRes.status : 0 }, 502);
 
   let out: { reply?: unknown; stage?: unknown; booked?: unknown; ended?: unknown };
   try {

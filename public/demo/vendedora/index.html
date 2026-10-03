@@ -297,7 +297,11 @@ async function handleUser(text) {
           if (j.ended) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; }
           llmFail = 0;
         } else { llmFail++; }
-      } else { llmFail++; diagStatus = r.status; }
+      } else {
+        llmFail++;
+        try { const ej = await r.json(); diagStatus = "Google " + (ej.up || r.status); }
+        catch (e2) { diagStatus = r.status; }
+      }
     } catch (e) { llmFail++; diagStatus = "red"; }
     if (llmFail >= 2) llmOn = false;
     if (!diagShown) {
