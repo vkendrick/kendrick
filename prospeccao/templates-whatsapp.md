@@ -25,6 +25,13 @@ Regras:
 >
 > ¿Le interesa algo así para {negocio}? Le explico en 5 min por aquí.
 
+## Demo interativa (link — quando o lead é mais visual)
+
+> Y si quiere verlo en acción: aquí hay una demo donde puedes *hablar* con una atendente virtual 👇
+> https://kendrick-z4b.pages.dev/demo/atendente/
+>
+> Imagínese esto atendiendo su negocio 24h. ¿Hablamos 5 min?
+
 ## Msg 2 — Follow-up 48h (sem resposta)
 
 > Hola de nuevo 👋 Solo para no perder el hilo: la muestra que preparé para {negocio} sigue disponible. ¿Quiere que se la envíe?

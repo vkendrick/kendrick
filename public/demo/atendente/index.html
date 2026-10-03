@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Demo — Atendente virtual FisioVida</title>
+<meta name="description" content="Demonstração interativa: atendente virtual que atende, informa e agenda. Fale com ela.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #0B2545; color: #fff; min-height: 100vh; display: flex; justify-content: center; }
+  .phone { width: 100%; max-width: 460px; min-height: 100vh; background: #0B2545; display: flex; flex-direction: column; }
+  header { padding: 18px 20px 14px; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: #C5A880; color: #0B2545; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  header b { font-size: 15px; }
+  header small { display: block; font-size: 12px; color: #7ee2a8; font-weight: 400; }
+  header small.off { color: rgba(255,255,255,.45); }
+  #log { flex: 1; overflow-y: auto; padding: 18px 16px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 85%; padding: 11px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+  .msg.ia { background: rgba(255,255,255,.1); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.you { background: #C5A880; color: #0B2545; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+  .msg.sys { background: transparent; border: 1px dashed rgba(255,255,255,.25); color: rgba(255,255,255,.6); align-self: center; font-size: 12px; text-align: center; }
+  .card { background: #fff; color: #0B2545; border-radius: 14px; padding: 16px; align-self: stretch; font-size: 14px; line-height: 1.7; }
+  .card b { color: #0B2545; }
+  .controls { padding: 12px 16px 20px; border-top: 1px solid rgba(255,255,255,.1); }
+  #micBtn { width: 100%; border: 0; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; background: #25D366; color: #fff; }
+  #micBtn.live { background: #e05252; animation: pulse 1.4s infinite; }
+  #micBtn:disabled { opacity: .5; }
+  @keyframes pulse { 50% { opacity: .75; } }
+  .row { display: flex; gap: 8px; margin-top: 8px; }
+  #txt { flex: 1; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: #fff; border-radius: 10px; padding: 12px; font-size: 14px; }
+  #txt::placeholder { color: rgba(255,255,255,.4); }
+  #send { border: 0; border-radius: 10px; padding: 0 18px; font-weight: 800; background: #C5A880; color: #0B2545; cursor: pointer; }
+  .hint { text-align: center; font-size: 11px; color: rgba(255,255,255,.4); margin-top: 8px; }
+  .kendrick { display: block; text-align: center; background: #fff; color: #0B2545; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 12px; text-decoration: none; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <div class="avatar">L</div>
+    <div><b>Lucía · FisioVida Madrid</b><small id="status" class="off">● offline — pulsa llamar</small></div>
+  </header>
+  <div id="log"></div>
+  <div class="controls">
+    <button id="micBtn">📞 Llamar ahora (demo gratis)</button>
+    <div class="row">
+      <input id="txt" placeholder="...o escribe aquí si no tienes micro" autocomplete="off">
+      <button id="send">➤</button>
+    </div>
+    <div class="hint">Funciona mejor en Chrome · permite el micrófono · habla en español</div>
+  </div>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const status = document.getElementById("status");
+const micBtn = document.getElementById("micBtn");
+const txt = document.getElementById("txt");
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let step = "idle";       // idle | open | day | hour | done
+let booking = {};
+let rec = null, listening = false;
+
+function addMsg(text, who) {
+  const d = document.createElement("div");
+  d.className = "msg " + who;
+  d.textContent = text;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+function setStatus(on, label) {
+  status.classList.toggle("off", !on);
+  status.textContent = (on ? "● " : "● ") + label;
+}
+function pickVoice() {
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v => v.lang.toLowerCase().startsWith("es") && /female|femenina|mujer|lucia|helena|monica|paulina|laura|carmen/i.test(v.name))
+      || vs.find(v => v.lang.toLowerCase().startsWith("es"))
+      || vs.find(v => v.lang.toLowerCase().startsWith("es-"))
+      || null;
+}
+function speak(text, after) {
+  setStatus(true, "hablando...");
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "es-ES";
+  u.rate = 1.02;
+  const v = pickVoice();
+  if (v) u.voice = v;
+  u.onend = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+function norm(s) {
+  return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+function think(raw) {
+  const t = norm(raw);
+  // flujo de reserva
+  if (step === "day") { booking.day = raw.trim(); step = "hour"; return "Perfecto, " + booking.day + ". ¿A qué hora te viene bien? Tenemos de 9 a 20."; }
+  if (step === "hour") {
+    booking.hour = raw.trim(); step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "✓ Cita registrada";
+    const summary = "Cita: " + booking.day + " a las " + booking.hour + " en FisioVida Madrid.";
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = "<b>✓ " + summary + "</b><br>Te hemos enviado la confirmación.<br><br>Esto ha sido una <b>demostración</b>: imagina esta atención 24h en tu negocio.<br><a class='kendrick' href='https://wa.me/34658598442?text=" + encodeURIComponent("Hola, probé la demo de la atendente virtual y quiero una para mi negocio.") + "' target='_blank'>Quiero una así →</a>";
+    log.appendChild(card); log.scrollTop = log.scrollHeight;
+    return "Listo. " + summary + " Te esperamos.";
+  }
+  if (/(cita|reservar|reserva|agendar|reservar|pedir hora)/.test(t)) { step = "day"; return "Con gusto. ¿Para qué día quieres la cita?"; }
+  if (/(precio|cuanto|vale|cuesta|tarifa)/.test(t)) return "La primera visita con limpieza son 39 euros, y el resto depende del tratamiento. ¿Quieres que te reserve una primera visita?";
+  if (/(horario|hora|abren|cierran|abierto|cuando)/.test(t)) return "Abrimos de lunes a viernes de 9 a 20, y sábados de 10 a 14.";
+  if (/(donde|direccion|donde estan|ubicacion|llegar)/.test(t)) return "Estamos en la calle de Fuencarral 123, en Chamberí, junto al metro Tribunal.";
+  if (/(urgente|urgencia|dolor|emergencia)/.test(t)) return "Lo siento mucho. Para urgencias te paso ahora mismo con una persona. Un momento, por favor.";
+  if (/(humano|persona|alguien|encargado|jefe)/.test(t)) return "Claro, te transfiero con recepción. Gracias por tu paciencia.";
+  if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Llamada terminada"; return "Gracias por llamar a FisioVida. ¡Que tengas un buen día!"; }
+  if (/(hola|buenas|buenos dias|buenas tardes)/.test(t)) return "Hola, ¿en qué puedo ayudarte? Puedo darte precios, horarios o reservarte una cita.";
+  return "Perdona, no te he entendido bien. Puedo ayudarte con citas, precios y horarios. ¿Qué necesitas?";
+}
+function handleUser(text) {
+  if (!text.trim()) return;
+  addMsg(text, "you");
+  const reply = think(text);
+  addMsg(reply, "ia");
+  if ("speechSynthesis" in window) speak(reply, () => { if (step !== "done") startListen(); });
+}
+function startListen() {
+  if (!SR || listening || step === "done") return;
+  try {
+    rec = new SR();
+    rec.lang = "es-ES";
+    rec.interimResults = false;
+    rec.onstart = () => { listening = true; micBtn.classList.add("live"); micBtn.textContent = "🎙 Escuchando... pulsa para colgar"; setStatus(true, "en línea — te escucho"); };
+    rec.onresult = (e) => { const t = e.results[0][0].transcript; stopListen(); handleUser(t); };
+    rec.onerror = () => { stopListen(); addMsg("No te he oído bien — prueba a escribir abajo 👇", "sys"); };
+    rec.onend = () => { listening = false; micBtn.classList.remove("live"); if (step !== "done" && step !== "idle") micBtn.textContent = "🎙 Seguir hablando"; };
+    rec.start();
+  } catch (e) { addMsg("Tu navegador no permite el micro — escribe abajo 👇", "sys"); }
+}
+function stopListen() { try { rec && rec.stop(); } catch (e) {} listening = false; micBtn.classList.remove("live"); }
+micBtn.onclick = () => {
+  if (step !== "idle") { stopListen(); step = "done"; micBtn.disabled = true; micBtn.textContent = "Llamada terminada"; speechSynthesis.cancel(); return; }
+  if (!SR) addMsg("Tu navegador no tiene reconocimiento de voz (usa Chrome). Puedes escribir abajo 👇 y Lucía te responde hablando.", "sys");
+  step = "open";
+  const hi = "Hola, soy Lucía, la asistente virtual de FisioVida Madrid. ¿En qué puedo ayudarte? Puedo darte precios, horarios o reservarte una cita.";
+  addMsg(hi, "ia");
+  if ("speechSynthesis" in window) speak(hi, startListen); else startListen();
+};
+document.getElementById("send").onclick = () => { const v = txt.value; txt.value = ""; if (step === "idle") { micBtn.onclick(); } handleUser(v); };
+txt.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("send").click(); });
+if ("speechSynthesis" in window) speechSynthesis.getVoices();
+addMsg("Demo 100% gratuita, sin registro. Pulsa «Llamar» y habla como un cliente de verdad: pide precio, horario o una cita.", "sys");
+</script>
+</body>
+</html>
