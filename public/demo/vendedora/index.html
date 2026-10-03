@@ -59,6 +59,8 @@ const txt = document.getElementById("txt");
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 let step = "idle"; // idle | open | day | hour | done
+let stage = "open"; // open | negocio | dolor | propuesta (máquina de descubrimiento)
+let noCount = 0;
 let booking = {};
 let rec = null, listening = false;
 
@@ -75,15 +77,17 @@ function setStatus(on, label) {
 }
 function pickVoice() {
   const vs = speechSynthesis.getVoices();
-  return vs.find(v => v.lang.toLowerCase().startsWith("es") && /female|femenina|mujer|lucia|helena|monica|paulina|laura|carmen/i.test(v.name))
-      || vs.find(v => v.lang.toLowerCase().startsWith("es"))
-      || null;
+  const es = vs.filter(v => v.lang.toLowerCase().startsWith("es"));
+  const FEM = /helena|laura|monica|paulina|carmen|lucia|elena|alba|abril|elvira|irene|paloma|dalila|sofia|valentina|maria|ana|rosa|femenina|female|mujer/i;
+  const MALE = /pablo|diego|jorge|carlos|miguel|enrique|pedro|juan|david|sergio|raul|andres|fernando|alvaro|adrian|tomas|hombre|male|masculino/i;
+  return es.find(v => FEM.test(v.name)) || es.find(v => !MALE.test(v.name)) || es[0] || null;
 }
 function speak(text, after) {
   setStatus(true, "hablando...");
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "es-ES";
   u.rate = 1.02;
+  u.pitch = 1.1;
   const v = pickVoice();
   if (v) u.voice = v;
   u.onend = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
@@ -123,16 +127,25 @@ function confirmBooking(day, hour) {
   log.appendChild(card); log.scrollTop = log.scrollHeight;
   return "Perfecto. " + summary + " Hablamos entonces.";
 }
-const TYPO = { presio: "precio", presios: "precios", orario: "horario", orarios: "horarios", funsiona: "funciona", funcona: "funciona", yamar: "llamar", guasap: "whatsapp", wassap: "whatsapp", wasap: "whatsapp" };
+const TYPO = { presio: "precio", presios: "precios", orario: "horario", orarios: "horarios", funsiona: "funciona", funcona: "funciona", yamar: "llamar", chama: "llama", somente: "solamente", guasap: "whatsapp", wassap: "whatsapp", wasap: "whatsapp", tenho: "tengo", uma: "una", um: "un", meu: "mi", minha: "mi", sim: "si", nao: "no", tchau: "adios", quero: "quiero", gostaria: "quisiera", obrigado: "gracias", obrigada: "gracias", quanto: "cuanto", custa: "cuesta", preco: "precio" };
 function clean(raw) {
   let s = norm(raw);
   for (const k of Object.keys(TYPO)) s = s.replace(new RegExp("\\b" + k + "\\b", "g"), TYPO[k]);
   return s;
 }
 const R = {
-  precio: "Muy simple: puesta en marcha 300 euros y después 99 al mes con 200 minutos incluidos. Se paga sola con 2 o 3 clientes extra al mes. ¿Te agendo una llamada para verlo en tu caso?",
+  precio: "La puesta en marcha son 300 euros y el plan 99 al mes con 200 minutos incluidos. Pero el valor depende de tu caso: ¿qué tipo de negocio tienes y cuántos mensajes recibís al mes por WhatsApp?",
   funciona: "Fácil: en una tarde la configuramos con tus servicios, precios y horarios. Ella atiende, informa y agenda. Tú solo recibes el resumen por WhatsApp. ¿Quieres que te llame y te lo enseño?"
 };
+const SECTORS = ["peluqueria","clinica","dental","dentista","estetica","fisioterapia","restaurante","bar","cafeteria","taller","tienda","gimnasio","yoga","academia","hotel","farmacia","veterinario","unas","flamenco","panaderia","pasteleria","fontaneria","electricista","barberia","pintor","mecanico","optica","mascotas"];
+function findSector(t) { return SECTORS.find(s => t.indexOf(s) !== -1) || null; }
+function sectorBenefit(s) {
+  if (/(clinica|dental|dentista|estetica|fisioterapia)/.test(s)) return "En clínicas suele ayudar en: responder dudas de tratamientos, informar precios y encaminar reservas.";
+  if (/(restaurante|bar|cafeteria)/.test(s)) return "En hostelería suele ayudar en: reservas de mesa, carta y horarios, incluso de noche.";
+  if (/(taller|mecanico)/.test(s)) return "En talleres suele ayudar en: pedir datos del coche y preparar presupuestos sin llamadas perdidas.";
+  if (/(tienda|peluqueria|barberia|farmacia)/.test(s)) return "En comercios de barrio suele ayudar en: precios, stock y horarios al momento.";
+  return "Para negocios como el tuyo suele ayudar en: responder precios y horarios al momento y encaminar reservas.";
+}
 function think(raw) {
   const t = clean(raw);
   const b = t.replace(/[^a-z]/g, "");
@@ -150,34 +163,69 @@ function think(raw) {
     return confirmBooking(booking.day, h);
   }
   // menú numérico: 1 precio · 2 cómo funciona · 3 agendar
-  if (/\b(uno|primera?|1)\b/.test(t)) return R.precio;
+  if (/\b(uno|primera?|1)\b/.test(t)) { stage = "negocio"; return R.precio; }
   if (/\b(dos|segunda?|2)\b/.test(t)) return R.funciona;
   if (/\b(tres|tercera?|3)\b/.test(t)) { step = "day"; return "Genial. ¿Qué día te llamamos? Solo 15 minutos."; }
   if (/^(si|vale|ok|okay|deacuerdo|venga|perfecto|genial|dale)$/.test(b)) { step = "day"; return "Genial. ¿Qué día te viene bien?"; }
   if (/^no$/.test(b)) return "Sin problema. Si cambias de idea, aquí estaré 24 horas. ¿Te explico el precio antes de irte?";
+  // "no me interesa" antes que "me interesa" (contiene la subcadena)
+  if (/(no me interesa|no quiero|no necesito|no lo necesito)/.test(t)) {
+    noCount++;
+    if (noCount === 1) { stage = "dolor"; return "Puede ser que no lo necesites. Solo una pregunta: cuando alguien escribe fuera de horario, ¿qué pasa?"; }
+    step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Sin problema, respeto tu decisión. Si cambias de idea, aquí estaré 24 horas.";
+  }
   // interés / reserva
-  if (/(me interesa|interesad|quiero una|si quiero|agendar|reservar|que me llame|llamame|llamadme|citame|apuntame|me apunto)/.test(t) || parseDay(t)) {
+  if (/(me interesa|interesad|quiero una|si quiero|estoy de acuerdo|totalmente|agendar|reservar|que me llame|llamame|llamadme|citame|apuntame|me apunto)/.test(t) || parseDay(t)) {
     const d = parseDay(t), h = parseHour(t);
     if (d && h) return confirmBooking(d, h);
     if (d) { booking.day = d; step = "hour"; return "Genial, " + d + ". ¿A qué hora?"; }
     step = "day"; return "Me alegro. ¿Qué día te llamamos? Solo 15 minutos.";
   }
-  if (/(precio|cuanto|vale|cuesta|tarifa|caro|barato)/.test(t)) return R.precio;
+  // descubrimiento: conociendo el negocio primero
+  if (stage === "negocio") {
+    const found = findSector(t);
+    if (found) { stage = "dolor"; return "¡Qué bueno! " + sectorBenefit(found) + " ¿Quién responde hoy los mensajes — tú o alguien del equipo?"; }
+  }
+  if (/(precio|cuanto|vale|cuesta|tarifa|caro|barato)/.test(t)) { stage = "negocio"; return R.precio; }
   if (/(como funciona|como va|que hace|que es esto|explicame|no entiendo)/.test(t)) return R.funciona;
-  if (/(no creo|no lo creo|me lo creo|mentira|falso|no funciona|desconfio|no me fio|estafa|es un robot|\brobot\b)/.test(t)) return "Es normal desconfiar... pero fíjate: estás hablando conmigo ahora mismo y soy una de ellas. ¿Seguimos? Te agendo una llamada sin compromiso.";
+  if (/(garantia|garantiza|y si no funciona|y si no va|devuelven|reembolso)/.test(t)) { stage = "negocio"; return "Te soy honesta: no prometo resultados, dependen de cada negocio. Lo que sí tienes: configuración a medida, soporte y cancelación mensual sin permanencia. ¿Me dices tu sector y lo vemos en tu caso?"; }
+  if (/(prueba|gratis|probar|demo|muestra)/.test(t)) { stage = "negocio"; return "La prueba soy yo misma: estás hablando con una ahora mismo. Y ofrecemos un piloto de 7 días en tu negocio. ¿De qué sector es?"; }
+  if (/(se equivoca|responde mal|error|tonterias|falla|mete la pata|dice cosas raras|inventa)/.test(t)) return "Tú defines qué puede decir y qué no; ante la duda, deriva a una persona. Nada se publica sin tu permiso. ¿Seguimos?";
+  if (/(mis datos|privacidad|rgpd|proteccion de datos|roban|venden mis)/.test(t)) return "Tus datos y los de tus clientes cumplen el RGPD: alojamiento en la UE y nada se comparte. ¿Seguimos?";
+  if (/(integra|conecta|wordpress|instagram|facebook|google|calendar|calendario|crm)/.test(t)) return "Trabaja en WhatsApp y teléfono, y se conecta con tu web y tu calendario para agendar de verdad. ¿Te enseño en una llamada?";
+  if (/(contrato|permanencia|cancelar|darse de baja|compromiso|atarme)/.test(t)) return "Sin permanencia: mes a mes. Cancelas cuando quieras, sin letra pequeña. ¿Seguimos?";
+  if (/(ella llama|ella inicia|inicia contactos|iniciar contactos|llama a clientes|hace llamadas|proactiva|solamente responde|solo responde)/.test(t)) { stage = "negocio"; return "Buena pregunta: ella atiende a quien te escribe, y según la configuración también puede iniciar contactos o hacer follow-ups. ¿Te enseño cómo quedaría en tu negocio? Dime tu sector."; }
+  if (/(cuanto tarda|cuanto demora|cuando estaria|ya estaria)/.test(t)) return "En una tarde la dejamos configurada y probada contigo. ¿Qué día te viene bien la llamada?";
+  if (/(pequeno|pequena|pequenos|pocos clientes|empezando|autonomo)/.test(t)) return "Justo para pequeños: cuesta menos que una hora extra al mes y atiende 24 horas. ¿Me dices tu sector y lo vemos?";
+  if (/(ya tengo web|ya tengo pagina|tengo web)/.test(t)) return "Perfecto, no la tocamos: el agente vive en WhatsApp y teléfono. ¿Te agendo la llamada?";
+  if (/(chatgpt|gpt|gemini|ya uso ia|claude)/.test(t)) return "ChatGPT responde de todo y a veces inventa; esta solo sabe lo tuyo, deriva lo dudoso a ti y agenda. ¿Ves la diferencia? Te la enseño en una llamada.";
+  if (/(whatsapp business|w business)/.test(t)) return "Suma, no sustituye: el Business organiza, el agente responde por ti. ¿Te agendo una llamada de 15 minutos?";
+  if (/(catalan|euskera|gallego|valenciano|portugues|ingles|idioma|idiomas)/.test(t)) return "Habla español y se configura en más idiomas según tus clientes. ¿El tuyo de qué sector es?";
+  if (/(factura|iva|como pago|recibo|transferencia)/.test(t)) return "Factura mensual con IVA, por tarjeta o transferencia. ¿Seguimos?";
+  if (/(quien configura|quien lo monta|tengo que hacer|tengo que aprender|complicado de usar)/.test(t)) return "Nosotros lo montamos: nos pasas servicios, precios y horarios por WhatsApp y la dejamos lista. Tú no tocas nada técnico.";
+  if (/(voy a pensar|lo pienso|lo pensare|me lo pienso|dejame pensar|lo consulto|consultarlo)/.test(t)) { stage = "negocio"; return "Claro. Para evaluar mejor: dime tu negocio y cómo atendéis hoy por WhatsApp, y te muestro 3 situaciones concretas donde ayudaría."; }
+  if (/(quiero ver|muestrame|ensename|ver ejemplo|ver demo|ver una demo)/.test(t)) { stage = "negocio"; return "Perfecto. Dime: 1) tu negocio, 2) quién atiende hoy, 3) qué más os cuesta. Y te lo muestro."; }
+  if (/(no creo|mentira|falso|desconfio|no me fio|complicado|esto es humo)/.test(t)) return "Es normal desconfiar... pero fíjate: estás hablando conmigo ahora mismo y soy una de ellas. ¿Seguimos? Te agendo una llamada sin compromiso.";
+  if (/(hablar.*robot|robot.*clientes|es una ia|inteligencia artificial|son ias)/.test(t)) return "Sí, es inteligencia artificial, configurada solo con lo tuyo y con tus reglas. Y tú controlas qué puede decir. ¿Quieres verla en tu sector?";
+  if (/(parezca.*robot|parece.*robot|note.*robot|notan|sepan que es|cuenta.*robot)/.test(t)) return "Entiendo. No recomiendo esconderlo: presentamos la IA con transparencia, pero la conversación es natural, rápida y a tu manera. ¿Te enseño?";
   if (/(no tengo tiempo|ocupado|ahora no|otro dia|estoy trabajando|estoy liado|tengo prisa)/.test(t)) { step = "day"; return "Lo entiendo, por eso existe: para que no pierdas clientes cuando estás ocupado. ¿Qué día te llamo, aunque sean 10 minutos?"; }
   if (/(recepcionista|secretaria|ya tengo a alguien|ya tengo quien)/.test(t)) return "Perfecto, no la sustituye: coge lo que se escapa — noches, fines de semana y picos de trabajo. ¿Te enseño cómo en una llamada de 15 minutos?";
-  if (/(humano|persona|encargada|jefa|veridiana|dueno|jefe)/.test(t)) return "Claro, le digo a Veridiana que te escriba hoy mismo por WhatsApp. ¿A qué número?";
+  if (/(quiero hablar|hablar con alguien|hablar con una persona|humano|persona|encargada|jefa|veridiana|dueno|jefe)/.test(t)) { stage = "negocio"; return "Claro. Para ponerte en contacto: ¿qué negocio tienes y qué horario te va mejor?"; }
   if (/(donde estan|donde estais|de donde|ubicacion|presencial|oficina)/.test(t)) return "Trabajamos online para toda España, y la asistente también: atiende por teléfono y WhatsApp estés donde estés. ¿Te agendo la llamada?";
   if (/(tengo un|tengo una|mi negocio|soy peluquero|soy dentista)/.test(t) || /(sirve|vale|funciona) para/.test(t)) {
-    const sectors = ["peluqueria","clinica","dental","dentista","restaurante","bar","cafeteria","taller","tienda","gimnasio","yoga","academia","hotel","farmacia","veterinario","fisioterapia","estetica","unas","flamenco","panaderia","pasteleria","fontaneria","electricista","barberia","pintor"];
-    if (sectors.some(s => t.indexOf(s) !== -1)) { step = "day"; return "¡Qué bueno! Para negocios como el tuyo funciona genial: atiende, informa y agenda sola, 24 horas. ¿Qué día te llamo 15 minutos para verlo en tu caso?"; }
-    return "Funciona para casi todos los negocios locales: clínicas, tiendas, talleres, restaurantes... ¿El tuyo de qué sector es?";
+    const found = findSector(t);
+    if (!found) return "Funciona para casi todos los negocios locales: clínicas, tiendas, talleres, restaurantes... ¿El tuyo de qué sector es?";
+    if (stage === "open" || stage === "negocio") { stage = "dolor"; return "¡Qué bueno! " + sectorBenefit(found) + " ¿Quién responde hoy los mensajes — tú o alguien del equipo?"; }
+    step = "day"; return "Perfecto. ¿Qué día te llamamos 15 minutos para verlo en tu caso?";
   }
   if (/(como te llamas|tu nombre|quien eres)/.test(t)) return "Me llamo Vera, la vendedora virtual de Kendrick. Y sí, soy una inteligencia artificial trabajando ahora mismo. ¿Te explico cómo tener una así?";
-  if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t) || /^(nomeinteresa|noquiero)$/.test(b)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaremos 24 horas."; }
+  if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaremos 24 horas."; }
   if (/(hola|buenas|buenos dias|buenas tardes|oye)/.test(t)) return "Hola, ¿qué tal? ¿Te explico en un minuto cómo una asistente como yo puede atender tu negocio día y noche?";
   if (/^(dime|dale|aver|cuentame|cuenta)$/.test(b)) return "Te cuento rápido: 1 precio, 2 cómo funciona, 3 agendar llamada. Di el número o dime qué te interesa.";
+  // cierre por etapa: guiar sin presionar
+  if (stage === "negocio") return "¿Qué tipo de negocio tienes? Clínica, tienda, taller, restaurante...";
+  if (stage === "dolor") { stage = "propuesta"; return "Imagina que alguien pregunta a las 22h cuánto cuesta tu servicio principal. En vez de esperar hasta mañana, el agente responde al momento con lo que tú definiste. ¿Hoy perdéis clientes por tardar en responder?"; }
+  if (stage === "propuesta") { step = "day"; return "¿Te agendo una llamada de 15 minutos para verlo en tu caso? ¿Qué día te viene bien?"; }
   return "Te escucho. Elige: 1 precio, 2 cómo funciona, 3 agendar llamada. ¿Qué prefieres?";
 }
 function handleUser(text) {
@@ -211,8 +259,8 @@ micBtn.onclick = () => {
 };
 document.getElementById("send").onclick = () => { const v = txt.value; txt.value = ""; if (step === "idle") { micBtn.onclick(); } handleUser(v); };
 txt.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("send").click(); });
-if ("speechSynthesis" in window) speechSynthesis.getVoices();
-addMsg("Demo 100% gratuita. Pulsa «Escuchar» y responde como un dueño de negocio: pregunta precio, desconfía, o di «me interesa».", "sys");
+if ("speechSynthesis" in window) { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); }
+addMsg("Demo 100% gratuita. Pulsa «Escuchar» y actúa como dueño: pregunta precio, desconfía, di tu sector o «me interesa».", "sys");
 </script>
 </body>
 </html>

@@ -76,16 +76,17 @@ function setStatus(on, label) {
 }
 function pickVoice() {
   const vs = speechSynthesis.getVoices();
-  return vs.find(v => v.lang.toLowerCase().startsWith("es") && /female|femenina|mujer|lucia|helena|monica|paulina|laura|carmen/i.test(v.name))
-      || vs.find(v => v.lang.toLowerCase().startsWith("es"))
-      || vs.find(v => v.lang.toLowerCase().startsWith("es-"))
-      || null;
+  const es = vs.filter(v => v.lang.toLowerCase().startsWith("es"));
+  const FEM = /helena|laura|monica|paulina|carmen|lucia|elena|alba|abril|elvira|irene|paloma|dalila|sofia|valentina|maria|ana|rosa|femenina|female|mujer/i;
+  const MALE = /pablo|diego|jorge|carlos|miguel|enrique|pedro|juan|david|sergio|raul|andres|fernando|alvaro|adrian|tomas|hombre|male|masculino/i;
+  return es.find(v => FEM.test(v.name)) || es.find(v => !MALE.test(v.name)) || es[0] || null;
 }
 function speak(text, after) {
   setStatus(true, "hablando...");
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "es-ES";
   u.rate = 1.02;
+  u.pitch = 1.1;
   const v = pickVoice();
   if (v) u.voice = v;
   u.onend = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
