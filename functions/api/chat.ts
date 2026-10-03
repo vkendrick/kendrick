@@ -45,22 +45,32 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     .map((m) => ({ role: m.role, text: m.text.slice(0, 500) }));
   if (!clean.length) return json({ error: "Sin mensajes" }, 400);
 
-  const geminiRes = await fetch(
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        system_instruction: { parts: [{ text: SYSTEM }] },
-        contents: clean.map((m) => ({
-          role: m.role === "assistant" ? "model" : "user",
-          parts: [{ text: m.text }],
-        })),
-        generationConfig: { responseMimeType: "application/json", temperature: 0.7, maxOutputTokens: 300 },
-      }),
-    }
-  ).catch(() => null);
-  if (!geminiRes || !geminiRes.ok) return json({ error: "Error IA", up: geminiRes ? geminiRes.status : 0 }, 502);
+  const payload = {
+    system_instruction: { parts: [{ text: SYSTEM }] },
+    contents: clean.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.text }],
+    })),
+    generationConfig: { responseMimeType: "application/json", temperature: 0.7, maxOutputTokens: 300 },
+  };
+  const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
+  let geminiRes: Response | null = null;
+  let lastUp = 0;
+  for (const model of MODELS) {
+    geminiRes = await fetch(
+      "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    ).catch(() => null);
+    if (!geminiRes) { lastUp = 0; continue; }
+    if (geminiRes.ok) break;
+    lastUp = geminiRes.status;
+    if (geminiRes.status !== 404) break;
+  }
+  if (!geminiRes || !geminiRes.ok) return json({ error: "Error IA", up: lastUp }, 502);
 
   let out: { reply?: unknown; stage?: unknown; booked?: unknown; ended?: unknown };
   try {
