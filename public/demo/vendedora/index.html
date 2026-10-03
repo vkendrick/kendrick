@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Demo — Vera, vendedora virtual de Kendrick</title>
+<meta name="description" content="Demonstração interativa: uma vendedora virtual apresenta a atendente virtual e agenda uma conversa.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #0B2545; color: #fff; min-height: 100vh; display: flex; justify-content: center; }
+  .phone { width: 100%; max-width: 460px; min-height: 100vh; background: #0B2545; display: flex; flex-direction: column; }
+  header { padding: 18px 20px 14px; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: #C5A880; color: #0B2545; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  header b { font-size: 15px; }
+  header small { display: block; font-size: 12px; color: #7ee2a8; font-weight: 400; }
+  header small.off { color: rgba(255,255,255,.45); }
+  #log { flex: 1; overflow-y: auto; padding: 18px 16px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 85%; padding: 11px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+  .msg.ia { background: rgba(255,255,255,.1); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.you { background: #C5A880; color: #0B2545; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+  .msg.sys { background: transparent; border: 1px dashed rgba(255,255,255,.25); color: rgba(255,255,255,.6); align-self: center; font-size: 12px; text-align: center; }
+  .card { background: #fff; color: #0B2545; border-radius: 14px; padding: 16px; align-self: stretch; font-size: 14px; line-height: 1.7; }
+  .controls { padding: 12px 16px 20px; border-top: 1px solid rgba(255,255,255,.1); }
+  #micBtn { width: 100%; border: 0; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; background: #C5A880; color: #0B2545; }
+  #micBtn.live { background: #e05252; color: #fff; animation: pulse 1.4s infinite; }
+  #micBtn:disabled { opacity: .5; }
+  @keyframes pulse { 50% { opacity: .75; } }
+  .row { display: flex; gap: 8px; margin-top: 8px; }
+  #txt { flex: 1; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: #fff; border-radius: 10px; padding: 12px; font-size: 14px; }
+  #txt::placeholder { color: rgba(255,255,255,.4); }
+  #send { border: 0; border-radius: 10px; padding: 0 18px; font-weight: 800; background: #25D366; color: #fff; cursor: pointer; font-size: 16px; }
+  .hint { text-align: center; font-size: 11px; color: rgba(255,255,255,.4); margin-top: 8px; }
+  .kendrick { display: block; text-align: center; background: #25D366; color: #fff; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 12px; text-decoration: none; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <div class="avatar">V</div>
+    <div><b>Vera · Kendrick Consultoria</b><small id="status" class="off">● offline — pulsa para empezar</small></div>
+  </header>
+  <div id="log"></div>
+  <div class="controls">
+    <button id="micBtn">▶ Escuchar la propuesta (demo gratis)</button>
+    <div class="row">
+      <input id="txt" placeholder="...o escribe aquí" autocomplete="off">
+      <button id="send">➤</button>
+    </div>
+    <div class="hint">Funciona mejor en Chrome · habla en español</div>
+  </div>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const status = document.getElementById("status");
+const micBtn = document.getElementById("micBtn");
+const txt = document.getElementById("txt");
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let step = "idle"; // idle | open | day | hour | done
+let booking = {};
+let rec = null, listening = false;
+
+function addMsg(text, who) {
+  const d = document.createElement("div");
+  d.className = "msg " + who;
+  d.textContent = text;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+function setStatus(on, label) {
+  status.classList.toggle("off", !on);
+  status.textContent = "● " + label;
+}
+function pickVoice() {
+  const vs = speechSynthesis.getVoices();
+  return vs.find(v => v.lang.toLowerCase().startsWith("es") && /female|femenina|mujer|lucia|helena|monica|paulina|laura|carmen/i.test(v.name))
+      || vs.find(v => v.lang.toLowerCase().startsWith("es"))
+      || null;
+}
+function speak(text, after) {
+  setStatus(true, "hablando...");
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "es-ES";
+  u.rate = 1.02;
+  const v = pickVoice();
+  if (v) u.voice = v;
+  u.onend = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
+  speechSynthesis.cancel();
+  speechSynthesis.speak(u);
+}
+function norm(s) {
+  return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+const DIAS = { lunes: "el lunes", martes: "el martes", miercoles: "el miércoles", jueves: "el jueves", viernes: "el viernes", sabado: "el sábado", domingo: "el domingo", hoy: "hoy", manana: "mañana" };
+const HORAS_TXT = { una: "1", dos: "2", tres: "3", cuatro: "4", cinco: "5", seis: "6", siete: "7", ocho: "8", nueve: "9", diez: "10", once: "11", doce: "12" };
+function parseDay(t) {
+  for (const k of Object.keys(DIAS)) if (t.indexOf(k) !== -1) return DIAS[k];
+  if (/(fines de semana|fin de semana|finde)/.test(t)) return "el sábado";
+  return null;
+}
+function parseHour(t) {
+  let s = t;
+  for (const w of Object.keys(HORAS_TXT)) s = s.replace(new RegExp("\\b" + w + "\\b"), HORAS_TXT[w]);
+  if (/(por la mañana|manana)/.test(s)) return "10";
+  if (/(por la tarde|\btarde\b)/.test(s)) return "16";
+  if (/mediodia/.test(s)) return "12";
+  const m = s.match(/(\d{1,2})(?::(\d{2}))?/);
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  if (h < 1 || h > 23) return null;
+  if (!/(las|hora|horas|\bh\b|am|pm|y media)/.test(s) && (h < 8 || h > 20)) return null;
+  return m[2] ? h + ":" + m[2] : String(h);
+}
+function confirmBooking(day, hour) {
+  booking.day = day; booking.hour = hour; step = "done"; listening = false;
+  micBtn.disabled = true; micBtn.textContent = "✓ Llamada agendada";
+  const summary = "Llamada: " + day + " a las " + hour + " con Veridiana (Kendrick).";
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = "<b>✓ " + summary + "</b><br>Te llamaremos para explicarte todo en 15 minutos.<br><br>Esto ha sido una <b>demostración</b>: una vendedora así puede trabajar para tu negocio.<br><a class='kendrick' href='https://wa.me/34658598442?text=" + encodeURIComponent("Hola, hablé con Vera y quiero una vendedora virtual para mi negocio.") + "' target='_blank'>Quiero una así →</a>";
+  log.appendChild(card); log.scrollTop = log.scrollHeight;
+  return "Perfecto. " + summary + " Hablamos entonces.";
+}
+function think(raw) {
+  const t = norm(raw);
+  if (step === "day") {
+    const d = parseDay(t);
+    if (!d) return "¿Qué día te viene bien? Por ejemplo: mañana, el jueves...";
+    const h = parseHour(t);
+    if (h) return confirmBooking(d, h);
+    booking.day = d; step = "hour";
+    return "Genial, " + d + ". ¿A qué hora? De 10 a 19.";
+  }
+  if (step === "hour") {
+    const h = parseHour(t);
+    if (!h) return "¿A qué hora? Por ejemplo: a las 11, a las 17...";
+    return confirmBooking(booking.day, h);
+  }
+  // interés / reserva
+  if (/(me interesa|interesado|quiero una|si quiero|vale|de acuerdo|agendar|reservar|llamame|llamadme)/.test(t) || parseDay(t)) {
+    const d = parseDay(t), h = parseHour(t);
+    if (d && h) return confirmBooking(d, h);
+    if (d) { booking.day = d; step = "hour"; return "Genial, " + d + ". ¿A qué hora?"; }
+    step = "day"; return "Me alegro. ¿Qué día te llamamos? Solo 15 minutos.";
+  }
+  if (/(precio|cuanto|vale|cuesta|tarifa|caro|barato)/.test(t)) return "Muy simple: puesta en marcha 300 euros y después 99 al mes con 200 minutos incluidos. Se paga sola con 2 o 3 clientes extra al mes. ¿Te agendo una llamada para verlo en tu caso?";
+  if (/(como funciona|como va|que hace|que es esto|explicame|no entiendo)/.test(t)) return "Fácil: en una tarde la configuramos con tus servicios, precios y horarios. Ella atiende, informa y agenda. Tú solo recibes el resumen por WhatsApp. ¿Quieres que te llame y te lo enseño?";
+  if (/(no creo|no lo creo|me lo creo|mentira|falso|no funciona|desconfio|estafa|es un robot|robot)/.test(t)) return "Es normal desconfiar... pero fíjate: estás hablando conmigo ahora mismo y soy una de ellas. ¿Seguimos? Te agendo una llamada sin compromiso.";
+  if (/(no tengo tiempo|ocupado|ahora no|otro dia|estoy trabajando)/.test(t)) { step = "day"; return "Lo entiendo, por eso existe: para que no pierdas clientes cuando estás ocupado. ¿Qué día te llamo, aunque sean 10 minutos?"; }
+  if (/(humano|persona|alguien|encargada|jefa)/.test(t)) return "Claro, le digo a Veridiana que te escriba hoy mismo por WhatsApp. ¿A qué número?";
+  if (/(gracias|adios|chao|hasta luego|nos vemos|no me interesa|no quiero)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaremos 24 horas."; }
+  if (/(hola|buenas|buenos dias|buenas tardes|oye|dime)/.test(t)) return "Hola, ¿qué tal? ¿Te explico en un minuto cómo una asistente como yo puede atender tu negocio día y noche?";
+  return "Te escucho. Puedo contarte el precio, cómo funciona, o agendarte una llamada de 15 minutos. ¿Qué prefieres?";
+}
+function handleUser(text) {
+  if (!text.trim()) return;
+  addMsg(text, "you");
+  const reply = think(text);
+  addMsg(reply, "ia");
+  if ("speechSynthesis" in window) speak(reply, () => { if (step !== "done") startListen(); });
+}
+function startListen() {
+  if (!SR || listening || step === "done") return;
+  try {
+    rec = new SR();
+    rec.lang = "es-ES";
+    rec.interimResults = false;
+    rec.onstart = () => { listening = true; micBtn.classList.add("live"); micBtn.textContent = "🎙 Escuchando... pulsa para terminar"; setStatus(true, "en línea — te escucho"); };
+    rec.onresult = (e) => { const t = e.results[0][0].transcript; stopListen(); handleUser(t); };
+    rec.onerror = () => { stopListen(); addMsg("No te he oído bien — prueba a escribir abajo 👇", "sys"); };
+    rec.onend = () => { listening = false; micBtn.classList.remove("live"); if (step !== "done" && step !== "idle") micBtn.textContent = "🎙 Seguir hablando"; };
+    rec.start();
+  } catch (e) { addMsg("Tu navegador no permite el micro — escribe abajo 👇", "sys"); }
+}
+function stopListen() { try { rec && rec.stop(); } catch (e) {} listening = false; micBtn.classList.remove("live"); }
+micBtn.onclick = () => {
+  if (step !== "idle") { stopListen(); step = "done"; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; speechSynthesis.cancel(); return; }
+  if (!SR) addMsg("Tu navegador no tiene reconocimiento de voz (usa Chrome). Puedes escribir abajo 👇 y Vera te responde hablando.", "sys");
+  step = "open";
+  const hi = "Hola, soy Vera, la vendedora virtual de Kendrick. Sí, soy una inteligencia artificial... como la que podría estar atendiendo tu negocio ahora mismo, las 24 horas. ¿Te gustaría tener una así? Te lo explico en un minuto.";
+  addMsg(hi, "ia");
+  if ("speechSynthesis" in window) speak(hi, startListen); else startListen();
+};
+document.getElementById("send").onclick = () => { const v = txt.value; txt.value = ""; if (step === "idle") { micBtn.onclick(); } handleUser(v); };
+txt.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("send").click(); });
+if ("speechSynthesis" in window) speechSynthesis.getVoices();
+addMsg("Demo 100% gratuita. Pulsa «Escuchar» y responde como un dueño de negocio: pregunta precio, desconfía, o di «me interesa».", "sys");
+</script>
+</body>
+</html>

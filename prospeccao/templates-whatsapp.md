@@ -32,6 +32,13 @@ Regras:
 >
 > Imagínese esto atendiendo su negocio 24h. ¿Hablamos 5 min?
 
+## Demo vendedora (link — o template vendedor em ação)
+
+> Y esto es lo mejor: la que te está escribiendo también puede ser virtual. Escúchala aquí 👇
+> https://kendrick-z4b.pages.dev/demo/vendedora/
+>
+> Si te convence, ella misma te agenda la llamada conmigo.
+
 ## Msg 2 — Follow-up 48h (sem resposta)
 
 > Hola de nuevo 👋 Solo para no perder el hilo: la muestra que preparé para {negocio} sigue disponible. ¿Quiere que se la envíe?
