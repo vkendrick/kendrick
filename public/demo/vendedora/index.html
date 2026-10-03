@@ -32,6 +32,7 @@
   #send { border: 0; border-radius: 10px; padding: 0 18px; font-weight: 800; background: #25D366; color: #fff; cursor: pointer; font-size: 16px; }
   .hint { text-align: center; font-size: 11px; color: rgba(255,255,255,.4); margin-top: 8px; }
   .kendrick { display: block; text-align: center; background: #25D366; color: #fff; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 12px; text-decoration: none; margin-top: 10px; }
+  #hangBtn { background: none; border: 0; color: #ff9a9a; font-size: 12px; margin-top: 8px; cursor: pointer; width: 100%; }
   .msg.typing span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.6); margin-right: 3px; animation: blink 1.2s infinite; }
   .msg.typing span:nth-child(2) { animation-delay: .2s; }
   .msg.typing span:nth-child(3) { animation-delay: .4s; }
@@ -47,6 +48,7 @@
   <div id="log"></div>
   <div class="controls">
     <button id="micBtn">▶ Escuchar la propuesta (demo gratis)</button>
+    <button id="hangBtn" style="display:none;">✕ colgar</button>
     <div class="row">
       <input id="txt" placeholder="...o escribe aquí" autocomplete="off">
       <button id="send">➤</button>
@@ -69,6 +71,8 @@ let booking = {};
 let history = [];
 let llmOn = true;
 let llmFail = 0;
+let diagStatus = 0;
+let diagShown = false;
 let rec = null, listening = false;
 const SECURE = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
 let micDead = false;
@@ -130,6 +134,7 @@ function parseHour(t) {
 function showBookingCard(day, hour) {
   booking.day = day; booking.hour = hour; step = "done"; listening = false;
   micBtn.disabled = true; micBtn.textContent = "✓ Llamada agendada";
+  hangBtn.style.display = "none";
   const summary = "Llamada: " + day + " a las " + hour + " con Veridiana (Kendrick).";
   const card = document.createElement("div");
   card.className = "card";
@@ -198,7 +203,7 @@ function thinkLocal(raw) {
   if (/(no me interesa|no quiero|no necesito|no lo necesito)/.test(t)) {
     noCount++;
     if (noCount === 1) { stage = "dolor"; return "Puede ser que no lo necesites. Solo una pregunta: cuando alguien escribe fuera de horario, ¿qué pasa?"; }
-    step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Sin problema, respeto tu decisión. Si cambias de idea, aquí estaré 24 horas.";
+    step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; hangBtn.style.display = "none"; return "Sin problema, respeto tu decisión. Si cambias de idea, aquí estaré 24 horas.";
   }
   // interés / reserva
   if (/(me interesa|interesad|quiero una|si quiero|estoy de acuerdo|totalmente|agendar|reservar|que me llame|llamame|llamadme|citame|apuntame|me apunto)/.test(t) || parseDay(t)) {
@@ -245,7 +250,7 @@ function thinkLocal(raw) {
     step = "day"; return "Perfecto. ¿Qué día te llamamos 15 minutos para verlo en tu caso?";
   }
   if (/(como te llamas|tu nombre|quien eres)/.test(t)) return "Me llamo Vera, la vendedora virtual de Kendrick. Y sí, soy una inteligencia artificial trabajando ahora mismo. ¿Te explico cómo tener una así?";
-  if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaremos 24 horas."; }
+  if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; hangBtn.style.display = "none"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaremos 24 horas."; }
   if (/(hola|buenas|buenos dias|buenas tardes|oye)/.test(t)) return "Hola, ¿qué tal? ¿Te explico en un minuto cómo una asistente como yo puede atender tu negocio día y noche?";
   if (/^(dime|dale|aver|cuentame|cuenta)$/.test(b)) return "Te cuento rápido: 1 precio, 2 cómo funciona, 3 agendar llamada. Di el número o dime qué te interesa.";
   // cierre por etapa: guiar sin presionar
@@ -292,9 +297,14 @@ async function handleUser(text) {
           if (j.ended) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; }
           llmFail = 0;
         } else { llmFail++; }
-      } else { llmFail++; }
-    } catch (e) { llmFail++; }
+      } else { llmFail++; diagStatus = r.status; }
+    } catch (e) { llmFail++; diagStatus = "red"; }
     if (llmFail >= 2) llmOn = false;
+    if (!diagShown) {
+      diagShown = true;
+      if (diagStatus === 503) addMsg("Aviso: IA no configurada en el servidor (falta la clave). Hablo en modo local.", "sys");
+      else if (diagStatus) addMsg("Aviso: IA indisponible (" + diagStatus + "). Hablo en modo local.", "sys");
+    }
   }
   if (!reply) {
     reply = thinkLocal(text);
@@ -339,17 +349,39 @@ function startListen() {
   } catch (e) { addMsg("Tu navegador no permite el micro — escribe abajo 👇", "sys"); }
 }
 function stopListen() { try { rec && rec.stop(); } catch (e) {} listening = false; micBtn.classList.remove("live"); }
+const hangBtn = document.getElementById("hangBtn");
+function hangUp(silent) {
+  stopListen(); step = "done"; listening = false;
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  micBtn.disabled = true; micBtn.textContent = "Llamada terminada";
+  hangBtn.style.display = "none";
+  if (!silent) addMsg("Llamada terminada. Gracias por probar la demo.", "sys");
+}
+hangBtn.onclick = () => hangUp(false);
 micBtn.onclick = () => {
-  if (step !== "idle") { stopListen(); step = "done"; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; speechSynthesis.cancel(); return; }
-  if (!micOK()) {
-    if (!SR) addMsg("Este navegador no tiene reconocimiento de voz (abre el link en Chrome). Puedes escribir abajo 👇 y Vera te responde hablando.", "sys");
-    else if (!SECURE) addMsg("Abre el link https (no el archivo) para usar el micro. Mientras tanto, escribe abajo 👇.", "sys");
-    else addMsg("Micro no disponible — escribe abajo 👇 y Vera te responde hablando.", "sys");
+  if (step === "idle") {
+    if (!micOK()) {
+      if (!SR) addMsg("Este navegador no tiene reconocimiento de voz (abre el link en Chrome). Puedes escribir abajo 👇 y Vera te responde hablando.", "sys");
+      else if (!SECURE) addMsg("Abre el link https (no el archivo) para usar el micro. Mientras tanto, escribe abajo 👇.", "sys");
+      else addMsg("Micro no disponible — escribe abajo 👇 y Vera te responde hablando.", "sys");
+    }
+    step = "open";
+    hangBtn.style.display = "";
+    const hi = "Hola, soy Vera, la vendedora virtual de Kendrick. Sí, soy una inteligencia artificial... como la que podría estar atendiendo tu negocio ahora mismo, las 24 horas. ¿Te gustaría tener una así? Te lo explico en un minuto.";
+    addMsg(hi, "ia");
+    if ("speechSynthesis" in window) speak(hi, startListen); else startListen();
+    return;
   }
-  step = "open";
-  const hi = "Hola, soy Vera, la vendedora virtual de Kendrick. Sí, soy una inteligencia artificial... como la que podría estar atendiendo tu negocio ahora mismo, las 24 horas. ¿Te gustaría tener una así? Te lo explico en un minuto.";
-  addMsg(hi, "ia");
-  if ("speechSynthesis" in window) speak(hi, startListen); else startListen();
+  if (step === "done") return;
+  if (listening) {
+    stopListen();
+    micBtn.textContent = "🎙 Hablar";
+    setStatus(true, "en línea");
+  } else if (micOK()) {
+    startListen();
+  } else {
+    addMsg("Micro no disponible ahora — escribe abajo 👇", "sys");
+  }
 };
 document.getElementById("send").onclick = () => { const v = txt.value; txt.value = ""; if (step === "idle") { micBtn.onclick(); } handleUser(v); };
 txt.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("send").click(); });
