@@ -95,20 +95,62 @@ function speak(text, after) {
 function norm(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
+const DIAS = { lunes: "el lunes", martes: "el martes", miercoles: "el miércoles", jueves: "el jueves", viernes: "el viernes", sabado: "el sábado", domingo: "el domingo", hoy: "hoy", manana: "mañana" };
+const HORAS_TXT = { una: "1", dos: "2", tres: "3", cuatro: "4", cinco: "5", seis: "6", siete: "7", ocho: "8", nueve: "9", diez: "10", once: "11", doce: "12" };
+function parseDay(t) {
+  for (const k of Object.keys(DIAS)) if (t.indexOf(k) !== -1) return DIAS[k];
+  if (/(fines de semana|fin de semana|finde)/.test(t)) return "el sábado";
+  return null;
+}
+function parseHour(t) {
+  let s = t;
+  for (const w of Object.keys(HORAS_TXT)) s = s.replace(new RegExp("\\b" + w + "\\b"), HORAS_TXT[w]);
+  if (/(por la mañana|manana)/.test(s)) return "10";
+  if (/(por la tarde|\btarde\b)/.test(s)) return "16";
+  if (/mediodia/.test(s)) return "12";
+  const m = s.match(/(\d{1,2})(?::(\d{2}))?/);
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  if (h < 1 || h > 23) return null;
+  if (!/(las|hora|horas|\bh\b|am|pm|y media)/.test(s) && (h < 8 || h > 20)) return null;
+  return m[2] ? h + ":" + m[2] : String(h);
+}
+function confirmBooking(day, hour) {
+  booking.day = day; booking.hour = hour; step = "done"; listening = false;
+  micBtn.disabled = true; micBtn.textContent = "✓ Cita registrada";
+  const summary = "Cita: " + day + " a las " + hour + " en FisioVida Madrid.";
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = "<b>✓ " + summary + "</b><br>Te hemos enviado la confirmación.<br><br>Esto ha sido una <b>demostración</b>: imagina esta atención 24h en tu negocio.<br><a class='kendrick' href='https://wa.me/34658598442?text=" + encodeURIComponent("Hola, probé la demo de la atendente virtual y quiero una para mi negocio.") + "' target='_blank'>Quiero una así →</a>";
+  log.appendChild(card); log.scrollTop = log.scrollHeight;
+  return "Listo. " + summary + " Te hemos enviado la confirmación. Te esperamos.";
+}
 function think(raw) {
   const t = norm(raw);
   // flujo de reserva
-  if (step === "day") { booking.day = raw.trim(); step = "hour"; return "Perfecto, " + booking.day + ". ¿A qué hora te viene bien? Tenemos de 9 a 20."; }
-  if (step === "hour") {
-    booking.hour = raw.trim(); step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "✓ Cita registrada";
-    const summary = "Cita: " + booking.day + " a las " + booking.hour + " en FisioVida Madrid.";
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = "<b>✓ " + summary + "</b><br>Te hemos enviado la confirmación.<br><br>Esto ha sido una <b>demostración</b>: imagina esta atención 24h en tu negocio.<br><a class='kendrick' href='https://wa.me/34658598442?text=" + encodeURIComponent("Hola, probé la demo de la atendente virtual y quiero una para mi negocio.") + "' target='_blank'>Quiero una así →</a>";
-    log.appendChild(card); log.scrollTop = log.scrollHeight;
-    return "Listo. " + summary + " Te esperamos.";
+  if (step === "day") {
+    const d = parseDay(t);
+    if (!d) return "¿Para qué día? Por ejemplo: mañana, el sábado...";
+    const h = parseHour(t);
+    if (h) return confirmBooking(d, h);
+    booking.day = d; step = "hour";
+    return "Perfecto, " + d + ". ¿A qué hora te viene bien? Abrimos de 9 a 20.";
   }
-  if (/(cita|reservar|reserva|agendar|reservar|pedir hora)/.test(t)) { step = "day"; return "Con gusto. ¿Para qué día quieres la cita?"; }
+  if (step === "hour") {
+    const h = parseHour(t);
+    if (!h) return "¿A qué hora? Por ejemplo: a las 10, a las 16...";
+    return confirmBooking(booking.day, h);
+  }
+  // fin de semana (antes del horario genérico)
+  if (/(fines de semana|fin de semana|finde|sabado|domingo)/.test(t) && /(horario|hora|abren|abierto|cierran|cuando|atienden|tienen)/.test(t))
+    return "Los sábados abrimos de 10 a 14. Los domingos cerrado. ¿Te reservo para el sábado?";
+  if (/(cita|reservar|reserva|agendar|apartar|pedir hora)/.test(t) || parseDay(t) || (parseHour(t) && /(quiero|pon|para|el|la)/.test(t))) {
+    const d = parseDay(t), h = parseHour(t);
+    if (d && h) return confirmBooking(d, h);
+    if (d) { booking.day = d; step = "hour"; return "Perfecto, " + d + ". ¿A qué hora?"; }
+    step = "day"; return "Con gusto. ¿Para qué día quieres la cita?";
+  }
+  if (/(quiero|quisiera|me gustaria)/.test(t)) { step = "day"; return "Perfecto. ¿Para qué día?"; }
   if (/(precio|cuanto|vale|cuesta|tarifa)/.test(t)) return "La primera visita con limpieza son 39 euros, y el resto depende del tratamiento. ¿Quieres que te reserve una primera visita?";
   if (/(horario|hora|abren|cierran|abierto|cuando)/.test(t)) return "Abrimos de lunes a viernes de 9 a 20, y sábados de 10 a 14.";
   if (/(donde|direccion|donde estan|ubicacion|llegar)/.test(t)) return "Estamos en la calle de Fuencarral 123, en Chamberí, junto al metro Tribunal.";
@@ -116,7 +158,14 @@ function think(raw) {
   if (/(humano|persona|alguien|encargado|jefe)/.test(t)) return "Claro, te transfiero con recepción. Gracias por tu paciencia.";
   if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Llamada terminada"; return "Gracias por llamar a FisioVida. ¡Que tengas un buen día!"; }
   if (/(hola|buenas|buenos dias|buenas tardes)/.test(t)) return "Hola, ¿en qué puedo ayudarte? Puedo darte precios, horarios o reservarte una cita.";
-  return "Perdona, no te he entendido bien. Puedo ayudarte con citas, precios y horarios. ¿Qué necesitas?";
+  if (/(primera visita|que incluye|incluye|incluido)/.test(t)) return "La primera visita incluye revisión completa, limpieza y presupuesto cerrado: 39 euros. ¿Te la reservo?";
+  if (/(oferta|descuento|promocion|barato|economico)/.test(t)) return "Ahora mismo la primera visita con limpieza está a 39 euros en vez de 55. ¿Quieres aprovecharla?";
+  if (/(dura|duracion|cuanto tiempo|tarda|rapido)/.test(t)) return "La primera visita dura unos 40 minutos, sin esperas si vienes con cita.";
+  if (/(ninos|nino|infantil|hijos|peques)/.test(t)) return "Sí, atendemos a niños desde los 6 años con mucha paciencia.";
+  if (/(pagar|pago|tarjeta|efectivo|plazos|seguro|mutua|financiar|cuotas)/.test(t)) return "Aceptamos tarjeta y efectivo, y financiamos tratamientos desde 300 euros hasta en 12 meses sin intereses.";
+  if (/(cancelar|cambiar|anular|modificar|mover).*(cita|reserva)|.*(cita|reserva).*(cancelar|cambiar|anular|modificar|mover)/.test(t)) return "Sin problema. Para cambiar o cancelar tu cita te paso con recepción, que lo gestionan al momento. Un segundo.";
+  if (/(quien eres|robot|maquina|que puedes hacer|ayuda|opciones)/.test(t)) return "Soy Lucía, la asistente virtual de FisioVida. Puedo reservarte cita, decirte precios y horarios, o pasarte con una persona. ¿Qué necesitas?";
+  return "Perdona, no te he entendido bien. Puedo ayudarte con citas, precios, horarios y dirección. ¿Qué necesitas?";
 }
 function handleUser(text) {
   if (!text.trim()) return;
