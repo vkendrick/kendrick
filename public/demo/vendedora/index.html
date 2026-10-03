@@ -123,8 +123,19 @@ function confirmBooking(day, hour) {
   log.appendChild(card); log.scrollTop = log.scrollHeight;
   return "Perfecto. " + summary + " Hablamos entonces.";
 }
+const TYPO = { presio: "precio", presios: "precios", orario: "horario", orarios: "horarios", funsiona: "funciona", funcona: "funciona", yamar: "llamar", guasap: "whatsapp", wassap: "whatsapp", wasap: "whatsapp" };
+function clean(raw) {
+  let s = norm(raw);
+  for (const k of Object.keys(TYPO)) s = s.replace(new RegExp("\\b" + k + "\\b", "g"), TYPO[k]);
+  return s;
+}
+const R = {
+  precio: "Muy simple: puesta en marcha 300 euros y después 99 al mes con 200 minutos incluidos. Se paga sola con 2 o 3 clientes extra al mes. ¿Te agendo una llamada para verlo en tu caso?",
+  funciona: "Fácil: en una tarde la configuramos con tus servicios, precios y horarios. Ella atiende, informa y agenda. Tú solo recibes el resumen por WhatsApp. ¿Quieres que te llame y te lo enseño?"
+};
 function think(raw) {
-  const t = norm(raw);
+  const t = clean(raw);
+  const b = t.replace(/[^a-z]/g, "");
   if (step === "day") {
     const d = parseDay(t);
     if (!d) return "¿Qué día te viene bien? Por ejemplo: mañana, el jueves...";
@@ -138,21 +149,36 @@ function think(raw) {
     if (!h) return "¿A qué hora? Por ejemplo: a las 11, a las 17...";
     return confirmBooking(booking.day, h);
   }
+  // menú numérico: 1 precio · 2 cómo funciona · 3 agendar
+  if (/\b(uno|primera?|1)\b/.test(t)) return R.precio;
+  if (/\b(dos|segunda?|2)\b/.test(t)) return R.funciona;
+  if (/\b(tres|tercera?|3)\b/.test(t)) { step = "day"; return "Genial. ¿Qué día te llamamos? Solo 15 minutos."; }
+  if (/^(si|vale|ok|okay|deacuerdo|venga|perfecto|genial|dale)$/.test(b)) { step = "day"; return "Genial. ¿Qué día te viene bien?"; }
+  if (/^no$/.test(b)) return "Sin problema. Si cambias de idea, aquí estaré 24 horas. ¿Te explico el precio antes de irte?";
   // interés / reserva
-  if (/(me interesa|interesado|quiero una|si quiero|vale|de acuerdo|agendar|reservar|llamame|llamadme)/.test(t) || parseDay(t)) {
+  if (/(me interesa|interesad|quiero una|si quiero|agendar|reservar|que me llame|llamame|llamadme|citame|apuntame|me apunto)/.test(t) || parseDay(t)) {
     const d = parseDay(t), h = parseHour(t);
     if (d && h) return confirmBooking(d, h);
     if (d) { booking.day = d; step = "hour"; return "Genial, " + d + ". ¿A qué hora?"; }
     step = "day"; return "Me alegro. ¿Qué día te llamamos? Solo 15 minutos.";
   }
-  if (/(precio|cuanto|vale|cuesta|tarifa|caro|barato)/.test(t)) return "Muy simple: puesta en marcha 300 euros y después 99 al mes con 200 minutos incluidos. Se paga sola con 2 o 3 clientes extra al mes. ¿Te agendo una llamada para verlo en tu caso?";
-  if (/(como funciona|como va|que hace|que es esto|explicame|no entiendo)/.test(t)) return "Fácil: en una tarde la configuramos con tus servicios, precios y horarios. Ella atiende, informa y agenda. Tú solo recibes el resumen por WhatsApp. ¿Quieres que te llame y te lo enseño?";
-  if (/(no creo|no lo creo|me lo creo|mentira|falso|no funciona|desconfio|estafa|es un robot|robot)/.test(t)) return "Es normal desconfiar... pero fíjate: estás hablando conmigo ahora mismo y soy una de ellas. ¿Seguimos? Te agendo una llamada sin compromiso.";
-  if (/(no tengo tiempo|ocupado|ahora no|otro dia|estoy trabajando)/.test(t)) { step = "day"; return "Lo entiendo, por eso existe: para que no pierdas clientes cuando estás ocupado. ¿Qué día te llamo, aunque sean 10 minutos?"; }
-  if (/(humano|persona|alguien|encargada|jefa)/.test(t)) return "Claro, le digo a Veridiana que te escriba hoy mismo por WhatsApp. ¿A qué número?";
-  if (/(gracias|adios|chao|hasta luego|nos vemos|no me interesa|no quiero)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaremos 24 horas."; }
-  if (/(hola|buenas|buenos dias|buenas tardes|oye|dime)/.test(t)) return "Hola, ¿qué tal? ¿Te explico en un minuto cómo una asistente como yo puede atender tu negocio día y noche?";
-  return "Te escucho. Puedo contarte el precio, cómo funciona, o agendarte una llamada de 15 minutos. ¿Qué prefieres?";
+  if (/(precio|cuanto|vale|cuesta|tarifa|caro|barato)/.test(t)) return R.precio;
+  if (/(como funciona|como va|que hace|que es esto|explicame|no entiendo)/.test(t)) return R.funciona;
+  if (/(no creo|no lo creo|me lo creo|mentira|falso|no funciona|desconfio|no me fio|estafa|es un robot|\brobot\b)/.test(t)) return "Es normal desconfiar... pero fíjate: estás hablando conmigo ahora mismo y soy una de ellas. ¿Seguimos? Te agendo una llamada sin compromiso.";
+  if (/(no tengo tiempo|ocupado|ahora no|otro dia|estoy trabajando|estoy liado|tengo prisa)/.test(t)) { step = "day"; return "Lo entiendo, por eso existe: para que no pierdas clientes cuando estás ocupado. ¿Qué día te llamo, aunque sean 10 minutos?"; }
+  if (/(recepcionista|secretaria|ya tengo a alguien|ya tengo quien)/.test(t)) return "Perfecto, no la sustituye: coge lo que se escapa — noches, fines de semana y picos de trabajo. ¿Te enseño cómo en una llamada de 15 minutos?";
+  if (/(humano|persona|encargada|jefa|veridiana|dueno|jefe)/.test(t)) return "Claro, le digo a Veridiana que te escriba hoy mismo por WhatsApp. ¿A qué número?";
+  if (/(donde estan|donde estais|de donde|ubicacion|presencial|oficina)/.test(t)) return "Trabajamos online para toda España, y la asistente también: atiende por teléfono y WhatsApp estés donde estés. ¿Te agendo la llamada?";
+  if (/(tengo un|tengo una|mi negocio|soy peluquero|soy dentista)/.test(t) || /(sirve|vale|funciona) para/.test(t)) {
+    const sectors = ["peluqueria","clinica","dental","dentista","restaurante","bar","cafeteria","taller","tienda","gimnasio","yoga","academia","hotel","farmacia","veterinario","fisioterapia","estetica","unas","flamenco","panaderia","pasteleria","fontaneria","electricista","barberia","pintor"];
+    if (sectors.some(s => t.indexOf(s) !== -1)) { step = "day"; return "¡Qué bueno! Para negocios como el tuyo funciona genial: atiende, informa y agenda sola, 24 horas. ¿Qué día te llamo 15 minutos para verlo en tu caso?"; }
+    return "Funciona para casi todos los negocios locales: clínicas, tiendas, talleres, restaurantes... ¿El tuyo de qué sector es?";
+  }
+  if (/(como te llamas|tu nombre|quien eres)/.test(t)) return "Me llamo Vera, la vendedora virtual de Kendrick. Y sí, soy una inteligencia artificial trabajando ahora mismo. ¿Te explico cómo tener una así?";
+  if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t) || /^(nomeinteresa|noquiero)$/.test(b)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaremos 24 horas."; }
+  if (/(hola|buenas|buenos dias|buenas tardes|oye)/.test(t)) return "Hola, ¿qué tal? ¿Te explico en un minuto cómo una asistente como yo puede atender tu negocio día y noche?";
+  if (/^(dime|dale|aver|cuentame|cuenta)$/.test(b)) return "Te cuento rápido: 1 precio, 2 cómo funciona, 3 agendar llamada. Di el número o dime qué te interesa.";
+  return "Te escucho. Elige: 1 precio, 2 cómo funciona, 3 agendar llamada. ¿Qué prefieres?";
 }
 function handleUser(text) {
   if (!text.trim()) return;
