@@ -74,7 +74,7 @@ let llmFail = 0;
 let diagStatus = 0;
 let diagShown = false;
 let audioAtual = null;
-let vozOff = false;
+let vozOff = true; // decisão: só voz local (neural desligada; reative p/ ElevenLabs)
 let vozFail = 0;
 function stopAudio() { try { if (audioAtual) audioAtual.pause(); } catch (e) {} audioAtual = null; }
 let rec = null, listening = false;
