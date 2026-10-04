@@ -73,6 +73,10 @@ let llmOn = true;
 let llmFail = 0;
 let diagStatus = 0;
 let diagShown = false;
+let audioAtual = null;
+let vozOff = false;
+let vozFail = 0;
+function stopAudio() { try { if (audioAtual) audioAtual.pause(); } catch (e) {} audioAtual = null; }
 let rec = null, listening = false;
 const SECURE = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
 let micDead = false;
@@ -96,8 +100,12 @@ function pickVoice() {
   const MALE = /pablo|diego|jorge|carlos|miguel|enrique|pedro|juan|david|sergio|raul|andres|fernando|alvaro|adrian|tomas|hombre|male|masculino/i;
   return es.find(v => FEM.test(v.name)) || es.find(v => !MALE.test(v.name)) || es[0] || null;
 }
-function speak(text, after) {
-  setStatus(true, "hablando...");
+function speakLocal(text, after) {
+  if (!("speechSynthesis" in window)) {
+    setStatus(true, "en línea — te escucho");
+    if (after) after();
+    return;
+  }
   const u = new SpeechSynthesisUtterance(text);
   u.lang = "es-ES";
   u.rate = 1.02;
@@ -107,6 +115,38 @@ function speak(text, after) {
   u.onend = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
   speechSynthesis.cancel();
   speechSynthesis.speak(u);
+}
+async function speak(text, after) {
+  setStatus(true, "hablando...");
+  stopAudio();
+  const done = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
+  if (!vozOff) {
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 25000);
+      const r = await fetch("/api/voz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(to);
+      if (r.ok) {
+        const blob = await r.blob();
+        if (!blob.size) throw new Error("audio vazio");
+        const url = URL.createObjectURL(blob);
+        const a = new Audio(url);
+        audioAtual = a;
+        a.onended = () => { URL.revokeObjectURL(url); audioAtual = null; done(); };
+        a.onerror = () => { audioAtual = null; vozFail++; speakLocal(text, after); };
+        await a.play();
+        vozFail = 0;
+        return;
+      }
+      if (r.status === 503) vozOff = true; else vozFail++;
+    } catch (e) { vozFail++; }
+  }
+  speakLocal(text, after);
 }
 function norm(s) {
   return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -352,7 +392,7 @@ function startListen() {
     rec.start();
   } catch (e) { addMsg("Tu navegador no permite el micro — escribe abajo 👇", "sys"); }
 }
-function stopListen() { try { rec && rec.stop(); } catch (e) {} listening = false; micBtn.classList.remove("live"); }
+function stopListen() { try { rec && rec.stop(); } catch (e) {} stopAudio(); listening = false; micBtn.classList.remove("live"); }
 const hangBtn = document.getElementById("hangBtn");
 function hangUp(silent) {
   stopListen(); step = "done"; listening = false;
