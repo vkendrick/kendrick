@@ -100,21 +100,32 @@ function pickVoice() {
   const MALE = /pablo|diego|jorge|carlos|miguel|enrique|pedro|juan|david|sergio|raul|andres|fernando|alvaro|adrian|tomas|hombre|male|masculino/i;
   return es.find(v => FEM.test(v.name)) || es.find(v => !MALE.test(v.name)) || es[0] || null;
 }
+let speakSeq = 0;
 function speakLocal(text, after) {
   if (!("speechSynthesis" in window)) {
     setStatus(true, "en línea — te escucho");
     if (after) after();
     return;
   }
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "es-ES";
-  u.rate = 1.02;
-  u.pitch = 1.1;
-  const v = pickVoice();
-  if (v) u.voice = v;
-  u.onend = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
+  const myCall = ++speakSeq;
+  const parts = text.replace(/([.!?…])\s+/g, "$1|").split("|").map(s => s.trim()).filter(Boolean);
+  let i = 0;
+  const alive = () => myCall === speakSeq;
+  const next = () => {
+    if (!alive()) return;
+    if (i >= parts.length) { setStatus(true, "en línea — te escucho"); if (after) after(); return; }
+    const u = new SpeechSynthesisUtterance(parts[i++]);
+    u.lang = "es-ES";
+    u.rate = 1.0;
+    u.pitch = 1.1;
+    const v = pickVoice();
+    if (v) u.voice = v;
+    u.onend = () => setTimeout(next, 200);
+    u.onerror = () => setTimeout(next, 100);
+    speechSynthesis.speak(u);
+  };
   speechSynthesis.cancel();
-  speechSynthesis.speak(u);
+  setTimeout(next, 60);
 }
 async function speak(text, after) {
   setStatus(true, "hablando...");
@@ -395,7 +406,7 @@ function startListen() {
 function stopListen() { try { rec && rec.stop(); } catch (e) {} stopAudio(); listening = false; micBtn.classList.remove("live"); }
 const hangBtn = document.getElementById("hangBtn");
 function hangUp(silent) {
-  stopListen(); step = "done"; listening = false;
+  stopListen(); step = "done"; listening = false; speakSeq++;
   if ("speechSynthesis" in window) speechSynthesis.cancel();
   micBtn.disabled = true; micBtn.textContent = "Llamada terminada";
   hangBtn.style.display = "none";
