@@ -101,7 +101,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
       if (!geminiRes) { lastUp = 0; continue; }
       if (geminiRes.ok) { done = true; break; }
       lastUp = geminiRes.status;
-      if (geminiRes.status < 500 && geminiRes.status !== 429) break;
+      if (geminiRes.status < 500) break;
     }
     if (done) break;
     if (lastUp !== 404) break;
