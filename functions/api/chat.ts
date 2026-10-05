@@ -59,8 +59,15 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     .map((m) => ({ role: m.role, text: m.text.slice(0, 500) }));
   if (!clean.length) return json({ error: "Sin mensajes" }, 400);
 
+  const userTurns = clean.filter((m) => m.role === "user").length;
+  const stage = typeof body.stage === "string" && STAGES.includes(body.stage) ? body.stage : "open";
+  let pushLine = "";
+  if (stage === "negocio" && userTurns >= 3)
+    pushLine = "AVANZA YA a 'dolor': da el ejemplo concreto de las 22h y pregunta si pierde clientes por tardar. PROHIBIDO preguntar otra vez por el negocio o por como consigue clientes. Devuelve stage 'dolor'.";
+  else if (stage === "dolor" && userTurns >= 4)
+    pushLine = "AVANZA YA a 'propuesta': ofrece la llamada de 15 minutos. PROHIBIDO repetir la pregunta del dolor. Devuelve stage 'propuesta'.";
   const payload = {
-    system_instruction: { parts: [{ text: SYS }, { text: langLine }] },
+    system_instruction: { parts: [{ text: SYS }, { text: langLine }].concat(pushLine ? [{ text: pushLine }] : []) },
     contents: clean.map((m) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.text }],
