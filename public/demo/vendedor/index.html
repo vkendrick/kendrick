@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Demo — Hugo, vendedor de Kendrick</title>
+<meta name="description" content="Demonstração interativa: um vendedor virtual apresenta landing + anúncios e agenda uma conversa.">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; background: #0B2545; color: #fff; min-height: 100vh; display: flex; justify-content: center; }
+  .phone { width: 100%; max-width: 460px; min-height: 100vh; background: #0B2545; display: flex; flex-direction: column; }
+  header { padding: 18px 20px 14px; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 12px; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: #C5A880; color: #0B2545; font-weight: 800; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+  header b { font-size: 15px; }
+  header small { display: block; font-size: 12px; color: #7ee2a8; font-weight: 400; }
+  header small.off { color: rgba(255,255,255,.45); }
+  #log { flex: 1; overflow-y: auto; padding: 18px 16px 12px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 85%; padding: 11px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; }
+  .msg.ia { background: rgba(255,255,255,.1); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.you { background: #C5A880; color: #0B2545; align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+  .msg.sys { background: transparent; border: 1px dashed rgba(255,255,255,.25); color: rgba(255,255,255,.6); align-self: center; font-size: 12px; text-align: center; }
+  .msg.typing span { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.6); margin-right: 3px; animation: blink 1.2s infinite; }
+  .msg.typing span:nth-child(2) { animation-delay: .2s; }
+  .msg.typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes blink { 40% { opacity: .2; } }
+  .card { background: #fff; color: #0B2545; border-radius: 14px; padding: 16px; align-self: stretch; font-size: 14px; line-height: 1.7; }
+  .controls { padding: 12px 16px 20px; border-top: 1px solid rgba(255,255,255,.1); }
+  #micBtn { width: 100%; border: 0; border-radius: 14px; padding: 16px; font-size: 16px; font-weight: 800; cursor: pointer; background: #C5A880; color: #0B2545; }
+  #micBtn.live { background: #e05252; color: #fff; animation: pulse 1.4s infinite; }
+  #micBtn:disabled { opacity: .5; }
+  @keyframes pulse { 50% { opacity: .75; } }
+  #hangBtn { background: none; border: 0; color: #ff9a9a; font-size: 12px; margin-top: 8px; cursor: pointer; width: 100%; }
+  .row { display: flex; gap: 8px; margin-top: 8px; }
+  #txt { flex: 1; border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.08); color: #fff; border-radius: 10px; padding: 12px; font-size: 14px; }
+  #txt::placeholder { color: rgba(255,255,255,.4); }
+  #send { border: 0; border-radius: 10px; padding: 0 18px; font-weight: 800; background: #25D366; color: #fff; cursor: pointer; font-size: 16px; }
+  .hint { text-align: center; font-size: 11px; color: rgba(255,255,255,.4); margin-top: 8px; }
+  .kendrick { display: block; text-align: center; background: #25D366; color: #fff; font-weight: 800; font-size: 14px; padding: 14px; border-radius: 12px; text-decoration: none; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="phone">
+  <header>
+    <div class="avatar">H</div>
+    <div><b>Hugo · Kendrick Media Buyer</b><small id="status" class="off">● offline — pulsa para empezar</small></div>
+  </header>
+  <div id="log"></div>
+  <div class="controls">
+    <button id="micBtn">▶ Escuchar la propuesta (demo gratis)</button>
+    <button id="hangBtn" style="display:none;">✕ colgar</button>
+    <div class="row">
+      <input id="txt" placeholder="...o escribe aquí" autocomplete="off">
+      <button id="send">➤</button>
+    </div>
+    <div class="hint">Funciona mejor en Chrome · habla en español</div>
+  </div>
+</div>
+
+<script>
+const log = document.getElementById("log");
+const status = document.getElementById("status");
+const micBtn = document.getElementById("micBtn");
+const hangBtn = document.getElementById("hangBtn");
+const txt = document.getElementById("txt");
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let step = "idle"; // idle | open | day | hour | done
+let stage = "open"; // open | negocio | dolor | propuesta
+let noCount = 0;
+let booking = {};
+let history = [];
+let llmOn = true;
+let llmFail = 0;
+let diagStatus = 0;
+let diagShown = false;
+let audioAtual = null;
+let vozOff = true;
+let vozFail = 0;
+let speakSeq = 0;
+let rec = null, listening = false;
+const SECURE = location.protocol === "https:" || location.hostname === "localhost" || location.hostname === "127.0.0.1";
+let micDead = false;
+function micOK() { return !!SR && SECURE && !micDead; }
+
+function addMsg(text, who) {
+  const d = document.createElement("div");
+  d.className = "msg " + who;
+  d.textContent = text;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+function setStatus(on, label) {
+  status.classList.toggle("off", !on);
+  status.textContent = "● " + label;
+}
+function pickVoice() {
+  const vs = speechSynthesis.getVoices();
+  const es = vs.filter(v => v.lang.toLowerCase().startsWith("es"));
+  const MASC = /pablo|diego|jorge|carlos|miguel|enrique|pedro|juan|david|sergio|raul|andres|fernando|alvaro|adrian|tomas|hombre|male|masculino/i;
+  const FEM = /helena|laura|monica|paulina|carmen|lucia|elena|alba|abril|elvira|irene|paloma|dalila|sofia|valentina|maria|ana|rosa|femenina|female|mujer/i;
+  return es.find(v => MASC.test(v.name)) || es.find(v => !FEM.test(v.name)) || es[0] || null;
+}
+function stopAudio() { try { if (audioAtual) audioAtual.pause(); } catch (e) {} audioAtual = null; }
+function speakLocal(text, after) {
+  if (!("speechSynthesis" in window)) {
+    setStatus(true, "en línea — te escucho");
+    if (after) after();
+    return;
+  }
+  const myCall = ++speakSeq;
+  const parts = text.replace(/([.!?…])\s+/g, "$1|").split("|").map(s => s.trim()).filter(Boolean);
+  let i = 0;
+  const alive = () => myCall === speakSeq;
+  const next = () => {
+    if (!alive()) return;
+    if (i >= parts.length) { setStatus(true, "en línea — te escucho"); if (after) after(); return; }
+    const u = new SpeechSynthesisUtterance(parts[i++]);
+    u.lang = "es-ES";
+    u.rate = 1.0;
+    u.pitch = 0.95;
+    const v = pickVoice();
+    if (v) u.voice = v;
+    u.onend = () => setTimeout(next, 200);
+    u.onerror = () => setTimeout(next, 100);
+    speechSynthesis.speak(u);
+  };
+  speechSynthesis.cancel();
+  setTimeout(next, 60);
+}
+async function speak(text, after) {
+  setStatus(true, "hablando...");
+  stopAudio();
+  const done = () => { setStatus(true, "en línea — te escucho"); if (after) after(); };
+  if (!vozOff) {
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 25000);
+      const r = await fetch("/api/voz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(to);
+      if (r.ok) {
+        const blob = await r.blob();
+        if (!blob.size) throw new Error("audio vazio");
+        const url = URL.createObjectURL(blob);
+        const a = new Audio(url);
+        audioAtual = a;
+        a.onended = () => { URL.revokeObjectURL(url); audioAtual = null; done(); };
+        a.onerror = () => { audioAtual = null; vozFail++; speakLocal(text, after); };
+        await a.play();
+        vozFail = 0;
+        return;
+      }
+      if (r.status === 503) vozOff = true; else vozFail++;
+    } catch (e) { vozFail++; }
+  }
+  speakLocal(text, after);
+}
+function norm(s) {
+  return (s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+const DIAS = { lunes: "el lunes", martes: "el martes", miercoles: "el miércoles", jueves: "el jueves", viernes: "el viernes", sabado: "el sábado", domingo: "el domingo", hoy: "hoy", manana: "mañana" };
+const HORAS_TXT = { una: "1", dos: "2", tres: "3", cuatro: "4", cinco: "5", seis: "6", siete: "7", ocho: "8", nueve: "9", diez: "10", once: "11", doce: "12" };
+function parseDay(t) {
+  for (const k of Object.keys(DIAS)) if (t.indexOf(k) !== -1) return DIAS[k];
+  if (/(fines de semana|fin de semana|finde)/.test(t)) return "el sábado";
+  return null;
+}
+function parseHour(t) {
+  let s = t;
+  for (const w of Object.keys(HORAS_TXT)) s = s.replace(new RegExp("\\b" + w + "\\b"), HORAS_TXT[w]);
+  if (/(por la mañana|manana)/.test(s)) return "10";
+  if (/(por la tarde|\btarde\b)/.test(s)) return "16";
+  if (/mediodia/.test(s)) return "12";
+  const m = s.match(/(\d{1,2})(?::(\d{2}))?/);
+  if (!m) return null;
+  const h = parseInt(m[1], 10);
+  if (h < 1 || h > 23) return null;
+  if (!/(las|hora|horas|\bh\b|am|pm|y media)/.test(s) && (h < 8 || h > 20)) return null;
+  return m[2] ? h + ":" + m[2] : String(h);
+}
+function showBookingCard(day, hour) {
+  booking.day = day; booking.hour = hour; step = "done"; listening = false;
+  micBtn.disabled = true; micBtn.textContent = "✓ Llamada agendada";
+  hangBtn.style.display = "none";
+  const summary = "Llamada: " + day + " a las " + hour + " con Veridiana (Kendrick).";
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = "<b>✓ " + summary + "</b><br>Hablaremos de landing + anuncios para tu negocio, 15 minutos.<br><br>Esto ha sido una <b>demostración</b>: un vendedor así puede trabajar para tu negocio.<br><a class='kendrick' href='https://wa.me/34658598442?text=" + encodeURIComponent("Hola, hablé con Hugo y quiero una llamada sobre landing + anuncios.") + "' target='_blank'>Confirmar por WhatsApp →</a>";
+  log.appendChild(card); log.scrollTop = log.scrollHeight;
+  return summary;
+}
+function confirmBooking(day, hour) {
+  const summary = showBookingCard(day, hour);
+  return "Perfecto. " + summary + " Hablamos entonces.";
+}
+const TYPO = { presio: "precio", presios: "precios", orario: "horario", funsiona: "funciona", funcona: "funciona", yamar: "llamar", guasap: "whatsapp", wassap: "whatsapp", wasap: "whatsapp", tenho: "tengo", uma: "una", um: "un", meu: "mi", minha: "mi", sim: "si", nao: "no", tchau: "adios", quero: "quiero", gostaria: "quisiera", obrigado: "gracias", obrigada: "gracias", quanto: "cuanto", custa: "cuesta", preco: "precio" };
+function clean(raw) {
+  let s = norm(raw);
+  for (const k of Object.keys(TYPO)) s = s.replace(new RegExp("\\b" + k + "\\b", "g"), TYPO[k]);
+  return s;
+}
+const R = {
+  precio: "Muy simple: landing 250 euros pago único, y gestión 300 al mes sin permanencia. Pero depende de tu caso: ¿qué negocio tienes y cuánto podrías invertir al mes en anuncios?",
+  funciona: "Fácil: primero una landing que convierte visitas en mensajes, después campañas en Instagram y Google optimizadas cada semana. ¿Te enseño cómo quedaría en tu caso?"
+};
+const SECTORS = ["peluqueria","clinica","dental","dentista","estetica","fisioterapia","restaurante","bar","cafeteria","taller","tienda","gimnasio","yoga","academia","hotel","farmacia","veterinario","unas","flamenco","panaderia","pasteleria","fontaneria","electricista","barberia","pintor","mecanico","optica","mascotas"];
+function findSector(t) { return SECTORS.find(s => t.indexOf(s) !== -1) || null; }
+function sectorBenefit(s) {
+  if (/(clinica|dental|dentista|estetica|fisioterapia)/.test(s)) return "Para clínicas lo normal son leads pidiendo presupuesto: con una landing que convierte y campañas bien puestas, a unos pocos euros por lead.";
+  if (/(restaurante|bar|cafeteria)/.test(s)) return "En hostelería lo normal son reservas directas desde Instagram, sin depender de plataformas que se llevan comisión.";
+  if (/(taller|mecanico)/.test(s)) return "En talleres lo normal son solicitudes de presupuesto desde Google, de gente buscando ya mismo.";
+  if (/(tienda|peluqueria|barberia|farmacia)/.test(s)) return "En comercios de barrio lo normal son mensajes de WhatsApp cada semana desde Instagram.";
+  return "Para negocios como el tuyo lo normal es un flujo constante de mensajes interesados cada semana.";
+}
+function thinkLocal(raw) {
+  const t = clean(raw);
+  const b = t.replace(/[^a-z]/g, "");
+  if (step === "day") {
+    const d = parseDay(t);
+    if (!d) return "¿Qué día te viene bien? Por ejemplo: mañana, el jueves...";
+    const h = parseHour(t);
+    if (h) return confirmBooking(d, h);
+    booking.day = d; step = "hour";
+    return "Genial, " + d + ". ¿A qué hora? De 10 a 19.";
+  }
+  if (step === "hour") {
+    const h = parseHour(t);
+    if (!h) return "¿A qué hora? Por ejemplo: a las 11, a las 17...";
+    return confirmBooking(booking.day, h);
+  }
+  if (/\b(uno|primera?|1)\b/.test(t)) { stage = "negocio"; return R.precio; }
+  if (/\b(dos|segunda?|2)\b/.test(t)) return R.funciona;
+  if (/\b(tres|tercera?|3)\b/.test(t)) { step = "day"; return "Genial. ¿Qué día te llamamos? Solo 15 minutos."; }
+  if (/^(si|vale|ok|okay|deacuerdo|venga|perfecto|genial|dale)$/.test(b)) { step = "day"; return "Genial. ¿Qué día te viene bien?"; }
+  if (/^no$/.test(b)) return "Sin problema. Si cambias de idea, aquí estaré. ¿Te explico el precio antes de irte?";
+  if (/(no me interesa|no quiero|no necesito|no lo necesito)/.test(t)) {
+    noCount++;
+    if (noCount === 1) { stage = "dolor"; return "Puede ser que no lo necesites. Solo una pregunta: ¿cuánto te cuesta hoy cada cliente que consigues?"; }
+    step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; hangBtn.style.display = "none"; return "Sin problema, respeto tu decisión. Si cambias de idea, aquí estaré.";
+  }
+  if (/(me interesa|interesad|quiero una|si quiero|estoy de acuerdo|totalmente|agendar|reservar|que me llame|llamame|llamadme|citame|apuntame|me apunto)/.test(t) || parseDay(t)) {
+    const d = parseDay(t), h = parseHour(t);
+    if (d && h) return confirmBooking(d, h);
+    if (d) { booking.day = d; step = "hour"; return "Genial, " + d + ". ¿A qué hora?"; }
+    step = "day"; return "Me alegro. ¿Qué día te llamamos? Solo 15 minutos.";
+  }
+  if (stage === "negocio") {
+    const found = findSector(t);
+    if (found) { stage = "dolor"; return "¡Qué bueno! " + sectorBenefit(found) + " ¿Cómo consigues clientes hoy — boca a boca, redes...?"; }
+  }
+  if (/(cuanto tarda|cuando estaria|ya estaria|rapido)/.test(t)) return "Landing lista en 7 días, primeros leads entre 7 y 14 días después. ¿Qué día te viene bien la llamada?";
+  if (/(precio|cuanto|vale|cuesta|tarifa|caro|barato)/.test(t)) { stage = "negocio"; return R.precio; }
+  if (/(como funciona|como va|que es|explicame|no entiendo)/.test(t)) return R.funciona;
+  if (/(verba|presupuesto|inversion|cuanto hay que|cuanto se necesita)/.test(t)) { stage = "negocio"; return "Recomendamos empezar con 300 a 500 al mes de verba, que pagas directo a Meta/Google. Con menos también se puede, más lento. ¿Cuánto podrías invertir tú?"; }
+  if (/(resultados|cuando veo|cuanto tarda en|garantia|garantiza|asegura|devuelven|reembolso)/.test(t)) { stage = "negocio"; return "Te soy honesto: no prometo CPL ni ROAS, varían por negocio. Lo que sí tienes: medición clara, optimización semanal y sin permanencia. ¿Me dices tu sector y lo vemos en tu caso?"; }
+  if (/(ya probe|ya lo intente|no me funciono|no funciono|perdi dinero|gaste y nada)/.test(t)) return "Pasa mucho, y casi siempre es por lo mismo: sin landing que convierta o sin píxel midiendo. Antes de gastar un euro, auditamos tu caso gratis. ¿Qué probaste tú?";
+  if (/(sobrino|primo|agencia anterior|otra agencia|ya tengo quien|community manager)/.test(t)) return "La diferencia: informe simple cada semana, sin permanencia y nicho local. Sin humo. ¿Te enseño en una llamada de 15 minutos?";
+  if (/(no tengo dinero|no tengo presupuesto|muy caro|no puedo pagar)/.test(t)) return "Lo entiendo. Por eso existe la landing de 250: empiezas a convertir lo que ya tienes, y el tráfico entra cuando puedas. ¿Te explico?";
+  if (/(no creo|mentira|falso|desconfio|no me fio|estafa|humo|vendehumos)/.test(t)) return "Es normal desconfiar... pero fíjate: estás hablando conmigo ahora mismo y soy una IA trabajando. ¿Seguimos? Sin compromiso.";
+  if (/(hablar.*robot|robot.*clientes|es una ia|inteligencia artificial|son ias)/.test(t)) return "Sí, soy inteligencia artificial, y mis respuestas siguen reglas que defines tú. ¿Quieres verlo en tu sector?";
+  if (/(pequeno|pequena|pequenos|pocos clientes|empezando|autonomo)/.test(t)) return "Justo para pequeños: la landing cuesta menos que un fin de semana flojo. ¿Me dices tu sector y lo vemos?";
+  if (/(permanencia|contrato|cancelar|darse de baja|compromiso|atarme)/.test(t)) return "Sin permanencia: mes a mes. Cancelas cuando quieras, sin letra pequeña. ¿Seguimos?";
+  if (/(quien hace|quien lo monta|tengo que hacer|complicado)/.test(t)) return "Nosotros: una charla de 30 minutos y lo montamos todo. Tú solo apruebas y recibes el informe semanal.";
+  if (/(ya tengo web|ya tengo pagina|tengo web)/.test(t)) return "Perfecto: la auditamos gratis y solo cambiamos lo que frena ventas. ¿Te agendo la llamada?";
+  if (/(informe|reporte|report|como miden|medicion|metricas)/.test(t)) return "Informe simple cada semana por WhatsApp: cuánto gastado, cuántos mensajes, a cuánto cada uno. Sin PDFs de 20 páginas.";
+  if (/(quiero ver|muestrame|ensename|ver ejemplo|ejemplos|casos)/.test(t)) { stage = "negocio"; return "Mira estos dos hechos por nosotros: una clínica y una barbería. ¿Cuál se parece más a tu negocio?"; }
+  if (/(quiero hablar|hablar con alguien|hablar con una persona|humano|persona|encargada|veridiana|dueno|jefe)/.test(t)) { stage = "negocio"; return "Claro. Para ponerte en contacto: ¿qué negocio tienes y qué horario te va mejor?"; }
+  if (/(donde estan|donde estais|de donde|ubicacion|presencial|oficina)/.test(t)) return "Trabajamos online para toda España. ¿Te agendo la llamada?";
+  if (/(tengo un|tengo una|mi negocio|soy peluquero|soy dentista)/.test(t) || /(sirve|vale|funciona) para/.test(t)) {
+    const found = findSector(t);
+    if (!found) return "Funciona para casi todos los negocios locales: clínicas, tiendas, talleres, restaurantes... ¿El tuyo de qué sector es?";
+    if (stage === "open" || stage === "negocio") { stage = "dolor"; return "¡Qué bueno! " + sectorBenefit(found) + " ¿Cómo consigues clientes hoy — boca a boca, redes...?"; }
+    step = "day"; return "Perfecto. ¿Qué día te llamamos 15 minutos para verlo en tu caso?";
+  }
+  if (/(como te llamas|tu nombre|quien eres)/.test(t)) return "Me llamo Hugo, vendedor de Kendrick. Y sí, soy una inteligencia artificial trabajando ahora mismo. ¿Te explico cómo consigo clientes con landing + anuncios?";
+  if (/(gracias|adios|chao|hasta luego|nos vemos)/.test(t)) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; hangBtn.style.display = "none"; return "Gracias por tu tiempo. Si cambias de idea, aquí estaré."; }
+  if (/(hola|buenas|buenos dias|buenas tardes|oye)/.test(t)) return "Hola, ¿qué tal? ¿Te explico en un minuto cómo llenamos agendas con landing + anuncios?";
+  if (/^(dime|dale|aver|cuentame|cuenta)$/.test(b)) return "Te cuento rápido: 1 precio, 2 cómo funciona, 3 agendar llamada. Di el número o dime qué te interesa.";
+  if (stage === "negocio") return "¿Qué tipo de negocio tienes? Clínica, tienda, taller, restaurante...";
+  if (stage === "dolor") { stage = "propuesta"; return "Imagina pagar unos 3,80 por cada persona que te escribe pidiendo presupuesto, sabiendo exactamente de dónde vino. ¿Hoy sabes cuánto te cuesta cada cliente?"; }
+  if (stage === "propuesta") { step = "day"; return "¿Te agendo una llamada de 15 minutos para verlo en tu caso? ¿Qué día te viene bien?"; }
+  return "Te escucho. Elige: 1 precio, 2 cómo funciona, 3 agendar llamada. ¿Qué prefieres?";
+}
+async function handleUser(text) {
+  if (!text.trim()) return;
+  addMsg(text, "you");
+  history.push({ role: "user", text: text.slice(0, 500) });
+  if (step === "day" || step === "hour") {
+    const reply = thinkLocal(text);
+    addMsg(reply, "ia");
+    history.push({ role: "assistant", text: reply });
+    speak(reply, () => { if (step !== "done") startListen(); });
+    return;
+  }
+  handleLLM(text);
+}
+async function handleLLM(text) {
+  const typing = document.createElement("div");
+  typing.className = "msg ia typing";
+  typing.innerHTML = "<span></span><span></span><span></span>";
+  log.appendChild(typing); log.scrollTop = log.scrollHeight;
+  let reply = null;
+  if (llmOn) {
+    try {
+      const ctrl = new AbortController();
+      const to = setTimeout(() => ctrl.abort(), 15000);
+      const r = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history.slice(-12), stage, svc: "hugo" }),
+        signal: ctrl.signal,
+      });
+      clearTimeout(to);
+      if (r.ok) {
+        const j = await r.json();
+        if (j && j.reply) {
+          reply = j.reply;
+          if (j.stage) stage = j.stage;
+          if (j.booked) showBookingCard(j.booked.day, j.booked.hour);
+          if (j.ended) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; hangBtn.style.display = "none"; }
+          llmFail = 0;
+        } else { llmFail++; diagStatus = "vacio"; }
+      } else { llmFail++; try { const ej = await r.json(); diagStatus = "Google " + (ej.up || r.status); } catch (e2) { diagStatus = r.status; } }
+    } catch (e) { llmFail++; diagStatus = "red"; }
+    if (llmFail >= 2) llmOn = false;
+    if (!diagShown) {
+      diagShown = true;
+      if (diagStatus === 503) addMsg("Aviso: IA no configurada en el servidor (falta la clave). Hablo en modo local.", "sys");
+      else if (diagStatus) addMsg("Aviso: IA indisponible (" + diagStatus + "). Hablo en modo local.", "sys");
+    }
+  }
+  if (!reply) {
+    reply = thinkLocal(text);
+    history.push({ role: "assistant", text: reply });
+  }
+  typing.textContent = reply;
+  typing.classList.remove("typing");
+  log.scrollTop = log.scrollHeight;
+  speak(reply, () => { if (step !== "done") startListen(); });
+}
+function startListen() {
+  if (!micOK() || listening || step === "done") return;
+  try {
+    rec = new SR();
+    rec.lang = "es-ES";
+    rec.interimResults = false;
+    rec.onstart = () => { listening = true; micBtn.classList.add("live"); micBtn.textContent = "🎙 Escuchando... pulsa para parar"; setStatus(true, "en línea — te escucho"); };
+    rec.onresult = (e) => { const t = e.results[0][0].transcript; stopListen(); handleUser(t); };
+    rec.onerror = (e) => {
+      stopListen();
+      const err = (e && e.error) || "";
+      if (err === "not-allowed" || err === "service-not-allowed") {
+        micDead = true;
+        micBtn.textContent = "💬 Seguir por texto";
+        addMsg("Micro bloqueado 🔒 — permite el micrófono (candado junto a la URL) o sigue escribiendo abajo 👇", "sys");
+      } else if (err === "no-speech") {
+        addMsg("No te he oído — habla un poco más alto o escribe abajo 👇", "sys");
+      } else if (err === "audio-capture") {
+        micDead = true;
+        micBtn.textContent = "💬 Seguir por texto";
+        addMsg("No encuentro micrófono en este dispositivo — escribe abajo 👇", "sys");
+      } else {
+        addMsg("Me he quedado sin oído un momento — escribe abajo 👇", "sys");
+      }
+    };
+    rec.onend = () => {
+      listening = false; micBtn.classList.remove("live");
+      if (micDead) { micBtn.textContent = "💬 Seguir por texto"; }
+      else if (step !== "done" && step !== "idle") micBtn.textContent = "🎙 Hablar";
+    };
+    rec.start();
+  } catch (e) { addMsg("Tu navegador no permite el micro — escribe abajo 👇", "sys"); }
+}
+function stopListen() { try { rec && rec.stop(); } catch (e) {} stopAudio(); listening = false; micBtn.classList.remove("live"); }
+function hangUp(silent) {
+  stopListen(); step = "done"; listening = false; speakSeq++;
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+  micBtn.disabled = true; micBtn.textContent = "Llamada terminada";
+  hangBtn.style.display = "none";
+  if (!silent) addMsg("Llamada terminada. Gracias por probar la demo.", "sys");
+}
+hangBtn.onclick = () => hangUp(false);
+micBtn.onclick = () => {
+  if (step === "idle") {
+    if (!micOK()) {
+      if (!SR) addMsg("Este navegador no tiene reconocimiento de voz (abre el link en Chrome). Puedes escribir abajo 👇 y Hugo te responde hablando.", "sys");
+      else if (!SECURE) addMsg("Abre el link https (no el archivo) para usar el micro. Mientras tanto, escribe abajo 👇.", "sys");
+      else addMsg("Micro no disponible — escribe abajo 👇 y Hugo te responde hablando.", "sys");
+    }
+    step = "open";
+    hangBtn.style.display = "";
+    const hi = "Hola, soy Hugo, vendedor de Kendrick. Ayudo a negocios locales a conseguir clientes con landing y anuncios. ¿Te explico en un minuto cómo funciona?";
+    addMsg(hi, "ia");
+    history.push({ role: "assistant", text: hi });
+    if ("speechSynthesis" in window) speak(hi, startListen); else startListen();
+    return;
+  }
+  if (step === "done") return;
+  if (listening) {
+    stopListen();
+    micBtn.textContent = "🎙 Hablar";
+    setStatus(true, "en línea");
+  } else if (micOK()) {
+    startListen();
+  } else {
+    addMsg("Micro no disponible ahora — escribe abajo 👇", "sys");
+  }
+};
+document.getElementById("send").onclick = () => { const v = txt.value; txt.value = ""; if (step === "idle") { micBtn.onclick(); } handleUser(v); };
+txt.addEventListener("keydown", (e) => { if (e.key === "Enter") document.getElementById("send").click(); });
+if ("speechSynthesis" in window) { speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged = () => speechSynthesis.getVoices(); }
+if (!micOK()) {
+  micBtn.textContent = "💬 Empezar por texto";
+  document.querySelector(".hint").textContent = !SR
+    ? "Este navegador no soporta micro — abre en Chrome. Escribe y Hugo responde hablando."
+    : "Sin acceso al micro — escribe abajo y Hugo responde hablando.";
+}
+addMsg("Demo 100% gratuita. Pulsa «Escuchar» y actúa como dueño: pregunta precio, di tu sector o «me interesa».", "sys");
+</script>
+</body>
+</html>

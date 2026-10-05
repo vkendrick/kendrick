@@ -39,6 +39,13 @@ Regras:
 >
 > Si te convence, ella misma te agenda la llamada conmigo.
 
+## Demo vendedor media buyer (link — pitch de landing + anuncios)
+
+> ¿Y si te enseño con un ejemplo? Habla aquí con Hugo, nuestro vendedor virtual de landing + anuncios 👇
+> https://kendrick-z4b.pages.dev/demo/vendedor/
+>
+> Pregúntale precio, desconfía, dile tu sector. Si te convence, él mismo te agenda la llamada.
+
 ## Msg 2 — Follow-up 48h (sem resposta)
 
 > Hola de nuevo 👋 Solo para no perder el hilo: la muestra que preparé para {negocio} sigue disponible. ¿Quiere que se la envíe?
