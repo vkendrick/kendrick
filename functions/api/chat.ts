@@ -106,15 +106,42 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     if (done) break;
     if (lastUp !== 404) break;
   }
-  if (!geminiRes || !geminiRes.ok) return json({ error: "Error IA", up: lastUp }, 502);
-
-  let out: { reply?: unknown; stage?: unknown; booked?: unknown; ended?: unknown };
-  try {
-    const data = await geminiRes.json();
-    out = JSON.parse(data.candidates[0].content.parts[0].text);
-  } catch {
-    return json({ error: "Respuesta IA inválida" }, 502);
+  let out: { reply?: unknown; stage?: unknown; booked?: unknown; ended?: unknown } | null = null;
+  if (geminiRes && geminiRes.ok) {
+    try {
+      const data = await geminiRes.json();
+      const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
+      if (parsed && typeof parsed.reply === "string" && parsed.reply.length > 0) out = parsed;
+    } catch {
+      out = null;
+    }
   }
+  if (!out) {
+    // regenera uma vez com o primeiro modelo antes de desistir
+    try {
+      const r2 = await fetch(
+        "https://generativelanguage.googleapis.com/v1beta/models/" + MODELS[0] + ":generateContent?key=" + apiKey,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+      if (r2.ok) {
+        const data = await r2.json();
+        const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
+        if (parsed && typeof parsed.reply === "string" && parsed.reply.length > 0) {
+          out = parsed;
+          lastUp = 0;
+        }
+      } else {
+        lastUp = r2.status;
+      }
+    } catch {
+      lastUp = lastUp || 0;
+    }
+  }
+  if (!out) return json({ error: !geminiRes || !geminiRes.ok ? "Error IA" : "Respuesta IA inválida", up: lastUp }, 502);
 
   const booked = out.booked as { day?: unknown; hour?: unknown } | null;
   return json({
