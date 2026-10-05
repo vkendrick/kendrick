@@ -18,7 +18,7 @@ Regras:
 
 ## Msg 1 — Primeiro contato (+ print da proposta)
 
-> Hola, soy Veridiana de Kendrick. Vi que {negocio} no aparece en Google cuando buscan {categoria} en {cidade} — sus competidores sí aparecen.
+> Hola, soy Veridiana de Kendrick. Ayudo a {categoria} en {cidade} a conseguir clientes con landing + anuncios.
 >
 > Mira lo que hicimos para un negocio parecido 👇
 > {ejemplo}
@@ -45,7 +45,7 @@ Regras:
 
 ## Msg 3 — Com interesse (enviar proposta + preço)
 
-> Perfecto 🙌 La idea es simple: web sencilla + Google Maps verificado + botón de WhatsApp, listo en 4 semanas desde €450.
+> Perfecto 🙌 La idea es simple: landing que vende (desde €250) + anuncios en Instagram/Google con gestión mensual (€300/mes, sin permanencia).
 >
 > ¿Agendamos una llamada de 15 min esta semana? Mi número: +34 658 598 442
 

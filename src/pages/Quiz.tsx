@@ -8,57 +8,57 @@ import { ArrowRight, ArrowLeft, CheckCircle2, RotateCcw } from "lucide-react";
 const QUESTIONS = [
   {
     id: 1,
-    question: "¿Qué pasa cuando alguien busca tu negocio en Google?",
-    context: "Piensa en alguien que nunca ha oído hablar de ti.",
+    question: "¿Anuncias tu negocio en internet hoy?",
+    context: "Instagram, Google, Facebook... cualquier anuncio pago.",
     options: [
-      { text: "No aparezco en ningún lado", points: 0 },
-      { text: "Aparezco a veces, pero no siempre", points: 1 },
-      { text: "Tengo Google Maps pero no web propia", points: 2 },
-      { text: "Aparezco bien con web y Google Maps actualizados", points: 3 },
+      { text: "No, nunca lo he hecho", points: 0 },
+      { text: "Probé impulsar posts, sin resultado claro", points: 1 },
+      { text: "Sí, pero sin control de lo que vuelve", points: 2 },
+      { text: "Sí, y sé lo que me trae cada euro", points: 3 },
     ],
   },
   {
     id: 2,
-    question: "¿Cómo consigues la mayoría de tus clientes nuevos?",
-    context: "¿De dónde vienen realmente los clientes que te contactan?",
+    question: "¿Cuánto podrías invertir al mes en anuncios?",
+    context: "La verba se paga directo a Meta/Google, no a nosotros.",
     options: [
-      { text: "Solo por recomendaciones de amigos o familiares", points: 0 },
-      { text: "Redes sociales, pero sin un sistema claro", points: 1 },
-      { text: "Mezcla de redes, Google y boca a boca", points: 2 },
-      { text: "Tengo un sistema que me trae clientes regularmente", points: 3 },
+      { text: "Menos de €300", points: 0 },
+      { text: "Entre €300 y €800", points: 1 },
+      { text: "Entre €800 y €2.000", points: 2 },
+      { text: "Más de €2.000", points: 3 },
     ],
   },
   {
     id: 3,
-    question: "¿Qué pasa cuando alguien te contacta por internet?",
-    context: "Un cliente potencial te escribe. ¿Qué ocurre después?",
+    question: "¿Cómo llegan tus clientes hoy?",
+    context: "¿De dónde vienen los que te contactan?",
     options: [
-      { text: "Le respondo cuando puedo, a veces tarde", points: 0 },
-      { text: "Respondo rápido pero sin proceso definido", points: 1 },
-      { text: "Tengo un proceso básico pero no automatizado", points: 2 },
-      { text: "Tengo respuestas automáticas y seguimiento claro", points: 3 },
+      { text: "Solo boca a boca", points: 0 },
+      { text: "Redes sociales, sin sistema", points: 1 },
+      { text: "Mezcla de redes y recomendaciones", points: 2 },
+      { text: "Tengo un flujo que trae clientes siempre", points: 3 },
     ],
   },
   {
     id: 4,
-    question: "¿Sabes cuánto te cuesta conseguir un cliente nuevo?",
-    context: "¿Cuánto dinero o tiempo inviertes por cada cliente?",
+    question: "¿Qué pasa cuando alguien te escribe por un anuncio?",
+    context: "Un interesado hace clic y te contacta. ¿Y después?",
     options: [
-      { text: "No tengo ni idea", points: 0 },
-      { text: "Más o menos, pero no lo mido", points: 1 },
-      { text: "Lo sé aproximadamente para algunos canales", points: 2 },
-      { text: "Lo mido con exactitud y lo optimizo", points: 3 },
+      { text: "Respondo cuando puedo, a veces tarde", points: 0 },
+      { text: "Respondo rápido pero sin proceso", points: 1 },
+      { text: "Tengo un proceso básico de respuesta", points: 2 },
+      { text: "Respuesta rápida + seguimiento claro", points: 3 },
     ],
   },
   {
     id: 5,
-    question: "¿Estás invirtiendo en publicidad online ahora mismo?",
-    context: "Publicidad de pago en Facebook, Instagram, Google, etc.",
+    question: "¿Tienes página para mandar los clics?",
+    context: "Sin destino que convenza, el clic se pierde.",
     options: [
-      { text: "No, nunca lo he hecho", points: 0 },
-      { text: "Lo he probado pero sin resultados claros", points: 1 },
-      { text: "Sí, pero no sé si funciona bien", points: 2 },
-      { text: "Sí, y tengo datos claros de qué funciona", points: 3 },
+      { text: "No tengo nada", points: 0 },
+      { text: "Sí, pero vieja y lenta", points: 1 },
+      { text: "Sí, normalita", points: 2 },
+      { text: "Sí, rápida y pensada para vender", points: 3 },
     ],
   },
 ];
@@ -81,52 +81,52 @@ const RESULTS: Record<LevelKey, {
   };
 }> = {
   invisible_digital: {
-    label: "Invisible Digital",
-    subtitle: "Tu negocio necesita una base sólida",
-    insight: "El 87% de tus clientes potenciales te buscan en Google antes de llamar — y no te encuentran. Cada día sin presencia digital es un cliente que va a la competencia.",
+    label: "Sin base lista",
+    subtitle: "Necesitas destino antes de tráfico",
+    insight: "Poner dinero en anuncios sin página que convenza es quemar verba: el clic llega y se va. Primero la base, después el tráfico.",
     package: {
       step: "01",
-      name: "Empezar a existir",
-      price: "desde €450",
-      duration: "4 semanas",
+      name: "Landing que vende",
+      price: "€250",
+      duration: "7 días · pago único",
       includes: [
-        "Una web sencilla que recibe clientes",
-        "Tu negocio verificado en Google Maps",
-        "Botón de WhatsApp para que te escriban",
+        "Página diseñada para convertir visitas en WhatsApps",
+        "Botón de WhatsApp + medición de cada clic",
+        "Rápida en móvil y lista para anuncios",
       ],
-      nextLevel: "Cuando tengas la base, el Nivel 02 conecta todo en un sistema de ventas.",
+      nextLevel: "Con la landing lista, el tráfico pago (€300/mes) llena tu agenda.",
     },
   },
   estructura_desconectada: {
-    label: "Estructura Desconectada",
-    subtitle: "Tienes presencia, pero no sistema",
-    insight: "Estás en internet, pero tus herramientas no trabajan juntas. Estás perdiendo entre el 60-70% de los clientes interesados por falta de seguimiento.",
+    label: "Listo para tráfico",
+    subtitle: "Tienes base, falta flujo constante",
+    insight: "Ya tienes con qué recibir clientes. Lo que falta es un flujo predecible: campañas optimizadas que traigan interesados cada semana.",
     package: {
       step: "02",
-      name: "Dejar de perder clientes",
-      price: "desde €850",
-      duration: "6 semanas",
+      name: "Tráfico gestionado",
+      price: "€300/mes",
+      duration: "mes a mes, sin permanencia",
       includes: [
-        "Todo lo del Nivel 01",
-        "Respuestas automáticas a quien te escribe",
-        "Una hoja simple con tus números: de dónde viene cada cliente",
+        "Revisamos tu página antes de gastar un euro",
+        "Campañas en Instagram y Google",
+        "Optimización semanal + informe simple",
       ],
-      nextLevel: "Con el sistema listo, el Nivel 03 multiplica resultados con publicidad.",
+      nextLevel: "Con verba arriba de €1.500/mes, pasamos a 10% de la facturación generada.",
     },
   },
   optimizacion_escala: {
-    label: "Optimización y Escala",
-    subtitle: "Listo para crecer con publicidad",
-    insight: "Tienes una base sólida. Ahora es el momento de invertir en publicidad para crecer más rápido. Sin un sistema de medición claro, invertir en publicidad es quemar dinero.",
+    label: "Para escalar",
+    subtitle: "Verba y base: hora de crecer",
+    insight: "Tienes base y capacidad de inversión. Aquí el juego es escala con control: saber exactamente cuánto cuesta cada cliente y subir la verba.",
     package: {
-      step: "03",
-      name: "Crecer con anuncios",
-      price: "desde €1.500",
-      duration: "8 semanas",
+      step: "02",
+      name: "Tráfico gestionado",
+      price: "€300/mes",
+      duration: "mes a mes · hasta 10% de facturación",
       includes: [
-        "Todo lo del Nivel 02",
-        "Anuncios en Instagram y Google",
-        "Revisamos los resultados contigo cada 15 días",
+        "Campañas en Instagram y Google",
+        "Optimización semanal + informe simple",
+        "Escala controlada por costo por cliente",
       ],
     },
   },
@@ -211,8 +211,8 @@ export default function Quiz() {
             Diagnóstico gratuito
           </span>
           <h1 className="text-white text-4xl md:text-5xl font-bold leading-tight mb-5">
-            ¿Dónde está tu negocio{" "}
-            <span className="text-[#C5A880] italic">digitalmente?</span>
+            ¿Tu negocio está listo{" "}
+            <span className="text-[#C5A880] italic">para anuncios?</span>
           </h1>
           <p className="text-white/50 text-base mb-10 leading-relaxed">
             5 preguntas · 3 minutos · Resultado personalizado

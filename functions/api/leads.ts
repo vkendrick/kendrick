@@ -28,9 +28,9 @@ interface ContactData {
 const WA_NUMBER = "34658598442";
 
 const levelLabels: Record<string, string> = {
-  invisible_digital: "Invisible Digital",
-  estructura_desconectada: "Estructura Desconectada",
-  optimizacion_escala: "Optimización y Escala",
+  invisible_digital: "Sin base lista",
+  estructura_desconectada: "Listo para tráfico",
+  optimizacion_escala: "Para escalar",
 };
 
 async function appendToSheet(env: Env, range: string, values: (string | number)[][]) {
@@ -141,19 +141,19 @@ async function notifyOwnerByEmail(env: Env, data: LeadData) {
 
 const levelDiagnosis: Record<string, string[]> = {
   invisible_digital: [
-    "Tu negocio no aparece cuando alguien te busca en Google",
+    "Sin página que convenza, poner dinero en anuncios es quemar verba",
     "Dependes solo del boca a boca para conseguir clientes",
-    "No tienes forma de captar clientes mientras duermes",
+    "Necesitas destino antes de tráfico",
   ],
   estructura_desconectada: [
-    "Tienes presencia online pero tus herramientas no trabajan juntas",
-    "Estás perdiendo entre el 60-70% de los clientes interesados por falta de seguimiento",
-    "No sabes qué canal te trae más clientes ni cuánto te cuesta cada uno",
+    "Tienes base, pero sin flujo constante de clientes",
+    "Cada semana sin campañas es una semana de boca a boca",
+    "No sabes cuánto te cuesta cada cliente",
   ],
   optimizacion_escala: [
-    "Tu base digital está lista, pero sin publicidad pagada tu crecimiento es lento",
-    "Sin un sistema de medición claro, invertir en publicidad es arriesgado",
-    "Tienes la oportunidad de multiplicar tus ingresos con la estrategia correcta",
+    "Tienes base y capacidad de inversión: hora de escalar",
+    "Sin medir el costo por cliente, escalar da miedo",
+    "Con control, cada euro extra trabaja para ti",
   ],
 };
 

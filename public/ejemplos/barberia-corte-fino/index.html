@@ -13,51 +13,81 @@
   .wrap { max-width: 680px; margin: 0 auto; background: #121212; }
   .gold { color: #d4a94e; }
   .topbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: #0c0c0c; position: sticky; top: 0; z-index: 20; border-bottom: 1px solid #2a2a2a; }
-  .logo { font-family: Georgia, serif; font-weight: 700; font-size: 18px; color: #f2ede4; }
-  .logo small { display: block; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-weight: 400; font-size: 11px; color: #9a8f7d; letter-spacing: 2px; text-transform: uppercase; }
-  .tel { color: #d4a94e; font-weight: 700; font-size: 14px; text-decoration: none; border: 1.5px solid #d4a94e; padding: 8px 14px; border-radius: 999px; }
-  .hero { position: relative; min-height: 88vh; display: flex; align-items: flex-end; background: #0c0c0c; }
-  .hero img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .hero .shade { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.94) 25%, rgba(0,0,0,.35) 65%, rgba(0,0,0,.3)); }
-  .hero .txt { position: relative; padding: 28px 22px 34px; width: 100%; }
-  .kicker { display: inline-block; color: #d4a94e; border: 1px solid rgba(212,169,78,.5); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; margin-bottom: 14px; }
-  h1 { font-family: Georgia, serif; font-size: 40px; line-height: 1.05; margin-bottom: 12px; }
+  .logo { font-family: Georgia, serif; font-weight: 700; font-size: 18px; }
+  .logo small { display: block; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-weight: 400; font-size: 10px; color: #9a8f7d; letter-spacing: 3px; text-transform: uppercase; }
+  .topcta { color: #121212; background: #d4a94e; font-weight: 800; font-size: 13px; text-decoration: none; padding: 9px 16px; border-radius: 999px; }
+  /* HERO SPLIT — distinto al de la clínica */
+  .hero { display: grid; grid-template-columns: 1fr; }
+  .hero .txt { padding: 34px 22px; }
+  .hero .ph { min-height: 300px; background: linear-gradient(160deg, #2a2a2a, #0c0c0c); }
+  .hero .ph img { width: 100%; height: 100%; max-height: 340px; object-fit: cover; }
+  .kicker { display: inline-block; color: #d4a94e; border: 1px solid rgba(212,169,78,.5); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; padding: 6px 12px; border-radius: 999px; margin-bottom: 14px; }
+  h1 { font-family: Georgia, serif; font-size: 42px; line-height: 1.02; margin-bottom: 12px; }
   h1 em { color: #d4a94e; }
-  .stars { color: #d4a94e; font-size: 15px; letter-spacing: 2px; }
-  .rev { font-size: 13px; color: rgba(242,237,228,.8); margin: 6px 0 20px; }
+  .stars { color: #d4a94e; font-size: 14px; letter-spacing: 2px; }
+  .rev { font-size: 13px; color: rgba(242,237,228,.75); margin: 6px 0 20px; }
   .cta { display: block; text-align: center; background: #d4a94e; color: #121212; font-weight: 800; font-size: 16px; padding: 16px; border-radius: 12px; text-decoration: none; }
-  .micro { text-align: center; font-size: 12px; color: rgba(242,237,228,.65); margin-top: 10px; }
-  .strip { display: grid; grid-template-columns: repeat(3, 1fr); background: #0c0c0c; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a; text-align: center; }
-  .strip div { padding: 16px 6px; }
-  .strip b { display: block; font-size: 20px; color: #d4a94e; font-family: Georgia, serif; }
-  .strip span { font-size: 11px; color: #9a8f7d; }
+  .micro { font-size: 12px; color: rgba(242,237,228,.6); margin-top: 10px; }
+  /* marquee */
+  .marquee { overflow: hidden; white-space: nowrap; border-top: 1px solid #2a2a2a; border-bottom: 1px solid #2a2a2a; background: #0c0c0c; padding: 12px 0; }
+  .marquee span { display: inline-block; font-family: Georgia, serif; font-size: 14px; letter-spacing: 3px; color: #d4a94e; padding-right: 48px; animation: roll 22s linear infinite; }
+  @keyframes roll { to { transform: translateX(-50%); } }
   section { padding: 34px 22px; }
   h2 { font-family: Georgia, serif; font-size: 26px; margin-bottom: 6px; }
   .sub { font-size: 14px; color: #9a8f7d; margin-bottom: 18px; }
-  .serv { border: 1px solid #2a2a2a; border-radius: 14px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 12px; background: #181818; }
-  .serv b { font-size: 15px; }
-  .serv small { display: block; font-weight: 400; font-size: 12px; color: #9a8f7d; margin-top: 3px; }
-  .price { font-family: Georgia, serif; font-weight: 700; font-size: 20px; color: #d4a94e; white-space: nowrap; }
-  .serv.star { border-color: #d4a94e; }
-  .tag { display: inline-block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: #121212; background: #d4a94e; font-weight: 800; padding: 3px 8px; border-radius: 999px; margin-bottom: 6px; }
-  .gal { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-  .gal div { border-radius: 12px; overflow: hidden; aspect-ratio: 3/4; background: linear-gradient(160deg, #2a2a2a, #121212); }
-  .gal img { width: 100%; height: 100%; object-fit: cover; }
-  .op { background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 14px; padding: 18px; margin-bottom: 12px; }
-  .op p { font-size: 14px; line-height: 1.6; margin: 8px 0; color: #e8e2d6; }
-  .op b { font-size: 13px; color: #d4a94e; }
-  iframe.map { width: 100%; height: 250px; border: 0; border-radius: 14px; filter: grayscale(1) invert(.92) contrast(.9); }
-  .hours { font-size: 14px; margin-top: 14px; line-height: 2; color: #e8e2d6; }
-  .hours a { color: #d4a94e; font-weight: 700; }
+  /* LA CARTA — filas estilo menú, no tarjetas */
+  .carta { border-top: 1px solid #2a2a2a; }
+  .plato { padding: 14px 0; border-bottom: 1px solid #2a2a2a; }
+  .plato .row { display: flex; align-items: baseline; gap: 10px; }
+  .plato b { font-size: 15px; }
+  .plato .dots { flex: 1; border-bottom: 1px dotted #4a4a4a; transform: translateY(-4px); }
+  .plato .price { font-family: Georgia, serif; font-size: 19px; color: #d4a94e; font-weight: 700; }
+  .plato small { display: block; font-size: 12px; color: #9a8f7d; margin-top: 4px; }
+  .plato.fav { background: #1a1a1a; margin: 0 -12px; padding: 14px 12px; border: 1px solid #d4a94e; border-radius: 12px; }
+  /* RITUAL — pasos numerados */
+  .ritual { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .paso { text-align: center; padding: 6px 2px; }
+  .paso .n { font-family: Georgia, serif; font-size: 30px; color: #d4a94e; }
+  .paso b { display: block; font-size: 13px; margin: 6px 0 4px; }
+  .paso span { font-size: 11px; color: #9a8f7d; line-height: 1.5; display: block; }
+  /* galería horizontal */
+  .rail { display: grid; grid-auto-flow: column; grid-auto-columns: 62%; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; margin: 0 -22px; padding-left: 22px; padding-right: 22px; }
+  .rail div { scroll-snap-align: start; border-radius: 14px; overflow: hidden; aspect-ratio: 4/5; background: #1e1e1e; }
+  .rail img { width: 100%; height: 100%; object-fit: cover; }
+  /* barberos */
+  .crew { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .barber { text-align: center; }
+  .barber .ph { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; margin: 0 auto 10px; border: 2px solid #d4a94e; background: #1e1e1e; }
+  .barber img { width: 100%; height: 100%; object-fit: cover; }
+  .barber b { font-size: 14px; }
+  .barber span { display: block; font-size: 11px; color: #9a8f7d; margin-top: 2px; }
+  /* opinión destacada */
+  .bigquote { font-family: Georgia, serif; font-size: 21px; line-height: 1.45; text-align: center; padding: 8px 6px 2px; }
+  .bigquote small { display: block; font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; font-size: 12px; color: #d4a94e; margin-top: 10px; }
+  /* banda reserva */
+  .band { background: #d4a94e; color: #121212; text-align: center; border-radius: 16px; padding: 26px 20px; }
+  .band h2 { color: #121212; }
+  .band p { font-size: 13px; margin: 6px 0 18px; opacity: .75; }
+  .band .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .band a { font-weight: 800; font-size: 14px; padding: 14px; border-radius: 10px; text-decoration: none; }
+  .band .w { background: #121212; color: #fff; }
+  .band .c { background: transparent; border: 2px solid #121212; color: #121212; }
+  iframe.map { width: 100%; height: 220px; border: 0; border-radius: 14px; filter: grayscale(1) invert(.92) contrast(.9); }
+  .hours { font-size: 13px; margin-top: 14px; line-height: 2; color: #cfc6b4; }
   .faq details { border-bottom: 1px solid #2a2a2a; padding: 13px 0; font-size: 14px; }
   .faq summary { font-weight: 700; cursor: pointer; }
+  .faq summary span.n { color: #d4a94e; font-family: Georgia, serif; margin-right: 8px; }
   .faq p { color: #9a8f7d; margin-top: 8px; line-height: 1.6; }
   footer { background: #0c0c0c; border-top: 1px solid #2a2a2a; color: #9a8f7d; text-align: center; font-size: 12px; padding: 26px 20px 110px; line-height: 2; }
   .stickybar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 30; display: grid; grid-template-columns: 1fr 1fr; box-shadow: 0 -4px 20px rgba(0,0,0,.4); }
   .stickybar a { text-align: center; font-weight: 800; font-size: 15px; padding: 17px; text-decoration: none; }
   .stickybar .c { background: #1a1a1a; color: #f2ede4; border-top: 1px solid #2a2a2a; }
   .stickybar .w { background: #25D366; color: #fff; }
-  @media (min-width: 720px) { h1 { font-size: 56px; } }
+  @media (min-width: 640px) {
+    .hero { grid-template-columns: 1fr 1fr; align-items: stretch; }
+    .hero .ph img { max-height: none; height: 100%; }
+    h1 { font-size: 48px; }
+  }
 </style>
 </head>
 <body>
@@ -65,12 +95,11 @@
 
   <div class="topbar">
     <div class="logo">El Corte Fino<small>Barbería · Triana</small></div>
-    <a class="tel" href="tel:+34600333444">600 333 444</a>
+    <a class="topcta" href="https://wa.me/34600333444?text=Hola%2C%20quiero%20reservar" target="_blank">Reservar</a>
   </div>
 
   <div class="hero">
-    <img class="bg" src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=1200&q=70" alt="Barbería" onerror="this.style.display='none'">
-    <div class="shade"></div>
+    <div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=800&q=70" alt="Barbero trabajando" onerror="this.style.display='none'"></div>
     <div class="txt">
       <span class="kicker">Triana · Sevilla · Desde 2012</span>
       <h1>El arte del <em>corte perfecto</em></h1>
@@ -81,52 +110,78 @@
     </div>
   </div>
 
-  <div class="strip">
-    <div><b>12</b><span>años en Triana</span></div>
-    <div><b>+8k</b><span>cortes al año</span></div>
-    <div><b>4.8★</b><span>en Google</span></div>
-  </div>
+  <div class="marquee"><span>CORTE ✦ BARBA ✦ NAVAJA ✦ DESDE 2012 ✦ TRIANA ✦ CORTE ✦ BARBA ✦ NAVAJA ✦ DESDE 2012 ✦ TRIANA ✦&nbsp;</span></div>
 
   <section>
-    <h2>Servicios y precios</h2>
+    <h2>La carta</h2>
     <p class="sub">Lo que ves es lo que pagas. Sin sorpresas en caja.</p>
-    <div class="serv"><div><b>Corte clásico</b><small>Tijera + máquina, acabado a navaja</small></div><span class="price">€18</span></div>
-    <div class="serv star"><div><span class="tag">El favorito</span><b>Corte + barba</b><small>Toalla caliente + aceites esenciales</small></div><span class="price">€25</span></div>
-    <div class="serv"><div><b>Afeitado a navaja</b><small>Ritual tradicional completo</small></div><span class="price">€15</span></div>
-    <div class="serv"><div><b>Corte infantil</b><small>Hasta 12 años, con paciencia</small></div><span class="price">€14</span></div>
+    <div class="carta">
+      <div class="plato"><div class="row"><b>Corte clásico</b><span class="dots"></span><span class="price">€18</span></div><small>Tijera + máquina, acabado a navaja</small></div>
+      <div class="plato fav"><div class="row"><b>Corte + barba ★ el favorito</b><span class="dots"></span><span class="price">€25</span></div><small>Toalla caliente + aceites esenciales</small></div>
+      <div class="plato"><div class="row"><b>Afeitado a navaja</b><span class="dots"></span><span class="price">€15</span></div><small>Ritual tradicional completo</small></div>
+      <div class="plato"><div class="row"><b>Corte infantil</b><span class="dots"></span><span class="price">€14</span></div><small>Hasta 12 años, con paciencia</small></div>
+    </div>
   </section>
 
   <section style="background:#0c0c0c;">
+    <h2>El ritual</h2>
+    <p class="sub">45 minutos sin prisas. Así sale cada cliente:</p>
+    <div class="ritual">
+      <div class="paso"><div class="n">01</div><b>Siéntate</b><span>Café de verdad y buena charla</span></div>
+      <div class="paso"><div class="n">02</div><b>Toalla caliente</b><span>Navaja, aceites, sin prisa</span></div>
+      <div class="paso"><div class="n">03</div><b>Sal nuevo</b><span>Acabado a detalle, siempre</span></div>
+    </div>
+  </section>
+
+  <section>
     <h2>La barbería</h2>
-    <p class="sub">Sillones de 1960, café de verdad y buena conversación.</p>
-    <div class="gal">
+    <p class="sub">Desliza → sillones de 1960 y oficio de verdad.</p>
+    <div class="rail">
       <div><img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?auto=format&fit=crop&w=600&q=60" alt="Salón" loading="lazy" onerror="this.style.display='none'"></div>
       <div><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=600&q=60" alt="Corte" loading="lazy" onerror="this.style.display='none'"></div>
       <div><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=600&q=60" alt="Herramientas" loading="lazy" onerror="this.style.display='none'"></div>
     </div>
   </section>
 
+  <section style="background:#0c0c0c;">
+    <h2>Manos expertas</h2>
+    <p class="sub">Quien te atiende, con nombre y cara.</p>
+    <div class="crew">
+      <div class="barber"><div class="ph"><img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?auto=format&fit=crop&w=300&q=60" alt="Mateo" loading="lazy" onerror="this.style.display='none'"></div><b>Mateo</b><span>Fundador · 12 años</span></div>
+      <div class="barber"><div class="ph"><img src="https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?auto=format&fit=crop&w=300&q=60" alt="Javi" loading="lazy" onerror="this.style.display='none'"></div><b>Javi</b><span>Barba y navaja</span></div>
+    </div>
+  </section>
+
   <section>
-    <h2>Lo que dicen en Google</h2>
+    <h2>Lo que dicen</h2>
     <p class="sub">214 reseñas · media 4.8/5</p>
-    <div class="op"><div class="stars">★★★★★</div><p>"El único sitio donde salgo contento el 100% de las veces. La toalla caliente es otro nivel."</p><b>— Diego T.</b></div>
-    <div class="op"><div class="stars">★★★★★</div><p>"Reservé por WhatsApp a las 10 y a las 12 ya estaba sentado. Rápidos y unos cracks."</p><b>— Manuel R.</b></div>
-    <div class="op"><div class="stars">★★★★★</div><p>"Llevo a mi hijo desde los 6 años. Paciencia infinita con los niños."</p><b>— Antonio G.</b></div>
+    <p class="bigquote">"El único sitio donde salgo contento el 100% de las veces. La toalla caliente es otro nivel."<small>— Diego T. · ★★★★★</small></p>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="band">
+      <h2>¿Este sábado?</h2>
+      <p>Los fines de semana vuelan. Reserva hoy tu hueco.</p>
+      <div class="row">
+        <a class="w" href="https://wa.me/34600333444?text=Hola%2C%20quiero%20reservar%20para%20el%20s%C3%A1bado" target="_blank">WhatsApp</a>
+        <a class="c" href="tel:+34600333444">Llamar</a>
+      </div>
+    </div>
   </section>
 
   <section style="background:#0c0c0c;">
     <h2>Dónde estamos</h2>
-    <p class="sub">Calle Betis 45 · Triana, Sevilla · Junto al puente</p>
+    <p class="sub">Calle Betis 45 · Triana, Sevilla</p>
     <iframe class="map" title="Mapa" loading="lazy" src="https://maps.google.com/maps?q=Triana,Sevilla&z=15&output=embed"></iframe>
-    <div class="hours">🕘 Lun–Vie: 10:00 – 20:00<br>🕘 Sáb: 9:00 – 15:00 · Dom cerrado<br>📞 <a href="tel:+34600333444">600 333 444</a></div>
+    <div class="hours">🕘 Lun–Vie: 10:00 – 20:00 · Sáb: 9:00 – 15:00<br>📞 <a href="tel:+34600333444" style="color:#d4a94e;font-weight:700;">600 333 444</a></div>
   </section>
 
   <section class="faq">
     <h2>Dudas rápidas</h2>
     <p class="sub">Lo que más nos preguntan.</p>
-    <details><summary>¿Necesito cita o puedo ir directo?</summary><p>Con cita entras a tu hora. Sin cita te atendemos si hay hueco, pero en fines de semana vuela.</p></details>
-    <details><summary>¿Cuánto dura un corte + barba?</summary><p>Unos 45 minutos, sin prisas. Es un ritual, no una carrera.</p></details>
-    <details><summary>¿Hacen arreglos de barba solo?</summary><p>Sí, perfilado y tratamiento por €15. Saldrás como nuevo.</p></details>
+    <details><summary><span class="n">01</span>¿Necesito cita o puedo ir directo?</summary><p>Con cita entras a tu hora. Sin cita te atendemos si hay hueco, pero en fines de semana vuela.</p></details>
+    <details><summary><span class="n">02</span>¿Cuánto dura un corte + barba?</summary><p>Unos 45 minutos, sin prisas. Es un ritual, no una carrera.</p></details>
+    <details><summary><span class="n">03</span>¿Hacen arreglos de barba solo?</summary><p>Sí, perfilado y tratamiento por €15. Saldrás como nuevo.</p></details>
   </section>
 
   <footer>
@@ -137,7 +192,7 @@
 
   <div class="stickybar">
     <a class="c" href="tel:+34600333444">📞 Llamar</a>
-    <a class="w" href="https://wa.me/34600333444?text=Hola%2C%20quiero%20reservar" target="_blank">WhatsApp</a>
+    <a class="w" href="https://wa.me/34600333444?text=Hola%2C%20quiero%20reservar" target="_blank">Reservar</a>
   </div>
 
 </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp, Star } from "lucide-react";
+import { ArrowRight, CheckCircle2, ChevronDown, ChevronUp } from "lucide-react";
 import SiteShot from "../components/SiteShot";
 const SHOWCASE = [
   {
@@ -16,8 +16,8 @@ const SHOWCASE = [
       base: "#0B2545",
       accent: "#C5A880",
     },
-    metric: "+6 pacientes/mes",
-    detail: "De invisible a Top 3 en Google en 4 semanas",
+    metric: "38 leads/mes",
+    detail: "A €3,80 por lead con Instagram Ads",
   },
   {
     name: "Barbería Don Mateo",
@@ -32,8 +32,8 @@ const SHOWCASE = [
       base: "#141414",
       accent: "#d4a94e",
     },
-    metric: "23 reservas online/mes",
-    detail: "12 años de negocio, cero presencia digital",
+    metric: "23 reservas/mes",
+    detail: "Desde Instagram Ads, sin depender del boca a boca",
   },
   {
     name: "Pastelería Dulce Luna",
@@ -49,61 +49,45 @@ const SHOWCASE = [
       accent: "#f472b6",
     },
     metric: "+40% ventas online",
-    detail: "Del barrio a toda la ciudad con Google Maps",
+    detail: "Con Meta Ads desde €10/día",
   },
 ];
 
 // ─── DATOS ────────────────────────────────────────────────────────────────────
 
-// Paquetes en escalera — cada nivel incluye el anterior. Copy simple, sin jerga.
+// Oferta media buyer: landing única + gestão mensal. Sem jerga.
 const PACKAGES = [
   {
     step: "01",
-    name: "Empezar a existir",
-    price: "desde €450",
-    duration: "4 semanas",
-    tagline: "Para quien no aparece en internet",
+    name: "Landing que vende",
+    price: "€250",
+    duration: "7 días · pago único",
+    tagline: "Para convertir visitas en WhatsApps",
     badge: null,
     highlight: false,
     includes: [
-      "Una web sencilla que recibe clientes",
-      "Tu negocio verificado en Google Maps",
-      "Botón de WhatsApp para que te escriban",
+      "Página diseñada para convertir visitas en mensajes",
+      "Botón de WhatsApp + medición de cada clic",
+      "Rápida en móvil y lista para anuncios",
     ],
-    cta: "Empezar desde cero",
-    note: "Garantía: si en 4 semanas no apareces en Google, seguimos trabajando sin coste hasta conseguirlo.",
-  },
-  {
-    step: "02",
-    name: "Dejar de perder clientes",
-    price: "desde €850",
-    duration: "6 semanas",
-    tagline: "Para quien ya está, pero sin sistema",
-    badge: "Más solicitado",
-    highlight: true,
-    includes: [
-      "Todo lo del Nivel 01",
-      "Respuestas automáticas a quien te escribe",
-      "Una hoja simple con tus números: de dónde viene cada cliente",
-    ],
-    cta: "Conectar mi negocio",
+    cta: "Quiero mi landing",
     note: null,
   },
   {
-    step: "03",
-    name: "Crecer con anuncios",
-    price: "desde €1.500",
-    duration: "8 semanas",
-    tagline: "Para quien está listo para escalar",
-    badge: null,
-    highlight: false,
+    step: "02",
+    name: "Tráfico gestionado",
+    price: "€300/mes",
+    duration: "mes a mes, sin permanencia",
+    tagline: "Para llenar la agenda cada semana",
+    badge: "Más solicitado",
+    highlight: true,
     includes: [
-      "Todo lo del Nivel 02",
-      "Anuncios en Instagram y Google",
-      "Revisamos los resultados contigo cada 15 días",
+      "Revisamos tu página antes de gastar un euro",
+      "Campañas en Instagram y Google",
+      "Optimización semanal + informe simple",
     ],
-    cta: "Escalar con publicidad",
-    note: "Lo que pagas a Instagram/Google por los anuncios no está incluido.",
+    cta: "Escalar con anuncios",
+    note: "La verba de anuncios (lo que pagas a Meta/Google) no está incluida. Verbas hasta €1.500/mes; por encima, 10% de la facturación generada.",
   },
 ];
 
@@ -114,76 +98,76 @@ const PORTFOLIO = [
     color: "#0B2545",
     business: "FisioVida Madrid",
     sector: "Fisioterapia",
-    package: "Nivel 01",
-    metric: "+6 pacientes/mes",
-    detail: "De 0 a Top 3 en Google en 4 semanas",
+    package: "Tráfico",
+    metric: "38 leads/mes",
+    detail: "A €3,80 por lead con Instagram Ads",
   },
   {
     initials: "MS",
     color: "#7c3aed",
     business: "Barbería Don Mateo",
     sector: "Barbería · Sevilla",
-    package: "Nivel 01",
-    metric: "23 reservas online/mes",
-    detail: "12 años de negocio, cero presencia digital",
+    package: "Tráfico",
+    metric: "23 reservas/mes",
+    detail: "Desde Instagram Ads",
   },
   {
     initials: "LF",
     color: "#0e7490",
     business: "LinguaFlow",
     sector: "Academia de idiomas",
-    package: "Nivel 02",
+    package: "Tráfico",
     metric: "+€1.200/mes",
-    detail: "Sistema de captación automatizado",
+    detail: "Con campañas Meta",
   },
   {
     initials: "RA",
     color: "#b45309",
     business: "Reyes Arquitectura",
     sector: "Arquitectura · Valencia",
-    package: "Nivel 02",
-    metric: "3× más presupuestos",
-    detail: "Embudo de leads desde LinkedIn y web",
+    package: "Tráfico",
+    metric: "3× presupuestos",
+    detail: "Desde Google Ads",
   },
   {
     initials: "DL",
     color: "#be185d",
     business: "Pastelería Dulce Luna",
     sector: "Pastelería artesanal",
-    package: "Nivel 01",
+    package: "Landing",
     metric: "+40% ventas online",
-    detail: "Instagram + Google Maps + pedidos web",
+    detail: "Con Meta Ads desde €10/día",
   },
   {
     initials: "YA",
     color: "#065f46",
     business: "Yoga Alma Serena",
     sector: "Bienestar · Barcelona",
-    package: "Nivel 03",
-    metric: "Clases llenas en 6 sem.",
-    detail: "Publicidad Meta + automatización de reservas",
+    package: "Tráfico",
+    metric: "97% ocupación",
+    detail: "Clases llenas con Meta Ads",
   },
 ];
 
 const PROCESS = [
-  { n: "01", title: "Diagnóstico", desc: "Revisamos tu situación digital en 60 min." },
-  { n: "02", title: "Plan", desc: "Propuesta clara con entregables y plazos exactos." },
-  { n: "03", title: "Ejecución", desc: "Construimos todo. Tú apruebas cada pieza." },
-  { n: "04", title: "Entrega", desc: "Todo funcionando. Formación incluida." },
+  { n: "01", title: "Diagnóstico", desc: "Vemos tu caso en 30 min, sin compromiso." },
+  { n: "02", title: "Plan", desc: "Propuesta con verba sugerida y plazos exactos." },
+  { n: "03", title: "Lanzamiento", desc: "Landing + campañas en marcha en días." },
+  { n: "04", title: "Optimización", desc: "Revisamos números contigo cada semana." },
 ];
 
 const FAQS = [
   {
-    q: "¿Necesito saber de tecnología?",
-    a: "No. Lo hacemos todo nosotros y te lo entregamos funcionando, explicado en palabras simples.",
+    q: "¿Cuánto tengo que invertir en anuncios?",
+    a: "Recomendamos empezar con €300–500/mes de verba, que pagas directo a Meta/Google. Con menos también se puede, pero más lento.",
   },
   {
-    q: "¿Cuánto tiempo tengo que dedicarle yo?",
-    a: "Una charla inicial de 60 min y revisiones cortas por semana. Después, 15 min por semana para mantenerlo.",
+    q: "¿Cuándo veré resultados?",
+    a: "Primeros leads entre 7 y 14 días. Optimizamos cada semana; a los 90 días decides con números en la mano.",
   },
   {
-    q: "¿Cuándo empiezo a ver resultados?",
-    a: "En 2-3 semanas ya apareces en Google. Los primeros clientes suelen llegar entre la semana 3 y 6.",
+    q: "¿Hay permanencia?",
+    a: "No. Mes a mes. Si no compensa, pausamos y listo.",
   },
 ];
 
@@ -223,24 +207,19 @@ export default function Home() {
         <div className="relative max-w-6xl mx-auto px-6 pt-24 pb-12 w-full">
           <div className="max-w-3xl">
             <span className="inline-block text-[#C5A880] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-6">
-              Consultoría Digital · Negocios locales
+              Tráfico pago · Negocios locales
             </span>
             <h1 className="text-[#0B2545] text-5xl md:text-6xl font-bold leading-[1.05] mb-6">
-              Consigo <span className="text-[#C5A880] italic">5-10 clientes nuevos/mes</span> para negocios invisibles en Google
+              Llenamos tu agenda con <span className="text-[#C5A880] italic">anuncios que convierten</span>
             </h1>
             <p className="text-gray-500 text-lg md:text-xl mb-8 max-w-xl leading-relaxed">
-              Sistema Google Maps + Web + WhatsApp en 4 semanas. Sin tecnicismos. Sin depender del boca a boca.
+              Landing que vende (desde €250) + gestión mensual (desde €300/mes). Tú pones la verba, nosotros el resto.
             </p>
 
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mb-8 text-gray-500 text-sm font-sans">
-              <span className="inline-flex items-center gap-2">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-[#C5A880] text-[#C5A880]" />
-                ))}
-              </span>
-              <span className="font-semibold text-[#0B2545]">4.9/5</span>
-              <span className="px-3 border-l border-gray-200">47 reseñas en Google</span>
-              <span className="px-3 border-l border-gray-200">7 negocios con resultados</span>
+              <span className="font-semibold text-[#0B2545]">ROAS medio 3,1×</span>
+              <span className="px-3 border-l border-gray-200">CPL desde €3,50</span>
+              <span className="px-3 border-l border-gray-200">+120 negocios</span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -277,9 +256,9 @@ export default function Home() {
           </div>
           <div className="grid md:grid-cols-3 gap-5">
             {[
-              { icon: "🔍", title: "Nadie te encuentra en Google", desc: "Tus competidores aparecen. Tú, no." },
-              { icon: "📱", title: "Redes sin ventas reales", desc: "Seguidores que no se convierten en clientes." },
-              { icon: "🔄", title: "Todo depende del boca a boca", desc: "Sin sistema, los ingresos son impredecibles." },
+              { icon: "📢", title: "Impulsas publicaciones a ciegas", desc: "Dinero en alcance que no vende." },
+              { icon: "🖱️", title: "Tu web no convierte los clics", desc: "Cada visita que se va es dinero perdido." },
+              { icon: "📊", title: "No sabes cuánto cuesta un cliente", desc: "Sin medir, escalar da miedo." },
             ].map((item) => (
               <div key={item.title} className="bg-white rounded-xl p-6 border border-gray-100">
                 <div className="text-3xl mb-4">{item.icon}</div>
@@ -299,23 +278,14 @@ export default function Home() {
               Nuestros servicios
             </span>
             <h2 className="text-[#0B2545] text-3xl md:text-4xl font-bold mt-3 mb-2">
-              Una escalera, no tres opciones aisladas
+              Un servicio, dos formas de empezar
             </h2>
             <p className="text-gray-400 text-sm max-w-lg mx-auto">
-              Cada nivel construye sobre el anterior. Empiezas donde estás y creces sin empezar de cero.
+              Landing sola o con gestión mensual. Sin ataduras, sin letra pequeña.
             </p>
           </div>
 
-          {/* Flecha visual de progresión */}
-          <div className="flex items-center justify-center gap-2 my-8 text-xs text-gray-300 font-sans">
-            <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Sin presencia</span>
-            <ArrowRight size={12} />
-            <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Presencia sin sistema</span>
-            <ArrowRight size={12} />
-            <span className="bg-gray-100 px-3 py-1 rounded-full text-gray-400">Escala con publicidad</span>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-8">
             {PACKAGES.map((pkg) => (
               <div
                 key={pkg.name}
@@ -436,7 +406,7 @@ export default function Home() {
             ))}
           </div>
           <p className="text-center mt-6 text-sm text-gray-500">
-            Estos 3 sitios son <span className="font-bold text-[#0B2545]">Nivel 01 — desde €450</span>, entregados en 4 semanas.{" "}
+            Estos 3 sitios son <span className="font-bold text-[#0B2545]">landings de €250</span>, listas en 7 días.{" "}
             <Link to="/casos" className="text-[#0B2545] font-semibold underline hover:text-[#C5A880]">
               Ver los 7 casos →
             </Link>
@@ -536,10 +506,10 @@ export default function Home() {
             ))}
           </div>
           <blockquote className="text-white text-xl md:text-2xl font-medium leading-relaxed mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
-            "En tres semanas pasé de que nadie me encontrara a tener la agenda llena los martes y jueves."
+            "Con los anuncios, la agenda se llena sola cada semana."
           </blockquote>
           <p className="text-[#C5A880] text-sm font-semibold">Ana Torres · FisioVida Madrid</p>
-          <p className="text-white/30 text-xs mt-1 font-sans">Nivel 01 · Arranque Digital Mínimo</p>
+          <p className="text-white/30 text-xs mt-1 font-sans">Landing €250 + Tráfico €300/mes</p>
         </div>
       </section>
 

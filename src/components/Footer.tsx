@@ -50,9 +50,8 @@ export default function Footer() {
           <div>
             <h4 className="text-[#C5A880] text-xs tracking-[2px] uppercase font-sans font-semibold mb-4">Servicios</h4>
             <ul className="space-y-2 text-sm text-white/60">
-              <li><a href="/#servicios" className="hover:text-white transition-colors">Arranque Digital Mínimo</a></li>
-              <li><a href="/#servicios" className="hover:text-white transition-colors">Estructura de Ventas Integrada</a></li>
-              <li><a href="/#servicios" className="hover:text-white transition-colors">Mentoría de Crecimiento Avanzado</a></li>
+              <li><a href="/#servicios" className="hover:text-white transition-colors">Landing que vende (€250)</a></li>
+              <li><a href="/#servicios" className="hover:text-white transition-colors">Tráfico gestionado (€300/mes)</a></li>
               <li><Link to="/quiz" className="hover:text-white transition-colors">Diagnóstico Gratuito</Link></li>
             </ul>
           </div>
