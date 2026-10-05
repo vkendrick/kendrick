@@ -232,12 +232,19 @@ const SHOTS: Record<number, {
       kicker: "Taller · Zaragoza", title: "Tu coche en", highlight: "buenas manos", cta: "Pedir presupuesto", base: "#1f2937", accent: "#fbbf24" },
 };
 
-function CaseRow({ c }: { c: (typeof CASES)[0] }) {
+function CaseRow({ c, flip }: { c: (typeof CASES)[0]; flip: boolean }) {
   const shot = SHOTS[c.id];
   return (
-    <article className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+    <article className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden">
+      <span
+        aria-hidden
+        className="pointer-events-none select-none absolute -top-3 right-4 text-[64px] font-bold leading-none opacity-10"
+        style={{ color: c.color, fontFamily: "'Playfair Display', serif" }}
+      >
+        {String(c.id).padStart(2, "0")}
+      </span>
       <div className="grid md:grid-cols-5 gap-0">
-        <div className="md:col-span-3 bg-[#FAF8F5]">
+        <div className={`md:col-span-3 bg-[#FAF8F5] ${flip ? "md:order-2" : ""}`}>
           <div className="flex items-center gap-1.5 px-3 h-9 bg-white border-b border-gray-100">
             <span className="w-2 h-2 rounded-full bg-[#ff5f57]" />
             <span className="w-2 h-2 rounded-full bg-[#febc2e]" />
@@ -258,8 +265,11 @@ function CaseRow({ c }: { c: (typeof CASES)[0] }) {
             />
           </div>
         </div>
-        <div className="md:col-span-2 p-6 flex flex-col">
-          <span className="text-[10px] text-[#C5A880] font-bold tracking-widest uppercase font-sans">
+        <div className={`md:col-span-2 p-6 flex flex-col ${flip ? "md:order-1" : ""}`}>
+          <span
+            className="text-[10px] font-bold tracking-widest uppercase font-sans"
+            style={{ color: c.color }}
+          >
             {c.package} · {c.packageName}
           </span>
           <h2 className="text-[#0B2545] text-xl font-bold mt-1">{c.business}</h2>
@@ -307,8 +317,8 @@ export default function Casos() {
 
       <section className="py-16 bg-[#FAF8F5]">
         <div className="max-w-6xl mx-auto px-6 space-y-6">
-          {CASES.map((c) => (
-            <CaseRow key={c.id} c={c} />
+          {CASES.map((c, i) => (
+            <CaseRow key={c.id} c={c} flip={i % 2 === 1} />
           ))}
         </div>
       </section>
