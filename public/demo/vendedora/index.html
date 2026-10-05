@@ -69,6 +69,13 @@ let stage = "open"; // open | negocio | dolor | propuesta (máquina de descubrim
 let noCount = 0;
 let booking = {};
 let history = [];
+let lang = "es", langSet = false;
+function detectLang(text) {
+  const t = " " + norm(text) + " ";
+  const pt = ((t.match(/\b(nao|sim|voce|obrigad|tchau|tenho|isso|esse|essa|mim|teu|tua|entao|peixes|quero|gostaria)\b/g) || []).length) * 2;
+  const es = ((t.match(/\b(gracias|quiero|vale|oye|tienes|este|esta|los|las|tus|tuyo|estoy)\b/g) || []).length) * 2;
+  return pt > es ? "pt" : "es";
+}
 let llmOn = true;
 let llmFail = 0;
 let diagStatus = 0;
@@ -314,6 +321,7 @@ async function handleUser(text) {
   if (!text.trim()) return;
   addMsg(text, "you");
   history.push({ role: "user", text: text.slice(0, 500) });
+  if (!langSet) { lang = detectLang(text); langSet = true; }
   // reserva local: rápido e fiável, sem IA
   if (step === "day" || step === "hour") {
     const reply = thinkLocal(text);
@@ -334,7 +342,7 @@ async function handleUser(text) {
       const r = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-12), stage }),
+        body: JSON.stringify({ messages: history.slice(-12), stage, lang }),
         signal: ctrl.signal,
       });
       clearTimeout(to);
