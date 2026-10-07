@@ -46,17 +46,17 @@ function json(data: unknown, status = 200) {
   });
 }
 
-// Few-shots: exemplos curtos do comportamento ideal (inclui Portuñol)
+// Few-shots: 1 par ES + 1 par PT (equilíbrio evita viés de idioma)
 const SHOTS = [
+  { role: "user", text: "no entiendo nada.. que es una landing" },
+  {
+    role: "model",
+    text: '{"reply":"Una landing es una página enfocada en convertir visitas en clientes. ¿Qué tipo de negocio tienes?","stage":"negocio","booked":null,"ended":false,"memory":{}}',
+  },
   { role: "user", text: "nao entendi nada.. landing que es eso" },
   {
     role: "model",
     text: '{"reply":"Uma landing page e uma pagina focada em converter visitantes em clientes. Que tipo de negocio voce tem?","stage":"negocio","booked":null,"ended":false,"memory":{}}',
-  },
-  { role: "user", text: "vendo peixes" },
-  {
-    role: "model",
-    text: '{"reply":"Entendi! Peixes frescos sao otimos. E como voce consegue seus clientes hoje em dia?","stage":"negocio","booked":null,"ended":false,"memory":{"business":"peixes"}}',
   },
 ];
 
