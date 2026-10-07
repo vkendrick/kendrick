@@ -70,6 +70,7 @@ let stage = "open"; // open | negocio | dolor | propuesta
 let noCount = 0;
 let booking = {};
 let history = [];
+let memory = {};
 let lang = "es", langSet = false;
 function detectLang(text) {
   const t = " " + norm(text) + " ";
@@ -320,7 +321,7 @@ async function handleLLM(text) {
       const r = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-12), stage, svc: "hugo", lang }),
+        body: JSON.stringify({ messages: history.slice(-12), stage, svc: "hugo", lang, memory }),
         signal: ctrl.signal,
       });
       clearTimeout(to);
@@ -329,6 +330,7 @@ async function handleLLM(text) {
         if (j && j.reply) {
           reply = j.reply;
           if (j.stage) stage = j.stage;
+          if (j.memory) memory = j.memory;
           if (j.booked) showBookingCard(j.booked.day, j.booked.hour);
           if (j.ended) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; hangBtn.style.display = "none"; }
           llmFail = 0;

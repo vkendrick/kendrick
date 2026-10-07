@@ -69,6 +69,7 @@ let stage = "open"; // open | negocio | dolor | propuesta (máquina de descubrim
 let noCount = 0;
 let booking = {};
 let history = [];
+let memory = {};
 let lang = "es", langSet = false;
 function detectLang(text) {
   const t = " " + norm(text) + " ";
@@ -342,7 +343,7 @@ async function handleUser(text) {
       const r = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-12), stage, lang }),
+        body: JSON.stringify({ messages: history.slice(-12), stage, lang, memory }),
         signal: ctrl.signal,
       });
       clearTimeout(to);
@@ -351,6 +352,7 @@ async function handleUser(text) {
         if (j && j.reply) {
           reply = j.reply;
           if (j.stage) stage = j.stage;
+          if (j.memory) memory = j.memory;
           history.push({ role: "assistant", text: reply });
           if (j.booked) showBookingCard(j.booked.day, j.booked.hour);
           if (j.ended) { step = "done"; listening = false; micBtn.disabled = true; micBtn.textContent = "Conversación terminada"; }

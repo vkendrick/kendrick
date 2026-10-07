@@ -7,6 +7,14 @@ interface ChatMsg {
   text: string;
 }
 
+interface Out {
+  reply?: unknown;
+  stage?: unknown;
+  booked?: unknown;
+  ended?: unknown;
+  memory?: unknown;
+}
+
 const STAGES = ["open", "negocio", "dolor", "propuesta", "day", "hour"];
 
 const SYSTEM = `Eres Vera, vendedora virtual de Kendrick Consultoria Digital (España). Hablas con dueños de pequeños negocios. Máximo 40 palabras por respuesta, tono cálido y humano, UNA sola pregunta por mensaje. Si el usuario escribe en portugués, responde en portugués.
@@ -38,11 +46,58 @@ function json(data: unknown, status = 200) {
   });
 }
 
+// Few-shots: exemplos curtos do comportamento ideal (inclui Portuñol)
+const SHOTS = [
+  { role: "user", text: "nao entendi nada.. landing que es eso" },
+  {
+    role: "model",
+    text: '{"reply":"Uma landing page e uma pagina focada em converter visitantes em clientes. Que tipo de negocio voce tem?","stage":"negocio","booked":null,"ended":false,"memory":{}}',
+  },
+  { role: "user", text: "vendo peixes" },
+  {
+    role: "model",
+    text: '{"reply":"Entendi! Peixes frescos sao otimos. E como voce consegue seus clientes hoje em dia?","stage":"negocio","booked":null,"ended":false,"memory":{"business":"peixes"}}',
+  },
+];
+
+function words(s: string): number {
+  return s.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function questionsOf(s: string): string[] {
+  return s
+    .split(/(?<=[?!])\s+/)
+    .map((x) => x.trim())
+    .filter((x) => /[?!]$/.test(x))
+    .map((x) =>
+      x
+        .toLowerCase()
+        .replace(/[^a-záéíóúñçãõ ]/gi, "")
+        .split(/\s+/)
+        .slice(0, 5)
+        .join(" ")
+    )
+    .filter((x) => x.length > 0);
+}
+
+function validOut(out: unknown, prevAssistant: string): boolean {
+  if (!out || typeof out !== "object") return false;
+  const r = (out as { reply?: unknown }).reply;
+  if (typeof r !== "string" || r.length === 0 || r.length > 600) return false;
+  if (words(r) > 70) return false;
+  const prevQ = questionsOf(prevAssistant);
+  if (prevQ.length) {
+    const newQ = questionsOf(r);
+    if (newQ.some((q) => prevQ.includes(q))) return false;
+  }
+  return true;
+}
+
 export const onRequestPost = async ({ request, env }: { request: Request; env: Env; params: unknown }) => {
   const apiKey = (env.GOOGLE_AI_API_KEY || "").trim();
   if (!apiKey) return json({ error: "IA no configurada" }, 503);
 
-  let body: { messages?: ChatMsg[]; stage?: string; svc?: string; lang?: string };
+  let body: { messages?: ChatMsg[]; stage?: string; svc?: string; lang?: string; memory?: unknown };
   try {
     body = await request.json();
   } catch {
@@ -66,14 +121,22 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     pushLine = "AVANZA YA a 'dolor': da el ejemplo concreto de las 22h y pregunta si pierde clientes por tardar. PROHIBIDO preguntar otra vez por el negocio o por como consigue clientes. Devuelve stage 'dolor'.";
   else if (stage === "dolor" && userTurns >= 4)
     pushLine = "AVANZA YA a 'propuesta': ofrece la llamada de 15 minutos. PROHIBIDO repetir la pregunta del dolor. Devuelve stage 'propuesta'.";
+  const memIn = (body.memory && typeof body.memory === "object" ? body.memory : {}) as Record<string, unknown>;
+  const memLine =
+    "Memoria conocida del usuario: " +
+    JSON.stringify({ name: typeof memIn.name === "string" ? memIn.name : "", business: typeof memIn.business === "string" ? memIn.business : "" }) +
+    ". Usala de vez en cuando (ej. su nombre) y actualiza el campo memory cuando descubras algo nuevo.";
   const payload = {
-    system_instruction: { parts: [{ text: SYS }, { text: langLine }].concat(pushLine ? [{ text: pushLine }] : []) },
-    contents: clean.map((m) => ({
-      role: m.role === "assistant" ? "model" : "user",
-      parts: [{ text: m.text }],
-    })),
-    generationConfig: { responseMimeType: "application/json", temperature: 0.7, maxOutputTokens: 300 },
+    system_instruction: { parts: [{ text: SYS }, { text: langLine }, { text: memLine }].concat(pushLine ? [{ text: pushLine }] : []) },
+    contents: SHOTS.map((s) => ({ role: s.role, parts: [{ text: s.text }] })).concat(
+      clean.map((m) => ({
+        role: m.role === "assistant" ? "model" : "user",
+        parts: [{ text: m.text }],
+      }))
+    ),
+    generationConfig: { responseMimeType: "application/json", temperature: 0.4, maxOutputTokens: 300 },
   };
+  const prevAssistant = [...clean].reverse().find((m) => m.role === "assistant")?.text ?? "";
   const MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-2.0-flash-lite"];
   let geminiRes: Response | null = null;
   let lastUp = 0;
@@ -106,15 +169,19 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
     if (done) break;
     if (lastUp !== 404) break;
   }
-  let out: { reply?: unknown; stage?: unknown; booked?: unknown; ended?: unknown } | null = null;
-  if (geminiRes && geminiRes.ok) {
+  async function tryParse(res: Response | null): Promise<unknown> {
+    if (!res) return null;
     try {
-      const data = await geminiRes.json();
-      const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
-      if (parsed && typeof parsed.reply === "string" && parsed.reply.length > 0) out = parsed;
+      const data = await res.json();
+      return JSON.parse(data.candidates[0].content.parts[0].text);
     } catch {
-      out = null;
+      return null;
     }
+  }
+  let out: Out | null = null;
+  if (geminiRes && geminiRes.ok) {
+    const parsed = await tryParse(geminiRes);
+    if (validOut(parsed, prevAssistant)) out = parsed as Out;
   }
   if (!out) {
     // regenera uma vez com o primeiro modelo antes de desistir
@@ -128,10 +195,9 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
         }
       );
       if (r2.ok) {
-        const data = await r2.json();
-        const parsed = JSON.parse(data.candidates[0].content.parts[0].text);
-        if (parsed && typeof parsed.reply === "string" && parsed.reply.length > 0) {
-          out = parsed;
+        const parsed = await tryParse(r2);
+        if (validOut(parsed, prevAssistant)) {
+          out = parsed as Out;
           lastUp = 0;
         }
       } else {
@@ -144,6 +210,17 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
   if (!out) return json({ error: !geminiRes || !geminiRes.ok ? "Error IA" : "Respuesta IA inválida", up: lastUp }, 502);
 
   const booked = out.booked as { day?: unknown; hour?: unknown } | null;
+  const memNew = (out.memory && typeof out.memory === "object" ? out.memory : {}) as Record<string, unknown>;
+  const memory: Record<string, string> = {};
+  for (const k of ["name", "business"]) {
+    const v =
+      typeof memNew[k] === "string" && (memNew[k] as string).trim()
+        ? (memNew[k] as string).slice(0, 60)
+        : typeof memIn[k] === "string"
+          ? (memIn[k] as string)
+          : "";
+    if (v) memory[k] = v;
+  }
   return json({
     reply: String(out.reply || "").slice(0, 600),
     stage: typeof out.stage === "string" && STAGES.includes(out.stage) ? out.stage : "open",
@@ -152,6 +229,7 @@ export const onRequestPost = async ({ request, env }: { request: Request; env: E
         ? { day: booked.day.slice(0, 40), hour: booked.hour.slice(0, 20) }
         : null,
     ended: !!out.ended,
+    memory,
   });
 };
 
