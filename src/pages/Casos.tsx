@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, ArrowLeft, CheckCircle2 } from "lucide-react";
-import SiteShot from "../components/SiteShot";
 
 // Casos y proyectos con datos alineados con los materiales entregados.
 // Las métricas solo se muestran cuando están documentadas como resultado;
@@ -232,69 +231,98 @@ const SHOTS: Record<number, {
       kicker: "Taller · Zaragoza", title: "Tu coche en", highlight: "buenas manos", cta: "Pedir presupuesto", base: "#1f2937", accent: "#fbbf24" },
 };
 
-function CaseRow({ c, flip }: { c: (typeof CASES)[0]; flip: boolean }) {
+function CaseLight({ c, n }: { c: (typeof CASES)[0]; n: string }) {
   const shot = SHOTS[c.id];
   return (
-    <article className="relative bg-white rounded-2xl border border-gray-100 overflow-hidden">
+    <article className="relative bg-white rounded-3xl border border-gray-100 overflow-hidden">
       <span
         aria-hidden
-        className="pointer-events-none select-none absolute -top-3 right-4 text-[64px] font-bold leading-none opacity-10"
-        style={{ color: c.color, fontFamily: "'Playfair Display', serif" }}
+        className="pointer-events-none select-none absolute top-3 right-5 z-10 text-[56px] font-bold leading-none text-white/90"
+        style={{ fontFamily: "'Playfair Display', serif", textShadow: "0 1px 12px rgba(0,0,0,.25)" }}
       >
-        {String(c.id).padStart(2, "0")}
+        {n}
       </span>
-      <div className="grid md:grid-cols-5 gap-0">
-        <div className={`md:col-span-3 bg-[#FAF8F5] ${flip ? "md:order-2" : ""}`}>
-          <div className="flex items-center gap-1.5 px-3 h-9 bg-white border-b border-gray-100">
-            <span className="w-2 h-2 rounded-full bg-[#ff5f57]" />
-            <span className="w-2 h-2 rounded-full bg-[#febc2e]" />
-            <span className="w-2 h-2 rounded-full bg-[#28c840]" />
-            <span className="flex-1 min-w-0 truncate rounded-md bg-[#FAF8F5] border border-gray-200 px-2 py-0.5 text-[10px] text-gray-400 font-sans">
-              {shot.url}
-            </span>
-          </div>
-          <div className="aspect-[21/10] overflow-hidden">
-            <SiteShot
-              photo={shot.photo}
-              kicker={shot.kicker}
-              title={shot.title}
-              highlight={shot.highlight}
-              cta={shot.cta}
-              base={shot.base}
-              accent={shot.accent}
-            />
-          </div>
-        </div>
-        <div className={`md:col-span-2 p-6 flex flex-col ${flip ? "md:order-1" : ""}`}>
-          <span
-            className="text-[10px] font-bold tracking-widest uppercase font-sans"
-            style={{ color: c.color }}
-          >
-            {c.package} · {c.packageName}
-          </span>
-          <h2 className="text-[#0B2545] text-xl font-bold mt-1">{c.business}</h2>
-          <p className="text-gray-400 text-xs mb-3">{c.sector}</p>
-          <p className="text-gray-500 text-sm leading-relaxed mb-4">{c.tagline}</p>
-          <div className="bg-[#FAF8F5] rounded-xl p-4 mb-4">
-            <p className="text-[#0B2545] font-bold text-2xl leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
-              {shot.metric}
+      <div className="relative h-60 md:h-80 overflow-hidden bg-[#0B2545]">
+        <img src={shot.photo} alt={`${c.business}`} loading="lazy" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
+        <span className="absolute left-5 top-4 rounded-full bg-black/55 backdrop-blur px-3 py-1 text-[10px] text-white/90 font-sans">
+          {shot.url}
+        </span>
+        <div className="absolute left-5 bottom-5 right-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold tracking-[2px] uppercase font-sans text-white/70">
+              {c.package} · {c.packageName}
             </p>
-            <p className="text-gray-400 text-xs mt-0.5">{shot.detail}</p>
+            <h2 className="text-white text-2xl md:text-3xl font-bold mt-1">{c.business}</h2>
+            <p className="text-white/60 text-xs mt-1">{c.sector}</p>
           </div>
-          <p className="text-xs font-bold text-[#0B2545] mb-2 font-sans">Recibió:</p>
-          <ul className="space-y-2 mb-4">
-            {c.after.map((a) => (
-              <li key={a} className="flex items-start gap-2 text-sm text-gray-600">
-                <CheckCircle2 size={14} className="text-[#C5A880] mt-0.5 shrink-0" />
-                {a}
-              </li>
-            ))}
-          </ul>
-          <blockquote className="mt-auto text-gray-500 text-xs leading-relaxed italic border-l-2 border-[#C5A880] pl-3">
-            "{c.quote}"
-            <span className="block text-[#C5A880] font-semibold not-italic mt-1">— {c.client}</span>
-          </blockquote>
         </div>
+      </div>
+      <div className="p-6 md:p-8">
+        <div className="inline-block rounded-xl bg-[#FAF8F5] border border-gray-100 px-5 py-3 mb-5">
+          <p className="text-[#0B2545] font-bold text-2xl leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+            {shot.metric}
+          </p>
+          <p className="text-gray-400 text-xs mt-0.5">{shot.detail}</p>
+        </div>
+        <p className="text-gray-500 text-sm leading-relaxed mb-5">{c.tagline}</p>
+        <div className="grid sm:grid-cols-3 gap-2 mb-5">
+          {c.after.map((a) => (
+            <div key={a} className="flex items-start gap-2 rounded-lg bg-[#FAF8F5] p-3 text-xs text-gray-600 font-medium">
+              <CheckCircle2 size={13} className="text-[#C5A880] mt-0.5 shrink-0" />
+              {a}
+            </div>
+          ))}
+        </div>
+        <blockquote className="text-gray-500 text-xs leading-relaxed italic border-l-2 border-[#C5A880] pl-3">
+          "{c.quote}"
+          <span className="block text-[#C5A880] font-semibold not-italic mt-1">— {c.client}</span>
+        </blockquote>
+      </div>
+    </article>
+  );
+}
+
+function CaseDark({ c, n, flip }: { c: (typeof CASES)[0]; n: string; flip: boolean }) {
+  const shot = SHOTS[c.id];
+  return (
+    <article className="relative overflow-hidden rounded-3xl bg-[#0B2545] grid md:grid-cols-2">
+      <span
+        aria-hidden
+        className="pointer-events-none select-none absolute top-2 right-5 text-[56px] font-bold leading-none text-white/10"
+        style={{ fontFamily: "'Playfair Display', serif" }}
+      >
+        {n}
+      </span>
+      <div className={`p-6 md:p-8 flex flex-col ${flip ? "md:order-2" : ""}`}>
+        <span className="text-[10px] text-[#C5A880] font-bold tracking-[2px] uppercase font-sans">
+          {c.package} · {c.packageName}
+        </span>
+        <h2 className="text-white text-2xl font-bold mt-1">{c.business}</h2>
+        <p className="text-white/40 text-xs mb-4">{c.sector}</p>
+        <p className="font-bold leading-none mb-1" style={{ fontFamily: "'Playfair Display', serif", color: "#C5A880", fontSize: "44px" }}>
+          {shot.metric}
+        </p>
+        <p className="text-white/50 text-xs mb-5">{shot.detail}</p>
+        <p className="text-gray-500 text-sm leading-relaxed mb-5 text-white/70">{c.tagline}</p>
+        <ul className="space-y-2 mb-5">
+          {c.after.map((a) => (
+            <li key={a} className="flex items-start gap-2 text-sm text-white/80">
+              <CheckCircle2 size={14} className="text-[#C5A880] mt-0.5 shrink-0" />
+              {a}
+            </li>
+          ))}
+        </ul>
+        <blockquote className="mt-auto text-white/60 text-xs leading-relaxed italic border-l-2 border-[#C5A880] pl-3">
+          "{c.quote}"
+          <span className="block text-[#C5A880] font-semibold not-italic mt-1">— {c.client}</span>
+        </blockquote>
+      </div>
+      <div className={`relative min-h-72 overflow-hidden ${flip ? "md:order-1" : ""}`}>
+        <img src={shot.photo} alt={`${c.business}`} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+        <span className="absolute left-4 bottom-4 rounded-full bg-black/55 backdrop-blur px-3 py-1 text-[10px] text-white/90 font-sans">
+          {shot.url}
+        </span>
       </div>
     </article>
   );
@@ -317,9 +345,14 @@ export default function Casos() {
 
       <section className="py-16 bg-[#FAF8F5]">
         <div className="max-w-6xl mx-auto px-6 space-y-6">
-          {CASES.map((c, i) => (
-            <CaseRow key={c.id} c={c} flip={i % 2 === 1} />
-          ))}
+          {CASES.map((c, i) => {
+            const n = String(c.id).padStart(2, "0");
+            return i % 2 === 0 ? (
+              <CaseLight key={c.id} c={c} n={n} />
+            ) : (
+              <CaseDark key={c.id} c={c} n={n} flip={i % 4 === 3} />
+            );
+          })}
         </div>
       </section>
 
