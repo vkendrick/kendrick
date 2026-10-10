@@ -365,6 +365,49 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── AGENTE VIRTUAL 24H — servicio premium ── */}
+      <section className="py-24 bg-white">
+        <div className="max-w-3xl mx-auto px-6 text-center">
+          <span className="inline-block text-[#0B2545] text-[10px] tracking-[4px] uppercase font-sans font-semibold mb-6 bg-[#FAF8F5] border border-gray-100 rounded-full px-4 py-1.5">
+            Nuevo · Inteligencia Artificial para tu negocio
+          </span>
+          <h2 className="text-[#0B2545] text-4xl md:text-5xl font-bold leading-[1.1] mb-5">
+            Tu negocio atendiendo{" "}
+            <span className="text-[#C5A880] italic">mientras duermes</span>
+          </h2>
+          <p className="text-gray-500 text-base md:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
+            Un agente de IA entrenado con tus servicios, precios y horarios. Responde el WhatsApp, informa y agenda — tú solo recibes el resumen.
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 mb-10 text-sm text-gray-600 font-medium">
+            <span className="inline-flex items-center gap-2">
+              <CheckCircle2 size={15} className="text-[#C5A880]" /> Responde en segundos
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <CheckCircle2 size={15} className="text-[#C5A880]" /> Agenda citas solo
+            </span>
+            <span className="inline-flex items-center gap-2">
+              <CheckCircle2 size={15} className="text-[#C5A880]" /> Sin nómina
+            </span>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              to="/demo/vendedora/"
+              className="inline-flex items-center justify-center gap-2 bg-[#C5A880] text-[#0B2545] font-bold px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#d4bc9a] active:scale-[0.97]"
+            >
+              Probar la demo <ArrowRight size={15} />
+            </Link>
+            <a
+              href="https://wa.me/34658598442?text=Hola%2C%20quiero%20un%20agente%20virtual%20para%20mi%20negocio."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 border border-[#0B2545]/20 text-[#0B2545] font-medium px-8 py-4 rounded text-sm tracking-wide transition-all duration-200 hover:bg-[#0B2545]/5"
+            >
+              Hablar por WhatsApp
+            </a>
+          </div>
+        </div>
+      </section>
+
       {/* ── TRABAJOS REALES — 3 casos, sin carrusel ── */}
       <section id="portfolio" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-6">
